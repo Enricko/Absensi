@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "341517270321",
+    "firebase_url": "https://absensi-c971a-default-rtdb.firebaseio.com",
+    "project_id": "absensi-c971a",
+    "storage_bucket": "absensi-c971a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341517270321:android:ec7c43f323d7f0a7d60410",
+        "android_client_info": {
+          "package_name": "com.example.absensi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341517270321-ad7j1n58fqcokeomohm94q7gh3r1jqbq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBbi7oAcuNHEXoguDg9u8irn2s6BYfSxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341517270321-ad7j1n58fqcokeomohm94q7gh3r1jqbq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "341517270321-iva23pg70c1ivbvbmi2oia9c7s2jcpn2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.absensiApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341517270321:android:f050de546046eb42d60410",
+        "android_client_info": {
+          "package_name": "com.example.absensi_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341517270321-ad7j1n58fqcokeomohm94q7gh3r1jqbq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBbi7oAcuNHEXoguDg9u8irn2s6BYfSxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341517270321-ad7j1n58fqcokeomohm94q7gh3r1jqbq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "341517270321-iva23pg70c1ivbvbmi2oia9c7s2jcpn2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.absensiApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
