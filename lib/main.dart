@@ -19,7 +19,6 @@ Future<void> main() async {
   // AdMob dengan Test ID
   // MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
   //     testDeviceIds: ['33BE2250B43518CCDA7DE426D04EE231']));
-
   runApp(const MyApp());
 }
 

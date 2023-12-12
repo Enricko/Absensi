@@ -14,14 +14,35 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(
-              width: double.infinity,
-              child:
-              Image.asset(
-                'assets/Background.png',
-                fit: BoxFit.cover,
-              ),
-              ),
+          Stack(
+              children:[
+                SizedBox(
+                  width: double.infinity,
+                  child: Image.asset(
+                    'assets/Background.png',
+                    // Replace with your image asset path
+                    fit: BoxFit.cover, // Use BoxFit.cover to fill the container
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 58),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Ghaluh Wizard",style: TextStyle(color: Colors.white)),
+                          Text("Karyawan",style: TextStyle(color: Colors.white,fontSize: 13,fontWeight: FontWeight.w300)),
+                        ],
+                      ),
+                      CircleAvatar()
+                    ],
+                  ),
+                )
+              ]
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 27),
             child: Column(

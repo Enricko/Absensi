@@ -12,6 +12,10 @@ dependencies:
     sdk: flutter
 #  UI
   cupertino_icons: ^1.0.2
+  dropdown_search: ^5.0.5
+
+# Format
+  intl: ^0.18.0
 
 #  Assets
   flutter_svg: ^2.0.9

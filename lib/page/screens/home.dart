@@ -1,5 +1,9 @@
+import 'package:absensi/page/screens/bulanan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'harian.dart';
+import 'form.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -16,13 +20,40 @@ class _HomeScreenState extends State<HomeScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: Image.asset(
-                'assets/Background.png',
-                // Replace with your image asset path
-                fit: BoxFit.cover, // Use BoxFit.cover to fill the container
-              ),
+            Stack(
+              children:[
+                SizedBox(
+                  width: double.infinity,
+                  child: Image.asset(
+                    'assets/Background.png',
+                    // Replace with your image asset path
+                    fit: BoxFit.cover, // Use BoxFit.cover to fill the container
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 58),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Selamat Datang,",style: TextStyle(color: Colors.white,fontSize: 13,fontWeight: FontWeight.w300)),
+                          Text("Ghaluh Wizard",style: TextStyle(color: Colors.white))
+                        ],
+                      ),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text("Total Bulan ini",style: TextStyle(color: Colors.white,fontSize: 13,fontWeight: FontWeight.w300)),
+                          Text("2.300.000",style: TextStyle(color: Colors.white),)
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ]
             ),
             Expanded(
               child: Padding(
@@ -31,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 100,
+                        height: 60,
                       ),
                       Text(
                         "Ringkasan",
@@ -56,7 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     foregroundColor:
                                         MaterialStateProperty.all(Colors.white),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> SumHarian()));
+                                  },
                                   child: Text("Harian"))),
                           SizedBox(
                             width: 10,
@@ -75,7 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       foregroundColor:
                                           MaterialStateProperty.all(
                                               Colors.blue)),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> SumBulanan()));
+                                  },
                                   child: Text("Bulanan"))),
                         ],
                       ),
@@ -200,6 +235,55 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 124,left: 24,right: 24),
+          child: SizedBox(
+            width: double.infinity,
+            child: Card(
+              child:
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 13),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset("assets/ClockClockwise.svg",color: Colors.black,),
+                          Text("2 Jam",style: TextStyle(color: Colors.blue),),
+                          Text("Lembur",style: TextStyle(color: Colors.black38),),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset("assets/Calendar.svg",color: Colors.black,),
+                          Text("Juni",style: TextStyle(color: Colors.blue),),
+                          Text("Bulan",style: TextStyle(color: Colors.black38),),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset("assets/u_money-stack.svg",color: Colors.black,),
+                          Text("Rp.400.000",style: TextStyle(color: Colors.blue),),
+                          Text("Total Hari ini",style: TextStyle(color: Colors.black38),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
         // Positioned(
         //   top: 50,
         //   right: 24,
@@ -245,7 +329,9 @@ class _HomeScreenState extends State<HomeScreen> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           backgroundColor: Colors.blue,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (ctx)=> FormAbsensi()));
+          },
           child: Icon(
             Icons.add,
             color: Colors.white,
