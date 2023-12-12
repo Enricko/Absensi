@@ -3,17 +3,25 @@ description: "A new Flutter project."
 publish_to: 'none' 
 
 version: 1.0.0+1
-
+ 
 environment:
   sdk: '>=3.2.3 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-
+#  UI
   cupertino_icons: ^1.0.2
+
+#  Assets
+  flutter_svg: ^2.0.9
+
+#  Admob
   google_mobile_ads: ^4.0.0
+
+#  Firebase
   firebase_core: ^2.24.2
+
 
 dev_dependencies:
   flutter_test:
@@ -26,5 +34,28 @@ flutter:
 
   assets:
     - assets/
+    - assets/Home.svg
+    - assets/Profile.svg
+    - assets/Search.svg
+    - assets/Calendar.svg
+    - assets/u_money-stack.svg
+    - assets/Fingerprint.svg
+    - assets/ClockClockwise.svg
+    - assets/Background.png
     - assets/man_computer.png
-    - assets/background.png
+    - assets/icon_call.svg
+    - assets/icon_email.svg
+    - assets/icon_logout.svg
+    - assets/icon_password.svg
+    - assets/icon_person.svg
+
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins/Poppins-Light.ttf
+          weight: 100
+        - asset: assets/fonts/Poppins/Poppins-Medium.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins/Poppins-Bold.ttf
+          weight: 600

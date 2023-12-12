@@ -19,7 +19,7 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             SingleChildScrollView(
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
