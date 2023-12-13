@@ -373,7 +373,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               style: TextStyle(
                                 color: Color(0xFF696F79),
                                 fontSize: 14,
-                                fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -435,7 +434,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             if (formkey.currentState!.validate()) {
                               setState(() {
                                 ignorePointer = true;
-                                ignorePointerTimer = Timer(const Duration(seconds: 10), () {
+                                ignorePointerTimer = Timer(const Duration(seconds: 2), () {
                                   setState(() {
                                     ignorePointer = false;
                                   });

@@ -1,6 +1,8 @@
 import 'package:absensi/page/screens/bulanan.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'harian.dart';
 import 'form.dart';
@@ -13,6 +15,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? name;
+
+  Future<void> getPref()async{
+    ///Inisiasi database local (SharedPreference)
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    ///Mengambil data dari database local
+    ///dan memasukan nya ke variable nama
+    setState(() {
+      name = pref.getString('nama')!;
+    });
+    print(name);
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    ///mengeksekusi function sebelum function build
+    getPref();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fit: BoxFit.cover, // Use BoxFit.cover to fill the container
                   ),
                 ),
-                const Padding(
+                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24,vertical: 58),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -40,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text("Selamat Datang,",style: TextStyle(color: Colors.white,fontSize: 13,fontWeight: FontWeight.w300)),
-                          Text("Ghaluh Wizard",style: TextStyle(color: Colors.white))
+                          Text(name ?? "-",style: TextStyle(color: Colors.white))
                         ],
                       ),
                       Column(
@@ -88,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         MaterialStateProperty.all(Colors.white),
                                   ),
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> const SumHarian()));
+
                                   },
                                   child: const Text("Harian"))),
                           const SizedBox(
@@ -109,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           MaterialStateProperty.all(
                                               Colors.blue)),
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> const SumBulanan()));
+
                                   },
                                   child: const Text("Bulanan"))),
                         ],
@@ -190,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           const Expanded(
                                               child: Text(
-                                            "Tanggal",
+                                            "Lembur",
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )),
@@ -208,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           const Expanded(
                                               child: Text(
-                                            "Tanggal",
+                                            "Total",
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )),
@@ -274,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           SvgPicture.asset("assets/u_money-stack.svg",color: Colors.black,),
                           const Text("Rp.400.000",style: TextStyle(color: Colors.blue),),
-                          const Text("Total Hari ini",style: TextStyle(color: Colors.black38),),
+                          const Text("Total Bulan ini",style: TextStyle(color: Colors.black38),),
                         ],
                       ),
                     ),

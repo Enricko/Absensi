@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +13,7 @@ class FormAbsensi extends StatefulWidget {
 }
 
 class _FormAbsensiState extends State<FormAbsensi> {
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
   final formkey = GlobalKey<FormState>();
 
   TextEditingController dateController = TextEditingController();
@@ -26,6 +28,18 @@ class _FormAbsensiState extends State<FormAbsensi> {
     decimalDigits: 2,
   );
 
+  Future<void> getData() async {
+    try {
+      QuerySnapshot querySnapshot = await users.get();
+      querySnapshot.docs.forEach((doc) {
+        print("--------");
+        print(doc.data());
+      });
+    } catch (e) {
+      print("Error reading data: $e");
+    }
+  }
+
   Future<String> totalLembur() async {
     // Menyimpan data pada device menggunakan SharedPreferences
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -38,7 +52,14 @@ class _FormAbsensiState extends State<FormAbsensi> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
+    getData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,

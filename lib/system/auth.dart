@@ -63,7 +63,7 @@ class Auth {
           .createUserWithEmailAndPassword(email: data['email'], password: data['password'])
           .then((value) {
         // Insert User to database
-        FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
+         FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
           "nama": data['nama'],
           "email": data['email'],
           "no_telepon": data['no_telepon'],

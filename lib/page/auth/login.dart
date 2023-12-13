@@ -53,8 +53,9 @@ class _LoginPageState extends State<LoginPage> {
   void cekUser() {
     // Logic cek Data User apakah sudah pernah login
     if (FirebaseAuth.instance.currentUser != null) {
+      FirebaseAuth.instance.currentUser ;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
       });
     }
   }
@@ -296,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                             if (formkey.currentState!.validate()) {
                               setState(() {
                                 ignorePointer = true;
-                                ignorePointerTimer = Timer(const Duration(seconds: 10), () {
+                                ignorePointerTimer = Timer(const Duration(seconds: 2), () {
                                   ignorePointer = false;
                                 });
                               });
@@ -361,7 +362,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              BannerAds(),
+              BannerAds(
+
+              ),
             ],
           ),
         ),
