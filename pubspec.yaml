@@ -25,6 +25,11 @@ dependencies:
 
 #  Firebase
   firebase_core: ^2.24.2
+  shared_preferences: ^2.2.2
+  firebase_database: ^10.3.8
+  firebase_auth: ^4.15.3
+  flutter_easyloading: ^3.0.5
+  currency_text_input_formatter: ^2.1.11
 
 
 dev_dependencies:
