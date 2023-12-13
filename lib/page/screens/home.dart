@@ -30,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     fit: BoxFit.cover, // Use BoxFit.cover to fill the container
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 58),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24,vertical: 58),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -57,19 +57,19 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Expanded(
               child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 60,
                       ),
-                      Text(
+                      const Text(
                         "Ringkasan",
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Row(
@@ -88,10 +88,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         MaterialStateProperty.all(Colors.white),
                                   ),
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> SumHarian()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> const SumHarian()));
                                   },
-                                  child: Text("Harian"))),
-                          SizedBox(
+                                  child: const Text("Harian"))),
+                          const SizedBox(
                             width: 10,
                           ),
                           Expanded(
@@ -104,17 +104,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       side: MaterialStateProperty.all(
-                                          BorderSide(color: Colors.blue)),
+                                          const BorderSide(color: Colors.blue)),
                                       foregroundColor:
                                           MaterialStateProperty.all(
                                               Colors.blue)),
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> SumBulanan()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (ctx)=> const SumBulanan()));
                                   },
-                                  child: Text("Bulanan"))),
+                                  child: const Text("Bulanan"))),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Expanded(
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border(
+                                    border: const Border(
                                       left: BorderSide(
                                           width: 1, color: Color(0xFF2FA4D9)),
                                       top: BorderSide(
@@ -149,70 +149,70 @@ class _HomeScreenState extends State<HomeScreen> {
                                           SvgPicture.asset(
                                             "assets/Calendar.svg",
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 8,
                                           ),
-                                          Expanded(
+                                          const Expanded(
                                               child: Text(
                                             "Tanggal",
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )),
-                                          Text("Kamis, 23 Juni 2023"),
+                                          const Text("Kamis, 23 Juni 2023"),
                                         ],
                                       ),
-                                      Divider(),
+                                      const Divider(),
                                       Row(
                                         children: [
                                           SvgPicture.asset(
                                             "assets/Fingerprint.svg",
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 8,
                                           ),
-                                          Expanded(
+                                          const Expanded(
                                               child: Text(
                                             "Absensi",
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )),
-                                          Text("Masuk"),
+                                          const Text("Masuk"),
                                         ],
                                       ),
-                                      Divider(),
+                                      const Divider(),
                                       Row(
                                         children: [
                                           SvgPicture.asset(
                                             "assets/ClockClockwise.svg",
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 8,
                                           ),
-                                          Expanded(
+                                          const Expanded(
                                               child: Text(
                                             "Tanggal",
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )),
-                                          Text("3 Jam"),
+                                          const Text("3 Jam"),
                                         ],
                                       ),
-                                      Divider(),
+                                      const Divider(),
                                       Row(
                                         children: [
                                           SvgPicture.asset(
                                             "assets/u_money-stack.svg",
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 8,
                                           ),
-                                          Expanded(
+                                          const Expanded(
                                               child: Text(
                                             "Tanggal",
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )),
-                                          Text(
+                                          const Text(
                                             "Rp.200.000",
                                             style:
                                                 TextStyle(color: Colors.blue),
@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                               ],
@@ -251,8 +251,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset("assets/ClockClockwise.svg",color: Colors.black,),
-                          Text("2 Jam",style: TextStyle(color: Colors.blue),),
-                          Text("Lembur",style: TextStyle(color: Colors.black38),),
+                          const Text("2 Jam",style: TextStyle(color: Colors.blue),),
+                          const Text("Lembur",style: TextStyle(color: Colors.black38),),
                         ],
                       ),
                     ),
@@ -262,8 +262,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset("assets/Calendar.svg",color: Colors.black,),
-                          Text("Juni",style: TextStyle(color: Colors.blue),),
-                          Text("Bulan",style: TextStyle(color: Colors.black38),),
+                          const Text("Juni",style: TextStyle(color: Colors.blue),),
+                          const Text("Bulan",style: TextStyle(color: Colors.black38),),
                         ],
                       ),
                     ),
@@ -273,8 +273,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset("assets/u_money-stack.svg",color: Colors.black,),
-                          Text("Rp.400.000",style: TextStyle(color: Colors.blue),),
-                          Text("Total Hari ini",style: TextStyle(color: Colors.black38),),
+                          const Text("Rp.400.000",style: TextStyle(color: Colors.blue),),
+                          const Text("Total Hari ini",style: TextStyle(color: Colors.black38),),
                         ],
                       ),
                     ),
@@ -330,9 +330,9 @@ class _HomeScreenState extends State<HomeScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           backgroundColor: Colors.blue,
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (ctx)=> FormAbsensi()));
+            Navigator.push(context, MaterialPageRoute(builder: (ctx)=> const FormAbsensi()));
           },
-          child: Icon(
+          child: const Icon(
             Icons.add,
             color: Colors.white,
           )),

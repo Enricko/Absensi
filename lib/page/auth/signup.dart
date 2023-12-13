@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:absensi/include/banner_ads.dart';
 import 'package:absensi/page/auth/login.dart';
+import 'package:absensi/page/screens/home.dart';
 import 'package:absensi/system/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +43,9 @@ class _SignUpPageState extends State<SignUpPage> {
     var email = emailController.text;
     var password = passwordController.text;
     var nomor = nomorController.text;
-    var gaji = gajiController.text;
+
+    // Mengubah format gaji jadi integer
+    var gaji = int.parse(gajiController.text.replaceAll(RegExp(r'[^0-9]'), ''));
 
     // Menjadikan Map agar mudah di pindah ke function lain
     var data = {
@@ -55,10 +59,21 @@ class _SignUpPageState extends State<SignUpPage> {
     Auth.signUp(data, context);
   }
 
+  void cekUser() {
+    // Logic cek Data User apakah sudah pernah login
+    if (FirebaseAuth.instance.currentUser != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+      });
+    }
+  }
+
+  // Code yang bakal di jalankan pertama kali halaman ini dibuka
   @override
   void initState() {
-    // TODO: implement initState
-    print("adsaadsasd");
+    // Cek User apakah user sudah pernah login sebelumnya
+    cekUser();
     super.initState();
   }
 
@@ -218,7 +233,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   return "The Email field is required.";
                                 }
                                 if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                                  return 'Please enter a valid email';
+                                  return 'Mohon masukkan email yang valid!';
                                 }
                                 return null;
                               },
@@ -416,7 +431,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            print("asdasdasd");
                             // Validasi Form Input sebelum menjalankan logic sign up
                             if (formkey.currentState!.validate()) {
                               setState(() {

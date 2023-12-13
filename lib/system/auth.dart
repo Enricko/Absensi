@@ -1,4 +1,5 @@
 import 'package:absensi/page/auth/login.dart';
+import 'package:absensi/page/menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -8,42 +9,86 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth {
   // Login Logic Functions
-  static login(Map<dynamic, dynamic> data, BuildContext context) async {}
+  static login(Map<dynamic, dynamic> data, BuildContext context) async {
+    try {
+      // UI Loading
+      EasyLoading.show(status: 'loading...');
+      // Login menggunakan function signInWithEmailAndPassword() yang telah di sediakan oleh firebase
+      var user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: data['email'], password: data['password']);
+      print(user.user!.uid);
+
+      // Mengambil semua data user yang ada di dalam database lalu di filter
+      FirebaseDatabase.instance.ref().child("user").onValue.listen((event) async {
+        // Menyimpan data pada device menggunakan SharedPreferences
+        SharedPreferences pref = await SharedPreferences.getInstance();
+
+        if (event.snapshot.hasChild(user.user!.uid)) {
+          var getUser = event.snapshot.child(user.user!.uid).value as Map;
+          // Menyimpan beberapa data yg penting ke device agar tidak selalu login
+          pref.setString("nama", getUser['nama'].toString());
+          pref.setString("email", getUser['email'].toString());
+          pref.setString("no_telepon", getUser['no_telepon'].toString());
+          pref.setInt("gaji_pokok", int.parse(getUser['gaji_pokok']));
+          EasyLoading.showSuccess('Welcome Back', dismissOnTap: true);
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
+          return; // Berhenti jika data-nya sesuai / data-nya ketemu
+        }
+      });
+
+      // Mengarah ke halaman dashboard jika berhasil
+    } on Exception catch (e) {
+      // Menampilkan error yang terjadi pada block code di atas
+      EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
+          dismissOnTap: true, duration: const Duration(seconds: 5));
+    } finally {
+      // Finally akan jalan jika try catch di atas telah selesai di jalankan
+      EasyLoading.dismiss();
+    }
+  }
 
   // SignUp Logic Functions
   static signUp(Map<dynamic, dynamic> data, BuildContext context) async {
-    // UI Loading
-    EasyLoading.show(status: 'loading...');
+    // Menjalankan block code di dalam agar kita mengetahui jika code tersebut errored
+    try {
+      // UI Loading
+      EasyLoading.show(status: 'loading...');
 
-    // Initialize Firebase Authentication
-    FirebaseApp app =
-        await Firebase.initializeApp(name: 'AuthUser', options: Firebase.app().options);
+      // Initialize Firebase Authentication
+      FirebaseApp app =
+          await Firebase.initializeApp(name: 'AuthUser', options: Firebase.app().options);
 
-    // Insert User to FirebaseAuth
-    await FirebaseAuth.instanceFor(app: app)
-        .createUserWithEmailAndPassword(email: data['email'], password: data['password'])
-        .then((value) {
-      // Insert User to database
-      FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
-        "nama": data['nama'],
-        "email": data['email'],
-        "no_telepon": data['no_telepon'],
-        "gaji_pokok": data['gaji_pokok'],
-      }).whenComplete(() {
-        // Jika logic telah selesai berjalan, kode yang di bawah ini bakal jalan
-        EasyLoading.showSuccess('Tambah Akun Berhasil',
-            dismissOnTap: true, duration: const Duration(seconds: 5));
-        // Mengarah ke Login Page jika Sign Up Berhasil
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      // Insert User to FirebaseAuth
+      await FirebaseAuth.instanceFor(app: app)
+          .createUserWithEmailAndPassword(email: data['email'], password: data['password'])
+          .then((value) {
+        // Insert User to database
+        FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
+          "nama": data['nama'],
+          "email": data['email'],
+          "no_telepon": data['no_telepon'],
+          "gaji_pokok": int.parse(data['gaji_pokok']),
+        }).whenComplete(() {
+          // Jika logic telah selesai berjalan, kode yang di bawah ini bakal jalan
+          EasyLoading.showSuccess('Tambah Akun Berhasil',
+              dismissOnTap: true, duration: const Duration(seconds: 5));
+          // Mengarah ke Login Page jika Sign Up Berhasil
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+        }).onError((error, stackTrace) {
+          // Jika logic mengalami error, kode yang di bawah ini bakal jalan
+          EasyLoading.showError('$error', dismissOnTap: true, duration: const Duration(seconds: 5));
+        });
       }).onError((error, stackTrace) {
         // Jika logic mengalami error, kode yang di bawah ini bakal jalan
-        EasyLoading.showError('Something went wrong : $error',
-            dismissOnTap: true, duration: const Duration(seconds: 5));
+        EasyLoading.showError('$error', dismissOnTap: true, duration: const Duration(seconds: 5));
       });
-    }).onError((error, stackTrace) {
-      // Jika logic mengalami error, kode yang di bawah ini bakal jalan
-      EasyLoading.showError('Something went wrong : $error',
+    } on Exception catch (e) {
+      // Menampilkan error yang terjadi pada block code di atas
+      EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
           dismissOnTap: true, duration: const Duration(seconds: 5));
-    });
+    } finally {
+      // Finally akan jalan jika try catch di atas telah selesai di jalankan
+      EasyLoading.dismiss();
+    }
   }
 }
