@@ -1,6 +1,11 @@
+import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/bulanan.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -10,6 +15,46 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
+  String id_user = "";
+
+  // Format Currency
+  NumberFormat currencyFormatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
+  Future<void> getPref() async {
+    ///Inisiasi database local (SharedPreference)
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    ///Mengambil data dari database local
+    ///dan memasukan nya ke variable id_user
+    setState(() {
+      id_user = pref.getString('id_user')!;
+    });
+  }
+
+  void cekUser() {
+    // Logic cek Data User apakah sudah pernah login
+    if (FirebaseAuth.instance.currentUser == null) {
+      FirebaseAuth.instance.currentUser;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Cek User apakah user sudah pernah login sebelumnya
+    cekUser();
+
+    ///mengeksekusi function sebelum function build
+    getPref();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +78,6 @@ class _HistoryState extends State<History> {
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 5),
                     width: double.infinity,
-                    height: 50,
                     child: TextFormField(
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(10, 3, 1, 3),
@@ -48,13 +92,11 @@ class _HistoryState extends State<History> {
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.black38),
+                            borderSide: BorderSide(width: 1, color: Colors.black38),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.black38),
+                            borderSide: BorderSide(width: 1, color: Colors.black38),
                           ),
                           filled: true,
                           fillColor: Colors.white),
@@ -71,90 +113,136 @@ class _HistoryState extends State<History> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                      Text("Pilih Tahun",style: TextStyle(fontSize: 16),),
-                      Text("2023"),
-                    ],),
-                    SizedBox(height: 10,),
+                        Text(
+                          "Pilih Tahun",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Text("2023"),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: 2,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              // Card Lemburan
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border(
-                                    left: BorderSide(
-                                        width: 1, color: Color(0xFF2FA4D9)),
-                                    top: BorderSide(
-                                        width: 11, color: Color(0xFF2FA4D9)),
-                                    right: BorderSide(
-                                        width: 1, color: Color(0xFF2FA4D9)),
-                                    bottom: BorderSide(
-                                        width: 1, color: Color(0xFF2FA4D9)),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                      child: StreamBuilder(
+                        // Query untuk mengambil data pada firebase
+                        stream: FirebaseDatabase.instance
+                            .ref()
+                            .child("lembur") // Parent di database
+                            .child(id_user) // Id user
+                            // .child(DateFormat('yyyy-MM', "id")
+                            //     .format(DateTime.now())) // Bulan dan tahun saat ini
+                            .onValue,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
+                            // Variable data mempermudah memanggil data pada database
+                            Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                                (snapshot.data! as DatabaseEvent).snapshot.value
+                                    as Map<dynamic, dynamic>);
+                            // Mengubah map menjadi list
+                            List<Map<dynamic, dynamic>> dataList = [];
+                            // Memperulangkan data menggunakan foreach
+                            data.forEach((key, value) {
+                              // Mensetting variable dengan total lembur dan gaji)
+                              dataList.add({
+                                'tanggal': key,
+                              });
+                            });
+                            return ListView.builder(
+                              itemCount: dataList.length,
+                              itemBuilder: (context, index) {
+                                return Column(
                                   children: [
-                                    Text("PAYSLIP JULY 2023",style: TextStyle(fontWeight: FontWeight.w500),),
-                                    SizedBox(height: 8,),
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          "assets/Calendar.svg",
-                                          color: Colors.blue,
-                                        ),
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                              "Agustus 2023",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w300,
-                                                  fontSize: 14,
-                                                  color: Colors.blue),
-                                            )),
-                                      ],
-                                    ),
-                                    Divider(),
-                                    SizedBox(
+                                    // Card Lemburan
+                                    Container(
                                       width: double.infinity,
-                                      child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            shape: MaterialStateProperty.all(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                            backgroundColor:
-                                            MaterialStateProperty.all(Colors.blue),
-                                            foregroundColor:
-                                            MaterialStateProperty.all(Colors.white),
+                                      padding:
+                                          const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border(
+                                          left: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                          top: BorderSide(width: 11, color: Color(0xFF2FA4D9)),
+                                          right: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                          bottom: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "PAYSLIP ${DateFormat('MMMM yyyy', 'id').format(DateFormat('yyyy-MM', "id").parse(dataList[index]['tanggal']))}",
+                                            style: TextStyle(fontWeight: FontWeight.w500),
                                           ),
-                                          onPressed: (){
-                                            Navigator.push(context,MaterialPageRoute(builder: (ctx)=>SumBulanan()));
-                                          }, child: Text("Lihat Detail")),
-                                    )
+                                          SizedBox(
+                                            height: 8,
+                                          ),
+                                          Row(
+                                            children: [
+                                              SvgPicture.asset(
+                                                "assets/Calendar.svg",
+                                                color: Colors.blue,
+                                              ),
+                                              SizedBox(
+                                                width: 8,
+                                              ),
+                                              Expanded(
+                                                  child: Text(
+                                                "${DateFormat('MMMM yyyy', 'id').format(DateFormat('yyyy-MM', "id").parse(dataList[index]['tanggal']))}",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w300,
+                                                    fontSize: 14,
+                                                    color: Colors.blue),
+                                              )),
+                                            ],
+                                          ),
+                                          Divider(),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  shape: MaterialStateProperty.all(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                  ),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(Colors.blue),
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all(Colors.white),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (ctx) => SumBulanan(tanggal:dataList[index]['tanggal'])));
+                                                },
+                                                child: Text("Lihat Detail")),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
                                   ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
+                                );
+                              },
+                            );
+                          }
+                          if (snapshot.hasData) {
+                            // Tampilkan kosong jika snapshot return data tapi data di database kosong
+                            return const Center(
+                              child: Text("Tidak ada lembur tahun ini"),
+                            );
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
                         },
                       ),
                     )
-              
                   ],
                 ),
               ),

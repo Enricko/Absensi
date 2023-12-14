@@ -16,7 +16,6 @@ class Auth {
       // Login menggunakan function signInWithEmailAndPassword() yang telah di sediakan oleh firebase
       var user = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: data['email'], password: data['password']);
-      print(user.user!.uid);
 
       // Mengambil semua data user yang ada di dalam database lalu di filter
       FirebaseDatabase.instance.ref().child("user").onValue.listen((event) async {
@@ -42,9 +41,6 @@ class Auth {
       // Menampilkan error yang terjadi pada block code di atas
       EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
           dismissOnTap: true, duration: const Duration(seconds: 5));
-    } finally {
-      // Finally akan jalan jika try catch di atas telah selesai di jalankan
-      EasyLoading.dismiss();
     }
   }
 
@@ -87,9 +83,6 @@ class Auth {
       // Menampilkan error yang terjadi pada block code di atas
       EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
           dismissOnTap: true, duration: const Duration(seconds: 5));
-    } finally {
-      // Finally akan jalan jika try catch di atas telah selesai di jalankan
-      EasyLoading.dismiss();
     }
   }
 }
