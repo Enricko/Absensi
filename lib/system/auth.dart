@@ -26,6 +26,7 @@ class Auth {
         if (event.snapshot.hasChild(user.user!.uid)) {
           var getUser = event.snapshot.child(user.user!.uid).value as Map;
           // Menyimpan beberapa data yg penting ke device agar tidak selalu login
+          pref.setString("id_user", user.user!.uid.toString());
           pref.setString("nama", getUser['nama'].toString());
           pref.setString("email", getUser['email'].toString());
           pref.setString("no_telepon", getUser['no_telepon'].toString());
