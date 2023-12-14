@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:absensi/system/insert_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,44 +18,83 @@ class FormAbsensi extends StatefulWidget {
 }
 
 class _FormAbsensiState extends State<FormAbsensi> {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  // Form Key untuk Validasi Form Input
   final formkey = GlobalKey<FormState>();
+  // ignorePointer agar tidak spam click
+  bool ignorePointer = false;
+  Timer? ignorePointerTimer;
 
+  // Set ID_User ke variable
   String id_user = "";
+  int totalGajiLembur = 0;
 
+  // Form Input Controller
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   int selectedRadio = 0;
   final String locale = 'id';
   String? status;
+
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp ',
-    decimalDigits: 2,
+    decimalDigits: 0,
   );
 
-  Future<void> getData() async {
-    try {
-      QuerySnapshot querySnapshot = await users.get();
-      querySnapshot.docs.forEach((doc) {
-        print("--------");
-        print(doc.data());
-      });
-    } catch (e) {
-      print("Error reading data: $e");
-    }
-  }
-
   String totalLembur(int gajiPokok) {
-    // Menyimpan data pada device menggunakan SharedPreferences
-    // SharedPreferences pref = await SharedPreferences.getInstance();
-    // int? gajiPokok = pref.getInt('gaji_pokok');
-
     if (timeController.text != "") {
-      return "${timeController.text == "1" ? currencyFormatter.format(int.parse(timeController.text) * 1.5 * (1 / 173) * gajiPokok!) : currencyFormatter.format(int.parse(timeController.text) * 2 * (1 / 173) * gajiPokok!)}";
+      // Lembur jam pertama
+      var lembur1 = 1 * 1.5 * (1 / 173) * gajiPokok!;
+
+      // Lembur jam kedua dan lembur di hari libur
+      var lembur2 =
+          currencyFormatter.format(int.parse(timeController.text) * 2 * (1 / 173) * gajiPokok!);
+
+      // Lembur jam pertama dan kedua di hari biasa
+      var lembur3 = currencyFormatter
+          .format(lembur1 + (int.parse(timeController.text) - 1) * 2 * (1 / 173) * gajiPokok!);
+      if (dateController.text != '') {
+        // Format Date
+        var dateFormat = DateFormat.EEEE('id')
+            .format(DateFormat('EEEE, dd MMMM yyyy', "id").parse(dateController.text));
+        // Jika Sabtu/Minggu maka return di bawah ini
+        if (dateFormat == 'Minggu' || dateFormat == 'Sabtu') {
+          return "$lembur2";
+        }
+      }
+      return "$lembur3";
     }
     return "Rp. 0";
+  }
+
+// Function untuk menentukan weekend
+  String cekLiburWeekend() {
+    if (dateController.text != '') {
+      // Format Date
+      var dateFormat = DateFormat.EEEE('id')
+          .format(DateFormat('EEEE, dd MMMM yyyy', "id").parse(dateController.text));
+      // Jika Sabtu/Minggu maka return di bawah ini
+      if (dateFormat == 'Minggu' || dateFormat == 'Sabtu') {
+        return '( Hari Libur )';
+      }
+    }
+    return '';
+  }
+
+  void simpanLembur() {
+    var date = dateController.text;
+    var time = timeController.text;
+    var absensi = "${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'} ${cekLiburWeekend()}";
+    var total = totalGajiLembur;
+
+    var data = {
+      'tanggal': date,
+      'absensi': absensi,
+      'lembur': time,
+      'total': total,
+    };
+    InsertData.lembur(data, id_user, context);
   }
 
   Future<void> getUser() async {
@@ -68,7 +110,6 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -149,7 +190,6 @@ class _FormAbsensiState extends State<FormAbsensi> {
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 5),
                     width: double.infinity,
-                    height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -243,7 +283,6 @@ class _FormAbsensiState extends State<FormAbsensi> {
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 5),
                   width: double.infinity,
-                  height: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -362,7 +401,8 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 "Absensi",
                                 style: TextStyle(color: Colors.black38),
                               )),
-                              Text("${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'}"),
+                              Text(
+                                  "${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'} ${cekLiburWeekend()}"),
                             ],
                           ),
                           Divider(),
@@ -404,12 +444,22 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                     .child(id_user)
                                     .onValue,
                                 builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
+                                  if (snapshot.hasData &&
+                                      (snapshot.data! as DatabaseEvent).snapshot.value != null) {
                                     Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
                                         (snapshot.data! as DatabaseEvent).snapshot.value
                                             as Map<dynamic, dynamic>);
+                                    if (data['gaji_pokok'] != null) {
+                                      totalGajiLembur = int.parse(
+                                          totalLembur(int.parse(data['gaji_pokok']))
+                                              .replaceAll(RegExp(r'[^0-9]'), ''));
+                                      return Text(
+                                        "${totalLembur(int.parse(data['gaji_pokok']))}",
+                                        style: TextStyle(color: Colors.blue),
+                                      );
+                                    }
                                     return Text(
-                                      "${totalLembur(int.parse(data['gaji_pokok']))}",
+                                      "Rp. 0",
                                       style: TextStyle(color: Colors.blue),
                                     );
                                   }
@@ -444,7 +494,18 @@ class _FormAbsensiState extends State<FormAbsensi> {
                         backgroundColor: MaterialStateProperty.all(Colors.blue),
                         foregroundColor: MaterialStateProperty.all(Colors.white),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        if (formkey.currentState!.validate()) {
+                          setState(() {
+                            ignorePointer = true;
+                            ignorePointerTimer = Timer(const Duration(seconds: 2), () {
+                              ignorePointer = false;
+                            });
+                          });
+                          // Menjalanan kan logic Simpan data lembur
+                          simpanLembur();
+                        }
+                      },
                       child: Text("Simpan")),
                 )
               ],
