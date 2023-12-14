@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FormAbsensi extends StatefulWidget {
@@ -15,6 +17,8 @@ class FormAbsensi extends StatefulWidget {
 class _FormAbsensiState extends State<FormAbsensi> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final formkey = GlobalKey<FormState>();
+
+  String id_user = "";
 
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
@@ -40,10 +44,10 @@ class _FormAbsensiState extends State<FormAbsensi> {
     }
   }
 
-  Future<String> totalLembur() async {
+  String totalLembur(int gajiPokok) {
     // Menyimpan data pada device menggunakan SharedPreferences
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    int? gajiPokok = pref.getInt('gaji_pokok');
+    // SharedPreferences pref = await SharedPreferences.getInstance();
+    // int? gajiPokok = pref.getInt('gaji_pokok');
 
     if (timeController.text != "") {
       return "${timeController.text == "1" ? currencyFormatter.format(int.parse(timeController.text) * 1.5 * (1 / 173) * gajiPokok!) : currencyFormatter.format(int.parse(timeController.text) * 2 * (1 / 173) * gajiPokok!)}";
@@ -51,10 +55,15 @@ class _FormAbsensiState extends State<FormAbsensi> {
     return "Rp. 0";
   }
 
+  Future<void> getUser() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    id_user = pref.getString('id_user')!;
+  }
+
   @override
   void initState() {
+    getUser();
     super.initState();
-
   }
 
   @override
@@ -388,11 +397,24 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                   style: TextStyle(color: Colors.black38),
                                 ),
                               ),
-                              FutureBuilder<String>(
-                                future: totalLembur(),
+                              StreamBuilder(
+                                stream: FirebaseDatabase.instance
+                                    .ref()
+                                    .child("user")
+                                    .child(id_user)
+                                    .onValue,
                                 builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                                        (snapshot.data! as DatabaseEvent).snapshot.value
+                                            as Map<dynamic, dynamic>);
+                                    return Text(
+                                      "${totalLembur(int.parse(data['gaji_pokok']))}",
+                                      style: TextStyle(color: Colors.blue),
+                                    );
+                                  }
                                   return Text(
-                                    "${snapshot.hasData ? snapshot.data : 'Rp. 0'}",
+                                    "Rp. 0",
                                     style: TextStyle(color: Colors.blue),
                                   );
                                 },

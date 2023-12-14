@@ -33,6 +33,7 @@ dependencies:
   currency_text_input_formatter: ^2.1.11
   flutter_localizations:
     sdk: flutter
+  firebase_ui_database: ^1.3.13
 
 
 dev_dependencies:
