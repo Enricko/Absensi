@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 13,
                                       fontWeight: FontWeight.w300)),
                               Text(
-                                "${currencyFormatter.format(int.parse(data['gaji_pokok']))}",
+                                "${currencyFormatter.format(int.parse(data['gaji_pokok']))}" ,
                                 style: const TextStyle(color: Colors.white),
                               )
                             ],
