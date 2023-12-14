@@ -1,3 +1,4 @@
+import 'package:absensi/page/screens/bulanan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -138,7 +139,9 @@ class _HistoryState extends State<History> {
                                             foregroundColor:
                                             MaterialStateProperty.all(Colors.white),
                                           ),
-                                          onPressed: (){}, child: Text("Lihat Detail")),
+                                          onPressed: (){
+                                            Navigator.push(context,MaterialPageRoute(builder: (ctx)=>SumBulanan()));
+                                          }, child: Text("Lihat Detail")),
                                     )
                                   ],
                                 ),

@@ -1,3 +1,7 @@
+import 'package:absensi/page/auth/login.dart';
+import 'package:absensi/page/screens/edit_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -9,6 +13,9 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +56,9 @@ class _ProfileState extends State<Profile> {
               children: [
                 // hasil extract widget
                 TileProfile(
+                  ontap: (){
+                    Navigator.push(context,MaterialPageRoute(builder: (ctx)=> EditProfile()));
+                  },
                   url: 'assets/icon_person.svg',
                   title: 'Edit Profile',
                 ),
@@ -65,6 +75,10 @@ class _ProfileState extends State<Profile> {
                   title: 'Ganti Nomor Telepon',
                 ),
                 TileProfile(
+                  ontap: ()async{
+                    await auth.signOut();
+                    Navigator.pushReplacement(context,MaterialPageRoute(builder: (ctx)=> LoginPage()));
+                  },
                   url: 'assets/icon_logout.svg',
                   title: 'Log Out',
                 ),
@@ -80,11 +94,12 @@ class _ProfileState extends State<Profile> {
 class TileProfile extends StatelessWidget {
   final String url;
   final String title;
+  final VoidCallback? ontap;
 
   const TileProfile({
     super.key,
     required this.url,
-    required this.title,
+    required this.title,  this.ontap,
   });
 
   @override
@@ -105,6 +120,7 @@ class TileProfile extends StatelessWidget {
             size: 13,
             color: Colors.blue,
           ),
+          onTap: ontap,
         ),
         SizedBox(
           height: 10,
