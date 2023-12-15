@@ -64,7 +64,7 @@ class Auth {
           "nama": data['nama'],
           "email": data['email'],
           "no_telepon": data['no_telepon'],
-          "gaji_pokok": int.parse(data['gaji_pokok']),
+          "gaji_pokok": data['gaji_pokok'],
         }).whenComplete(() {
           // Jika logic telah selesai berjalan, kode yang di bawah ini bakal jalan
           EasyLoading.showSuccess('Tambah Akun Berhasil',
