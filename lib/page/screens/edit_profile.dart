@@ -18,17 +18,18 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   String id_user = "";
-  CollectionReference users = FirebaseFirestore.instance.collection('user');
+  // CollectionReference users = FirebaseFirestore.instance.collection('user');
   TextEditingController nameController = TextEditingController();
   TextEditingController gajiController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+
   /// format bilangan kedalam mata uang
   NumberFormat currencyFormatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp ',
     decimalDigits: 0,
   );
-  
+
   Future<void> getPref() async {
     ///Inisiasi database local (SharedPreference)
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -38,6 +39,10 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       id_user = pref.getString('id_user')!;
     });
+
+    // Get All data users from firebase database
+    getUserFromFirebase();
+
   }
 
   void cekUser() {
@@ -50,13 +55,18 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  Future<void> fetchDataFromFirestore() async {
+  Future<void> getUserFromFirebase() async {
     try {
-      QuerySnapshot querySnapshot = await users.get();
-      // Process the data from the querySnapshot
-      for (QueryDocumentSnapshot document in querySnapshot.docs) {
-        print('Document data: ${document.data()}');
-      }
+      FirebaseDatabase.instance
+          .ref()
+          .child("user") // Parent di database
+          .child(id_user) // Id user
+          .onValue
+          .listen((event) {
+            var snapshot = event.snapshot.value as Map;
+            nameController.text = snapshot['nama'];
+            // nameController.text = snapshot.value;
+          });
     } catch (e) {
       print('Error fetching data: $e');
     }
@@ -65,10 +75,9 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
+    print("asdad");
     // Cek User apakah user sudah pernah login sebelumnya
     cekUser();
-
-    fetchDataFromFirestore();
 
     ///mengeksekusi function sebelum function build
     getPref();
@@ -94,14 +103,12 @@ class _EditProfileState extends State<EditProfile> {
           stream: FirebaseDatabase.instance.ref().child("user").child(id_user).onValue,
           builder: (context, snapshot) {
             // Mengecek apakah data nya ada atau tidak
-            if (snapshot.hasData &&
-                (snapshot.data! as DatabaseEvent).snapshot.value != null) {
+            if (snapshot.hasData && (snapshot.data! as DatabaseEvent).snapshot.value != null) {
               Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
                   (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
 
               // Display True data
-              return
-              Column(
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Nama"),
@@ -116,15 +123,15 @@ class _EditProfileState extends State<EditProfile> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: TextFormField(
-                      initialValue: data['nama'] ?? "-",
-                      // controller: nameController,
+                      // initialValue: data['nama'] ?? "-",
+                      controller: nameController,
                       keyboardType: TextInputType.text,
                       onChanged: (value) {
                         setState(() {});
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty || value == "") {
-                          return "Jam Lembur harus di isi!";
+                          return "Nama harus di isi!";
                         }
                         return null;
                       },
@@ -257,9 +264,7 @@ class _EditProfileState extends State<EditProfile> {
                           backgroundColor: MaterialStateProperty.all(Colors.blue),
                           foregroundColor: MaterialStateProperty.all(Colors.white),
                         ),
-                        onPressed: () {
-
-                        },
+                        onPressed: () {},
                         child: Text("Simpan")),
                   )
                 ],
@@ -269,7 +274,6 @@ class _EditProfileState extends State<EditProfile> {
             return CircularProgressIndicator();
           },
         ),
-
       ),
     );
   }
