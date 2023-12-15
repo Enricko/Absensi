@@ -42,7 +42,6 @@ class _EditProfileState extends State<EditProfile> {
 
     // Get All data users from firebase database
     getUserFromFirebase();
-
   }
 
   void cekUser() {
@@ -63,10 +62,12 @@ class _EditProfileState extends State<EditProfile> {
           .child(id_user) // Id user
           .onValue
           .listen((event) {
-            var snapshot = event.snapshot.value as Map;
-            nameController.text = snapshot['nama'];
-            // nameController.text = snapshot.value;
-          });
+        var snapshot = event.snapshot.value as Map;
+        nameController.text = snapshot['nama'];
+        gajiController.text = snapshot['gaji_pokok'];
+        phoneNumberController.text = snapshot['no_telepon'];
+        // nameController.text = snapshot.value;
+      });
     } catch (e) {
       print('Error fetching data: $e');
     }
@@ -167,8 +168,8 @@ class _EditProfileState extends State<EditProfile> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: TextFormField(
-                      initialValue: data['no_telepon'] ?? "-",
-                      // controller: phoneNumberController,
+                      // initialValue: data['no_telepon'] ?? "-",
+                      controller: phoneNumberController,
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {});
@@ -211,8 +212,8 @@ class _EditProfileState extends State<EditProfile> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: TextFormField(
-                      initialValue: currencyFormatter.format(int.parse(data['gaji_pokok'])) ?? "-",
-                      // controller: gajiController,
+                      // initialValue: currencyFormatter.format(int.parse(data['gaji_pokok'])) ?? "-",
+                      controller: gajiController,
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {});
