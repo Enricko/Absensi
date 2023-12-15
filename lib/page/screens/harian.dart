@@ -1,3 +1,4 @@
+import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -53,6 +54,8 @@ class _SumHarianState extends State<SumHarian> {
 
     ///mengeksekusi function sebelum function build
     getPref();
+        // Load InterstitialAd Ads
+    InterstitialAds.loadAd();
   }
 
   @override

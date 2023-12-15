@@ -1,6 +1,10 @@
+import 'package:absensi/include/interstisial_ads.dart';
+import 'package:absensi/page/auth/login.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -10,9 +14,44 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  String id_user = "";
   TextEditingController nameController = TextEditingController();
   TextEditingController gajiController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+  
+  Future<void> getPref() async {
+    ///Inisiasi database local (SharedPreference)
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    ///Mengambil data dari database local
+    ///dan memasukan nya ke variable id_user
+    setState(() {
+      id_user = pref.getString('id_user')!;
+    });
+  }
+
+  void cekUser() {
+    // Logic cek Data User apakah sudah pernah login
+    if (FirebaseAuth.instance.currentUser == null) {
+      FirebaseAuth.instance.currentUser;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Cek User apakah user sudah pernah login sebelumnya
+    cekUser();
+
+    ///mengeksekusi function sebelum function build
+    getPref();
+    // Load InterstitialAd Ads
+    InterstitialAds.loadAd();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

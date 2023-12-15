@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/system/insert_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -96,20 +97,6 @@ class _FormAbsensiState extends State<FormAbsensi> {
     // return "Rp. 0";
   }
 
-// Function untuk menentukan weekend
-  String cekLiburWeekend() {
-    if (dateController.text != '') {
-      // Format Date
-      var dateFormat = DateFormat.EEEE('id')
-          .format(DateFormat('EEEE, dd MMMM yyyy', "id").parse(dateController.text));
-      // Jika Sabtu/Minggu maka return di bawah ini
-      if (dateFormat == 'Minggu' || dateFormat == 'Sabtu') {
-        return '( Hari Libur )';
-      }
-    }
-    return '';
-  }
-
   void simpanLembur() {
     var date = dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
     var time = timeController.text != '' ? timeController.text : "0";
@@ -155,6 +142,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
     ///mengeksekusi function sebelum function build
     getPref();
+    
+    // Load InterstitialAd Ads
+    InterstitialAds.loadAd();
   }
 
   @override

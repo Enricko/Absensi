@@ -40,6 +40,14 @@ class InterstitialAds {
           debugPrint('$ad loaded.');
           // Keep a reference to the ad so you can show it later.
           _interstitialAd = ad;
+          // Iklan bakal muncul jika ini mendapatkan 1 dan memiliki chance 1/3 atau 33.3%
+          // Kenapa saya kasih begini agar pindah page ti dak selalu iklan
+          // Agar user tidak terlalu merasa risih dengan iklan
+          int random = Random().nextInt(3);
+          print("random : $random");
+          if (random == 1) {
+            _interstitialAd!.show();
+          }
         },
         // Called when an ad request failed.
         onAdFailedToLoad: (LoadAdError error) {
@@ -47,16 +55,6 @@ class InterstitialAds {
         },
       ),
     );
-    // Delay beberapa saat sebelum show
-    Future.delayed(Duration(seconds: 3), () {
-      // Iklan bakal muncul jika ini mendapatkan 1
-      // Kenapa saya kasih begini agar pindah page ti dak selalu iklan
-      // Agar user tidak terlalu merasa risih dengan iklan
-      int random = Random().nextInt(3);
-      if (random == 1) {
-        _interstitialAd!.show();
-      }
-    });
   }
 }
 

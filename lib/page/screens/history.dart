@@ -1,3 +1,4 @@
+import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/bulanan.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -53,6 +54,8 @@ class _HistoryState extends State<History> {
 
     ///mengeksekusi function sebelum function build
     getPref();
+        // Load InterstitialAd Ads
+    InterstitialAds.loadAd();
   }
 
   @override
