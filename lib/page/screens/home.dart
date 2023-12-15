@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/bulanan.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,6 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     ///mengeksekusi function sebelum function build
     getPref();
+
+    // Load InterstitialAd Ads
+    InterstitialAds.loadAd();
   }
 
   @override
@@ -112,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 13,
                                       fontWeight: FontWeight.w300)),
                               Text(
-                                "${currencyFormatter.format(int.parse(data['gaji_pokok']))}" ,
+                                "${currencyFormatter.format(int.parse(data['gaji_pokok']))}",
                                 style: const TextStyle(color: Colors.white),
                               )
                             ],

@@ -39,7 +39,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
   TextEditingController timeController = TextEditingController();
   int selectedRadio = 0;
   final String locale = 'id';
-  String? keterangan ;
+  String? keterangan;
 
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
@@ -50,33 +50,36 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
   String totalLembur(int gajiPokok) {
     if (timeController.text != "") {
+      // Lembur jam pertama
       var a = 1 * 1.5 * gajiPokok * (1 / 173);
+      // Lembur jam kedua dan lembur di hari libur
       var b = (int.parse(timeController.text) - 1) * 2 * gajiPokok * (1 / 173);
+      // Lembur Di hari biasa
       var hariBiasa = currencyFormatter.format(a + b);
 
+      // Lembur Di hari libur
       var hariLibur =
           currencyFormatter.format(int.parse(timeController.text) * 2 * gajiPokok * (1 / 173));
 
+      // Lembur Di hari libur
       if (keterangan == "Hari Libur") {
         return "$hariLibur";
       }
-      if (keterangan == "Hari Biasa") {
+      // Lembur Di hari biasa
+      else if (keterangan == "Hari Biasa") {
         return "$hariBiasa";
-      }else{
+      } else {
         return "Rp. 0";
       }
     }
     return "Rp. 0";
 
     // if (timeController.text != "") {
-    //   // Lembur jam pertama
     //   var lembur1 = 1 * 1.5 * (1 / 173) * gajiPokok;
     //
-    //   // Lembur jam kedua dan lembur di hari libur
     //   var lembur2 =
     //   currencyFormatter.format(int.parse(timeController.text) * 2 * (1 / 173) * gajiPokok);
     //
-    //   // Lembur jam pertama dan kedua di hari biasa
     //   var lembur3 = currencyFormatter
     //       .format(lembur1 + (int.parse(timeController.text) - 1) * 2 * (1 / 173) * gajiPokok);
     //   if (dateController.text != '') {
@@ -97,8 +100,8 @@ class _FormAbsensiState extends State<FormAbsensi> {
   String cekLiburWeekend() {
     if (dateController.text != '') {
       // Format Date
-      var dateFormat = DateFormat.EEEE('id').format(
-          DateFormat('EEEE, dd MMMM yyyy', "id").parse(dateController.text));
+      var dateFormat = DateFormat.EEEE('id')
+          .format(DateFormat('EEEE, dd MMMM yyyy', "id").parse(dateController.text));
       // Jika Sabtu/Minggu maka return di bawah ini
       if (dateFormat == 'Minggu' || dateFormat == 'Sabtu') {
         return '( Hari Libur )';
@@ -108,12 +111,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
   }
 
   void simpanLembur() {
-    var date = dateController.text;
-    var time = timeController.text;
-    // var absensi =
-    //     "${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'} ${cekLiburWeekend()}";
-    var absensi =
-        "${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'}";
+    var date = dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
+    var time = timeController.text != '' ? timeController.text : "0";
+    var absensi = "${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'}";
     var total = totalGajiLembur;
 
     var data = {
@@ -142,8 +142,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
     if (FirebaseAuth.instance.currentUser == null) {
       FirebaseAuth.instance.currentUser;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
       });
     }
   }
@@ -180,8 +179,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                      "Silahkan lengkapi formulir dibawah ini untuk mengisi absensi lemburan"),
+                  Text("Silahkan lengkapi formulir dibawah ini untuk mengisi absensi lemburan"),
                   SizedBox(
                     height: 10,
                   ),
@@ -190,7 +188,6 @@ class _FormAbsensiState extends State<FormAbsensi> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Radio(
-
                         activeColor: Colors.blue,
                         value: 0,
                         groupValue: selectedRadio,
@@ -239,14 +236,12 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               initialDate: DateTime.now(),
                               firstDate: DateTime(1945),
                               lastDate: DateTime(2030),
-                              initialEntryMode:
-                                  DatePickerEntryMode.calendarOnly,
+                              initialEntryMode: DatePickerEntryMode.calendarOnly,
                             ).then((value) {
                               if (value != null) {
                                 //format tanggal hari, tanggal bulan tahun dalam bahasa indonesia
                                 String formatDate =
-                                    DateFormat('EEEE, dd MMMM yyyy', "id")
-                                        .format(value);
+                                    DateFormat('EEEE, dd MMMM yyyy', "id").format(value);
                                 setState(() {
                                   dateController.text = formatDate;
                                 });
@@ -263,16 +258,13 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               controller: dateController,
                               enabled: false,
                               validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty ||
-                                    value == "") {
+                                if (value == null || value.isEmpty || value == "") {
                                   return "Tanggal Lembur harus di isi!";
                                 }
                                 return null;
                               },
                               decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10, 3, 1, 3),
+                                  contentPadding: EdgeInsets.fromLTRB(10, 3, 1, 3),
                                   hintText: "Pilih Tanggal Lemburan Anda",
                                   hintStyle: TextStyle(fontSize: 13),
                                   suffixIcon: Padding(
@@ -284,13 +276,11 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                   ),
                                   disabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.black38),
+                                    borderSide: BorderSide(width: 1, color: Colors.black38),
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.redAccent),
+                                    borderSide: BorderSide(width: 1, color: Colors.redAccent),
                                   ),
                                   filled: true,
                                   fillColor: Colors.white),
@@ -318,15 +308,13 @@ class _FormAbsensiState extends State<FormAbsensi> {
                           popupProps: PopupPropsMultiSelection.menu(
                             fit: FlexFit.loose,
                             showSearchBox: false,
-                            itemBuilder: (context, item, isSelected) =>
-                                ListTile(
+                            itemBuilder: (context, item, isSelected) => ListTile(
                               title: Text(item),
                             ),
                           ),
                           dropdownBuilder: (context, selectedItem) => Text(
                             keterangan ?? "Pilih Keterangan Lembur Anda",
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.black38),
+                            style: TextStyle(fontSize: 15, color: Colors.black38),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -338,16 +326,13 @@ class _FormAbsensiState extends State<FormAbsensi> {
                             enabled: false,
                             focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(13),
-                                borderSide:
-                                    BorderSide(color: Colors.blue, width: 1)),
+                                borderSide: BorderSide(color: Colors.blue, width: 1)),
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(13),
-                                borderSide: BorderSide(
-                                    color: Colors.black38, width: 1)),
+                                borderSide: BorderSide(color: Colors.black38, width: 1)),
                             errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(13),
-                                borderSide: BorderSide(
-                                    color: Colors.redAccent, width: 1)),
+                                borderSide: BorderSide(color: Colors.redAccent, width: 1)),
                           )),
                         ),
                         SizedBox(
@@ -371,42 +356,33 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               setState(() {});
                             },
                             validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value == "") {
+                              if (value == null || value.isEmpty || value == "") {
                                 return "Jam Lembur harus di isi!";
                               }
                               return null;
                             },
                             decoration: InputDecoration(
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(10, 3, 10, 3),
+                                contentPadding: EdgeInsets.fromLTRB(10, 3, 10, 3),
                                 hintText: "Masukan Jam Lembur",
                                 hintStyle: TextStyle(fontSize: 13),
                                 suffixText: "Jam",
                                 suffixStyle: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue),
+                                    fontSize: 15, fontWeight: FontWeight.bold, color: Colors.blue),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(
-                                      width: 1, color: Colors.black38),
+                                  borderSide: BorderSide(width: 1, color: Colors.black38),
                                 ),
                                 disabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(
-                                      width: 1, color: Colors.black38),
+                                  borderSide: BorderSide(width: 1, color: Colors.black38),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(
-                                      width: 1, color: Colors.black38),
+                                  borderSide: BorderSide(width: 1, color: Colors.black38),
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(
-                                      width: 1, color: Colors.redAccent),
+                                  borderSide: BorderSide(width: 1, color: Colors.redAccent),
                                 ),
                                 filled: true,
                                 fillColor: Colors.white),
@@ -451,20 +427,15 @@ class _FormAbsensiState extends State<FormAbsensi> {
                     children: [
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
                           border: Border(
-                            left:
-                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                            top:
-                                BorderSide(width: 11, color: Color(0xFF2FA4D9)),
-                            right:
-                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                            bottom:
-                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                            left: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                            top: BorderSide(width: 11, color: Color(0xFF2FA4D9)),
+                            right: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                            bottom: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
                           ),
                         ),
                         child: Column(
@@ -491,8 +462,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
                                         ///apabila tanggal lembur bernilai "" maka akan otomatis set ke tanggal pada hari itu
                                         : dateController.text == ""
-                                            ? DateFormat(
-                                                    'EEEE, dd MMMM yyyy', 'id')
+                                            ? DateFormat('EEEE, dd MMMM yyyy', 'id')
                                                 .format(DateTime.now())
                                             : dateController.text
                                     // "${dateController.text == '' ? 'Senin, 1 Januari 2000' : dateController.text}"
@@ -561,20 +531,14 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                       .onValue,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData &&
-                                        (snapshot.data! as DatabaseEvent)
-                                                .snapshot
-                                                .value !=
-                                            null) {
-                                      Map<dynamic, dynamic> data =
-                                          Map<dynamic, dynamic>.from(
-                                              (snapshot.data! as DatabaseEvent)
-                                                      .snapshot
-                                                      .value
-                                                  as Map<dynamic, dynamic>);
+                                        (snapshot.data! as DatabaseEvent).snapshot.value != null) {
+                                      Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                                          (snapshot.data! as DatabaseEvent).snapshot.value
+                                              as Map<dynamic, dynamic>);
                                       if (data['gaji_pokok'] != null) {
-                                        totalGajiLembur = int.parse(totalLembur(
-                                                int.parse(data['gaji_pokok']))
-                                            .replaceAll(RegExp(r'[^0-9]'), ''));
+                                        totalGajiLembur = int.parse(
+                                            totalLembur(int.parse(data['gaji_pokok']))
+                                                .replaceAll(RegExp(r'[^0-9]'), ''));
                                         return Text(
                                           "${totalLembur(int.parse(data['gaji_pokok']))}",
                                           style: TextStyle(color: Colors.blue),
@@ -613,17 +577,14 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.blue),
-                          foregroundColor:
-                              MaterialStateProperty.all(Colors.white),
+                          backgroundColor: MaterialStateProperty.all(Colors.blue),
+                          foregroundColor: MaterialStateProperty.all(Colors.white),
                         ),
                         onPressed: () {
                           if (formkey.currentState!.validate()) {
                             setState(() {
                               ignorePointer = true;
-                              ignorePointerTimer =
-                                  Timer(const Duration(seconds: 2), () {
+                              ignorePointerTimer = Timer(const Duration(seconds: 2), () {
                                 ignorePointer = false;
                               });
                             });
