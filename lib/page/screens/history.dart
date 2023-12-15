@@ -18,6 +18,9 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   String id_user = "";
 
+  List<int> years = List.generate(20, (index) => DateTime.now().year - 10 + index);
+  int selectedYear = DateTime.now().year;
+
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
     locale: 'id',
@@ -120,7 +123,20 @@ class _HistoryState extends State<History> {
                           "Pilih Tahun",
                           style: TextStyle(fontSize: 16),
                         ),
-                        Text("2023"),
+                        DropdownButton<int>(
+                          value: selectedYear,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedYear = value!;
+                            });
+                          },
+                          items:years.map<DropdownMenuItem<int>>((int year) {
+                            return DropdownMenuItem<int>(
+                              value: year,
+                              child: Text('$year'),
+                            );
+                          }).toList(),
+                        ),
                       ],
                     ),
                     SizedBox(

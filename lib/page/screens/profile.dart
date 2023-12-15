@@ -1,5 +1,6 @@
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
+import 'package:absensi/page/screens/edit_emailpass.dart';
 import 'package:absensi/page/screens/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -65,23 +66,57 @@ class _ProfileState extends State<Profile> {
                 fit: BoxFit.cover, // Use BoxFit.cover to fill the container
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 58),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+              child:
+              StreamBuilder(
+                // Query untuk mengambil data pada firebase
+                stream: FirebaseDatabase.instance.ref().child("user").child(id_user).onValue,
+                builder: (context, snapshot) {
+                  // Mengecek apakah data nya ada atau tidak
+                  if (snapshot.hasData &&
+                      (snapshot.data! as DatabaseEvent).snapshot.value != null) {
+                    Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                        (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+                    // Display True data
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(data['nama'] ?? "-", style: TextStyle(color: Colors.white)),
+                            Text("Karyawan",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 13, fontWeight: FontWeight.w300)),
+                          ],
+                        ),
+                        CircleAvatar()
+                      ],
+                    );
+                  }
+                  // Menampilkan dummy data agar tidak error
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Ghaluh Wizard", style: TextStyle(color: Colors.white)),
-                      Text("Karyawan",
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 13, fontWeight: FontWeight.w300)),
+
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("-", style: TextStyle(color: Colors.white)),
+                          Text("Karyawan",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 13, fontWeight: FontWeight.w300)),
+                        ],
+                      ),
+                      CircleAvatar()
                     ],
-                  ),
-                  CircleAvatar()
-                ],
+                  );
+                },
               ),
             )
           ]),
@@ -98,16 +133,11 @@ class _ProfileState extends State<Profile> {
                   title: 'Edit Profile',
                 ),
                 TileProfile(
+                  ontap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => EditEmailPass()));
+                  },
                   url: 'assets/icon_email.svg',
-                  title: 'Edit Email',
-                ),
-                TileProfile(
-                  url: 'assets/icon_password.svg',
-                  title: 'Edit Password',
-                ),
-                TileProfile(
-                  url: 'assets/icon_call.svg',
-                  title: 'Ganti Nomor Telepon',
+                  title: 'Edit Email Password',
                 ),
                 TileProfile(
                   ontap: () async {
