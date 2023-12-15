@@ -98,7 +98,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
   }
 
   void simpanLembur() {
-    var date = dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
+    var date = dateController.text != ''
+        ? dateController.text
+        : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
     var time = timeController.text != '' ? timeController.text : "0";
     var absensi = "${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'}";
     var total = totalGajiLembur;
@@ -142,7 +144,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
     ///mengeksekusi function sebelum function build
     getPref();
-    
+
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
   }
@@ -575,7 +577,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
                             setState(() {
                               ignorePointer = true;
                               ignorePointerTimer = Timer(const Duration(seconds: 2), () {
-                                ignorePointer = false;
+                                setState(() {
+                                  ignorePointer = false;
+                                });
                               });
                             });
                             // Menjalanan kan logic Simpan data lembur

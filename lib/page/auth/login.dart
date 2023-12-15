@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   void cekUser() {
     // Logic cek Data User apakah sudah pernah login
     if (FirebaseAuth.instance.currentUser != null) {
-      FirebaseAuth.instance.currentUser ;
+      FirebaseAuth.instance.currentUser;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
       });
@@ -298,7 +298,9 @@ class _LoginPageState extends State<LoginPage> {
                               setState(() {
                                 ignorePointer = true;
                                 ignorePointerTimer = Timer(const Duration(seconds: 2), () {
-                                  ignorePointer = false;
+                                  setState(() {
+                                    ignorePointer = false;
+                                  });
                                 });
                               });
                               // Menjalanan kan logic Login
@@ -362,9 +364,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              BannerAds(
-
-              ),
+              BannerAds(),
             ],
           ),
         ),

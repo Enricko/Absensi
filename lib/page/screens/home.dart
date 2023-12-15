@@ -23,8 +23,14 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+// Enum untuk seleksi tombol harian dan bulanan
+enum SelectButton { harian, bulanan }
+
 class _HomeScreenState extends State<HomeScreen> {
   String id_user = "";
+
+  // Seleksi Tombol Harian dan Bulanan
+  SelectButton selectButton = SelectButton.harian;
 
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
@@ -193,10 +199,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-                                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                                    side: MaterialStateProperty.all(
+                                        const BorderSide(color: Colors.blue)),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        selectButton == SelectButton.harian
+                                            ? Colors.blue
+                                            : Colors.white),
+                                    foregroundColor: MaterialStateProperty.all(
+                                        selectButton == SelectButton.harian
+                                            ? Colors.white
+                                            : Colors.blue),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {
+                                      selectButton = SelectButton.harian;
+                                    });
+                                  },
                                   child: const Text("Harian"))),
                           const SizedBox(
                             width: 10,
@@ -204,15 +222,27 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                               child: OutlinedButton(
                                   style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      side: MaterialStateProperty.all(
-                                          const BorderSide(color: Colors.blue)),
-                                      foregroundColor: MaterialStateProperty.all(Colors.blue)),
-                                  onPressed: () {},
+                                    ),
+                                    side: MaterialStateProperty.all(
+                                        const BorderSide(color: Colors.blue)),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        selectButton == SelectButton.bulanan
+                                            ? Colors.blue
+                                            : Colors.white),
+                                    foregroundColor: MaterialStateProperty.all(
+                                        selectButton == SelectButton.bulanan
+                                            ? Colors.white
+                                            : Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      selectButton = SelectButton.bulanan;
+                                    });
+                                  },
                                   child: const Text("Bulanan"))),
                         ],
                       ),
@@ -243,13 +273,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 // Setiap data yang di perulangkan bakal di simpan ke dalam list
                                 final currentData = Map<String, dynamic>.from(value);
                                 // Mensetting variable dengan total lembur dan gaji)
-                                dataList.add({
-                                  'tanggal': currentData['tanggal'],
-                                  'absensi': currentData['absensi'],
-                                  'keterangan': currentData['keterangan'],
-                                  'lembur': currentData['lembur'],
-                                  'total': currentData['total'],
-                                });
+                                var parseDate = DateFormat("EEEE, dd MMMM yyyy", 'id')
+                                    .parse(currentData['tanggal']);
+                                var nowDate = DateFormat("EEEE, dd MMMM yyyy", 'id').parse(
+                                    DateFormat("EEEE, dd MMMM yyyy", 'id').format(DateTime.now()));
+                                var yesterdayDate = DateFormat("EEEE, dd MMMM yyyy", 'id').parse(
+                                    DateFormat("EEEE, dd MMMM yyyy", 'id')
+                                        .format(DateTime.now().subtract(Duration(days: 1))));
+                                if (parseDate.isAtSameMomentAs(nowDate) ||
+                                    parseDate.isAtSameMomentAs(yesterdayDate) ||
+                                    selectButton == SelectButton.bulanan) {
+                                  dataList.add({
+                                    'tanggal': currentData['tanggal'],
+                                    'absensi': currentData['absensi'],
+                                    'keterangan': currentData['keterangan'],
+                                    'lembur': currentData['lembur'],
+                                    'total': currentData['total'],
+                                  });
+                                }
                               });
 
                               return ListView.builder(
@@ -357,8 +398,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             if (snapshot.hasData) {
                               // Tampilkan kosong jika snapshot return data tapi data di database kosong
-                              return const Center(
-                                child: Text("Tidak ada lembur hari ini"),
+                              return Center(
+                                child: Text(
+                                    "Tidak ada lembur ${selectButton == SelectButton.harian ? 'hari' : 'bulan'} ini"),
                               );
                             }
                             return const Center(
