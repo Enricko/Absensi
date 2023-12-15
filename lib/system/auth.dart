@@ -29,7 +29,7 @@ class Auth {
           pref.setString("nama", getUser['nama'].toString());
           pref.setString("email", getUser['email'].toString());
           pref.setString("no_telepon", getUser['no_telepon'].toString());
-          pref.setInt("gaji_pokok", int.parse(getUser['gaji_pokok']));
+          pref.setInt("gaji_pokok", getUser['gaji_pokok']);
           EasyLoading.showSuccess('Welcome Back', dismissOnTap: true);
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
           return; // Berhenti jika data-nya sesuai / data-nya ketemu

@@ -18,7 +18,7 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   String id_user = "";
 
-  List<int> years = List.generate(20, (index) => DateTime.now().year - 10 + index);
+  List<int> years = [DateTime.now().year];
   int selectedYear = DateTime.now().year;
 
   // Format Currency
@@ -57,7 +57,7 @@ class _HistoryState extends State<History> {
 
     ///mengeksekusi function sebelum function build
     getPref();
-        // Load InterstitialAd Ads
+    // Load InterstitialAd Ads
     InterstitialAds.loadAd();
   }
 
@@ -130,7 +130,7 @@ class _HistoryState extends State<History> {
                               selectedYear = value!;
                             });
                           },
-                          items:years.map<DropdownMenuItem<int>>((int year) {
+                          items: years.map<DropdownMenuItem<int>>((int year) {
                             return DropdownMenuItem<int>(
                               value: year,
                               child: Text('$year'),
@@ -160,12 +160,22 @@ class _HistoryState extends State<History> {
                                     as Map<dynamic, dynamic>);
                             // Mengubah map menjadi list
                             List<Map<dynamic, dynamic>> dataList = [];
+
                             // Memperulangkan data menggunakan foreach
                             data.forEach((key, value) {
                               // Mensetting variable dengan total lembur dan gaji)
-                              dataList.add({
-                                'tanggal': key,
-                              });
+
+                              // Filter Tahun History
+                              var parseDateyear = DateFormat("yyyy", 'id').parse(key);
+                              var formInputYear = DateFormat("yyyy", 'id').parse(selectedYear.toString());
+                              if(!years.contains(parseDateyear.year)){
+                                years.add(parseDateyear.year);
+                              }
+                              if (parseDateyear.isAtSameMomentAs(formInputYear)) {
+                                dataList.add({
+                                  'tanggal': key,
+                                });
+                              }
                             });
                             return ListView.builder(
                               itemCount: dataList.length,
@@ -235,7 +245,9 @@ class _HistoryState extends State<History> {
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (ctx) => SumBulanan(tanggal:dataList[index]['tanggal'])));
+                                                          builder: (ctx) => SumBulanan(
+                                                              tanggal: dataList[index]
+                                                                  ['tanggal'])));
                                                 },
                                                 child: Text("Lihat Detail")),
                                           )
