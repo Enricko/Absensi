@@ -113,7 +113,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       color: Colors.white,
                                       fontSize: 13,
                                       fontWeight: FontWeight.w300)),
-                              Text(FirebaseAuth.instance.currentUser!.displayName ?? "-", style: const TextStyle(color: Colors.white))
+                              Text(FirebaseAuth.instance.currentUser!.displayName ?? "-",
+                                  style: const TextStyle(color: Colors.white))
                             ],
                           ),
                           Column(
@@ -558,13 +559,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   "assets/ClockClockwise.svg",
                                   color: Colors.black,
                                 ),
-                                Text(
-                                  "$totalJam Jam",
-                                  style: const TextStyle(color: Colors.blue),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    "$totalJam Jam",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.blue),
+                                  ),
                                 ),
-                                const Text(
-                                  "Lembur",
-                                  style: TextStyle(color: Colors.black38),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: const Text(
+                                    "Lembur",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.black38),
+                                  ),
                                 ),
                               ],
                             ),
@@ -578,13 +587,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   "assets/Calendar.svg",
                                   color: Colors.black,
                                 ),
-                                Text(
-                                  "${DateFormat('MMMM', 'id').format(DateTime.now())}",
-                                  style: const TextStyle(color: Colors.blue),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    "${DateFormat('MMMM', 'id').format(DateTime.now())}",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.blue),
+                                  ),
                                 ),
-                                const Text(
-                                  "Bulan",
-                                  style: TextStyle(color: Colors.black38),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: const Text(
+                                    "Bulan",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.black38),
+                                  ),
                                 ),
                               ],
                             ),
@@ -598,13 +615,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   "assets/u_money-stack.svg",
                                   color: Colors.black,
                                 ),
-                                Text(
-                                  "${currencyFormatter.format(totalGaji)}",
-                                  style: const TextStyle(color: Colors.blue),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    "${currencyFormatter.format(totalGaji)}",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.blue),
+                                  ),
                                 ),
-                                const Text(
-                                  "Total Bulan ini",
-                                  style: TextStyle(color: Colors.black38),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: const Text(
+                                    "Total Bulan ini",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.black38),
+                                  ),
                                 ),
                               ],
                             ),
@@ -623,13 +648,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "assets/ClockClockwise.svg",
                                 color: Colors.black,
                               ),
-                              Text(
-                                "0 Jam",
-                                style: const TextStyle(color: Colors.blue),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  "0 Jam",
+                                  style: const TextStyle(color: Colors.blue),
+                                ),
                               ),
-                              const Text(
-                                "Lembur",
-                                style: TextStyle(color: Colors.black38),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: const Text(
+                                  "Lembur",
+                                  style: TextStyle(color: Colors.black38),
+                                ),
                               ),
                             ],
                           ),
@@ -643,13 +674,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "assets/Calendar.svg",
                                 color: Colors.black,
                               ),
-                              Text(
-                                "${DateFormat('MMMM', 'id').format(DateTime.now())}",
-                                style: const TextStyle(color: Colors.blue),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  "${DateFormat('MMMM', 'id').format(DateTime.now())}",
+                                  style: const TextStyle(color: Colors.blue),
+                                ),
                               ),
-                              const Text(
-                                "Bulan",
-                                style: TextStyle(color: Colors.black38),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: const Text(
+                                  "Bulan",
+                                  style: TextStyle(color: Colors.black38),
+                                ),
                               ),
                             ],
                           ),
@@ -663,13 +700,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "assets/u_money-stack.svg",
                                 color: Colors.black,
                               ),
-                              Text(
-                                "Rp.0",
-                                style: const TextStyle(color: Colors.blue),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  "Rp.0",
+                                  style: const TextStyle(color: Colors.blue),
+                                ),
                               ),
-                              const Text(
-                                "Total Bulan ini",
-                                style: TextStyle(color: Colors.black38),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: const Text(
+                                  "Total Bulan ini",
+                                  style: TextStyle(color: Colors.black38),
+                                ),
                               ),
                             ],
                           ),

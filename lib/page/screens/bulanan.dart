@@ -114,7 +114,7 @@ class _SumBulananState extends State<SumBulanan> {
                                   style: TextStyle(color: Colors.black38),
                                 )),
                                 Text(
-                                    "${currencyFormatter.format(int.tryParse(data['gaji_pokok']))}"),
+                                    "${currencyFormatter.format(data['gaji_pokok'])}"),
                               ],
                             );
                           }

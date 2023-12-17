@@ -101,7 +101,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
         ? dateController.text
         : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
     var time = timeController.text != '' ? timeController.text : "0";
-    var absensi = "${selectedRadio == 1 ? 'Masuk' : 'Tidak Masuk'}";
+    var absensi = "${selectedRadio != 1 ? 'Masuk' : 'Tidak Masuk'}";
     var total = totalGajiLembur;
 
     var data = {
