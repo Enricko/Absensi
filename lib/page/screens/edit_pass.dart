@@ -124,7 +124,6 @@ class _EditPasswordState extends State<EditPassword> {
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 5),
                     width: double.infinity,
-                    height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -167,7 +166,6 @@ class _EditPasswordState extends State<EditPassword> {
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 5),
                     width: double.infinity,
-                    height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                     ),
