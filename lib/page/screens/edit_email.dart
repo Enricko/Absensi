@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -22,7 +21,6 @@ class EditEmail extends StatefulWidget {
 
 class _EditEmailState extends State<EditEmail> {
   String id_user = "";
-  CollectionReference users = FirebaseFirestore.instance.collection('user');
   TextEditingController emailController = TextEditingController();
 
   // Form Key untuk Validasi Form Input
@@ -68,7 +66,7 @@ class _EditEmailState extends State<EditEmail> {
           .onValue
           .listen((event) {
         var snapshot = event.snapshot.value as Map;
-        emailController.text = snapshot['email'];
+        emailController.text = FirebaseAuth.instance.currentUser!.email!;
 
         // nameController.text = snapshot.value;
       });
@@ -88,7 +86,6 @@ class _EditEmailState extends State<EditEmail> {
     // Menjalankan Logic Class Function Update Email
     UpdateData.email(data, id_user, context);
   }
-
 
   @override
   void initState() {
@@ -114,93 +111,95 @@ class _EditEmailState extends State<EditEmail> {
         foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Form(
-              key: formkey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Email"),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+          padding: EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Form(
+                key: formkey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Email"),
+                    SizedBox(
+                      height: 5,
                     ),
-                    child: TextFormField(
-                      controller: emailController,
-                      keyboardType: TextInputType.text,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty || value == "") {
-                          return "Jam Lembur harus di isi!";
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(10, 3, 10, 3),
-                          hintText: "Email",
-                          hintStyle: TextStyle(fontSize: 13),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(width: 1, color: Colors.black38),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(width: 1, color: Colors.black38),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(width: 1, color: Colors.redAccent),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.text,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty || value == "") {
+                            return "Jam Lembur harus di isi!";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(10, 3, 10, 3),
+                            hintText: "Email",
+                            hintStyle: TextStyle(fontSize: 13),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(width: 1, color: Colors.black38),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(width: 1, color: Colors.black38),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(width: 1, color: Colors.redAccent),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white),
                       ),
                     ),
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
-                  ),
-                  onPressed: () {
-                    if (formkey.currentState!.validate()) {
-                      setState(() {
-                        ignorePointer = true;
-                        ignorePointerTimer = Timer(const Duration(seconds: 2), () {
-                          setState(() {
-                            ignorePointer = false;
+                    Text(
+                      "Mohon cek verifikasi di email baru untuk mengubah email",
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                    ),
+                    onPressed: () {
+                      if (formkey.currentState!.validate()) {
+                        setState(() {
+                          ignorePointer = true;
+                          ignorePointerTimer = Timer(const Duration(seconds: 2), () {
+                            setState(() {
+                              ignorePointer = false;
+                            });
                           });
                         });
-                      });
-                      // Menjalanan kan logic Edit Email
-                      editEmail();
-                    }
-                  },
-                  child: Text("Simpan")),
-            )
-          ],
-        )
-
-      ),
+                        // Menjalanan kan logic Edit Email
+                        editEmail();
+                      }
+                    },
+                    child: Text("Simpan")),
+              )
+            ],
+          )),
     );
   }
 }

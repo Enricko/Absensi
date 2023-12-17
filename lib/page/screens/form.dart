@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/system/insert_data.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -529,10 +528,10 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                               as Map<dynamic, dynamic>);
                                       if (data['gaji_pokok'] != null) {
                                         totalGajiLembur = int.parse(
-                                            totalLembur(int.parse(data['gaji_pokok']))
+                                            totalLembur(data['gaji_pokok'])
                                                 .replaceAll(RegExp(r'[^0-9]'), ''));
                                         return Text(
-                                          "${totalLembur(int.parse(data['gaji_pokok']))}",
+                                          "${totalLembur(data['gaji_pokok'])}",
                                           style: TextStyle(color: Colors.blue),
                                         );
                                       }

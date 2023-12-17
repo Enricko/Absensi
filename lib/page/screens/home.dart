@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/bulanan.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       color: Colors.white,
                                       fontSize: 13,
                                       fontWeight: FontWeight.w300)),
-                              Text(data['nama'] ?? "-", style: const TextStyle(color: Colors.white))
+                              Text(FirebaseAuth.instance.currentUser!.displayName ?? "-", style: const TextStyle(color: Colors.white))
                             ],
                           ),
                           Column(

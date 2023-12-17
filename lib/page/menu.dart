@@ -1,13 +1,12 @@
-
 import 'package:absensi/page/screens/history.dart';
 import 'package:absensi/page/screens/home.dart';
 import 'package:absensi/page/screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-
 class Menu extends StatefulWidget {
-  const Menu({Key? key}) : super(key: key);
+  const Menu({Key? key, this.indexPage = 0}) : super(key: key);
+  final int indexPage;
 
   @override
   State<Menu> createState() => _MenuState();
@@ -15,7 +14,15 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   var _bottomNavIndex = 0;
-  final navigation = <Widget>[HomeScreen(),History(),Profile()];
+  final navigation = <Widget>[HomeScreen(), History(), Profile()];
+
+  @override
+  void initState() {
+    setState(() {
+      _bottomNavIndex = widget.indexPage;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +30,10 @@ class _MenuState extends State<Menu> {
       body: navigation[_bottomNavIndex],
       bottomNavigationBar:
           //Navigation Bar
-      BottomNavigationBar(
+          BottomNavigationBar(
         currentIndex: _bottomNavIndex,
         onTap: (index) => setState(() => _bottomNavIndex = index),
-        items:  <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/Home.svg",
@@ -54,10 +61,7 @@ class _MenuState extends State<Menu> {
         unselectedItemColor: Colors.grey, // Change the color of unselected items
         showSelectedLabels: true,
         showUnselectedLabels: true,
-
       ),
     );
   }
-
-  }
-
+}

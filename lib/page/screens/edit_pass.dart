@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -23,7 +22,6 @@ class EditPassword extends StatefulWidget {
 
 class _EditPasswordState extends State<EditPassword> {
   String id_user = "";
-  CollectionReference users = FirebaseFirestore.instance.collection('user');
   TextEditingController passOldController = TextEditingController();
   TextEditingController passNewController = TextEditingController();
   String? passOld;
@@ -47,11 +45,6 @@ class _EditPasswordState extends State<EditPassword> {
     setState(() {
       id_user = pref.getString('id_user')!;
     });
-
-    // Get All data users from firebase database
-    setState(() {
-      getUserFromFirebase();
-    });
   }
 
   void cekUser() {
@@ -64,32 +57,15 @@ class _EditPasswordState extends State<EditPassword> {
     }
   }
 
-  // function get data dari firebase
-  Future<void> getUserFromFirebase() async {
-    try {
-      FirebaseDatabase.instance
-          .ref()
-          .child("user") // Parent di database
-          .child(id_user) // Id user
-          .onValue
-          .listen((event) {
-        var snapshot = event.snapshot.value as Map;
-        passOld = snapshot['password'];
-
-        // nameController.text = snapshot.value;
-      });
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
-
   //function update data
   void editProfile() {
     // Mengubah Controller menjadi String/int
-    var password = passNewController.text;
+    var oldPassword = passOldController.text;
+    var newPassword = passNewController.text;
     // Menjadikan Map agar mudah di pindah ke function lain
     var data = {
-      'password': password,
+      'old_password': oldPassword,
+      'new_password': newPassword,
     };
     // Menjalankan Logic Class Function Update Password
     UpdateData.password(data, id_user, context);
@@ -161,9 +137,6 @@ class _EditPasswordState extends State<EditPassword> {
                       validator: (value) {
                         if (value == null || value.isEmpty || value == "") {
                           return "Password Lama harus di isi!";
-                        }
-                        if (value != passOld) {
-                          return "Password Lama Salah";
                         }
                         return null;
                       },

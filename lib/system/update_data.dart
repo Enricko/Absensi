@@ -1,26 +1,30 @@
 import "package:absensi/page/menu.dart";
+import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_database/firebase_database.dart";
 import "package:flutter/material.dart";
 import "package:flutter_easyloading/flutter_easyloading.dart";
 import "package:intl/intl.dart";
 
 class UpdateData {
-  static profile(Map<String,dynamic> data, String id_user, BuildContext context) async {
+  static profile(Map<String, dynamic> data, String id_user, BuildContext context) async {
     // Menjalankan block code di dalam agar kita mengetahui jika code tersebut errored
     try {
       // UI Loading
       EasyLoading.show(status: 'loading...');
+
+      // Setting Nama di firebase Authentication
+      await FirebaseAuth.instance.currentUser!.updateDisplayName(data['nama']);
+
       // Update data profile ke Firebase Database
-      FirebaseDatabase.instance
-          .ref()
-          .child("user")
-          .child(id_user)
-          .update(data)
-          .whenComplete(() {
+      FirebaseDatabase.instance.ref().child("user").child(id_user).update({
+        "no_telepon": data['no_telepon'],
+        "gaji_pokok": data['gaji_pokok'],
+      }).whenComplete(() {
         // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
         EasyLoading.showSuccess('Profile telah di Edit',
             dismissOnTap: true, duration: const Duration(seconds: 5));
-        Navigator.pop(context);
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) => Menu(indexPage: 2)));
         return;
       }).onError((error, stackTrace) {
         EasyLoading.showError("Something went wrong : $error",
@@ -33,26 +37,27 @@ class UpdateData {
     }
   }
 
-  static email(Map<String,dynamic> data, String id_user, BuildContext context) async {
+  static email(Map<String, dynamic> data, String id_user, BuildContext context) async {
     // Menjalankan block code di dalam agar kita mengetahui jika code tersebut errored
     try {
       // UI Loading
       EasyLoading.show(status: 'loading...');
-      // Update data profile ke Firebase Database
-      FirebaseDatabase.instance
-          .ref()
-          .child("user")
-          .child(id_user)
-          .update(data)
-          .whenComplete(() {
-        // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
-        EasyLoading.showSuccess('Email telah di Edit',
-            dismissOnTap: true, duration: const Duration(seconds: 5));
-        Navigator.pop(context);
-        return;
-      }).onError((error, stackTrace) {
-        EasyLoading.showError("Something went wrong : $error",
-            dismissOnTap: true, duration: const Duration(seconds: 5));
+      // Get Current User
+      final user = FirebaseAuth.instance.currentUser;
+
+      // Update Email by Verification pada Firebase Auth
+      await user!.verifyBeforeUpdateEmail(data['email']).then((value) {
+        // Update data profile ke Firebase Database
+        FirebaseDatabase.instance.ref().child("user").child(id_user).update(data).whenComplete(() {
+          // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
+          EasyLoading.showSuccess('Mohon cek verifikasi di email baru untuk mengubah email',
+              dismissOnTap: true, duration: const Duration(seconds: 5));
+          Navigator.pop(context);
+          return;
+        }).onError((error, stackTrace) {
+          EasyLoading.showError("Something went wrong : $error",
+              dismissOnTap: true, duration: const Duration(seconds: 5));
+        });
       });
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
@@ -61,27 +66,40 @@ class UpdateData {
     }
   }
 
-  static password(Map<String,dynamic> data, String id_user, BuildContext context) async {
+  static password(Map<String, dynamic> data, String id_user, BuildContext context) async {
     // Menjalankan block code di dalam agar kita mengetahui jika code tersebut errored
     try {
       // UI Loading
       EasyLoading.show(status: 'loading...');
+
+      // Get Current User
+      final user = FirebaseAuth.instance.currentUser;
+      // User Credentials
+      final cred =
+          EmailAuthProvider.credential(email: user!.email!, password: data['old_password']);
       // Update data profile ke Firebase Database
-      FirebaseDatabase.instance
-          .ref()
-          .child("user")
-          .child(id_user)
-          .update(data)
-          .whenComplete(() {
-        // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
-        EasyLoading.showSuccess('Password telah di Edit',
-            dismissOnTap: true, duration: const Duration(seconds: 5));
-        Navigator.pop(context);
-        return;
+      await user.reauthenticateWithCredential(cred).then((value) async {
+        await user.updatePassword(data['new_password']).then((_) {
+          // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
+          EasyLoading.showSuccess('Password telah di Edit',
+              dismissOnTap: true, duration: const Duration(seconds: 5));
+          Navigator.pop(context);
+          return;
+        }).onError((error, stackTrace) {
+          EasyLoading.showError("Something went wrong : $error",
+              dismissOnTap: true, duration: const Duration(seconds: 5));
+        });
       }).onError((error, stackTrace) {
-        EasyLoading.showError("Something went wrong : $error",
+        EasyLoading.showError("Password Lama Salah",
             dismissOnTap: true, duration: const Duration(seconds: 5));
       });
+      // FirebaseDatabase.instance
+      //     .ref()
+      //     .child("user")
+      //     .child(id_user)
+      //     .update(data)
+      //     .whenComplete(() {})
+      //     .onError((error, stackTrace) {});
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
       EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
@@ -89,5 +107,3 @@ class UpdateData {
     }
   }
 }
-
-

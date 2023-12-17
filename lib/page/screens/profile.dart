@@ -89,7 +89,7 @@ class _ProfileState extends State<Profile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(data['nama'] ?? "-", style: TextStyle(color: Colors.white)),
+                            Text(FirebaseAuth.instance.currentUser!.displayName ?? "-", style: TextStyle(color: Colors.white)),
                             Text("Karyawan",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 13, fontWeight: FontWeight.w300)),

@@ -16,7 +16,7 @@ class Auth {
       // Login menggunakan function signInWithEmailAndPassword() yang telah di sediakan oleh firebase
       var user = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: data['email'], password: data['password']);
-
+          
       // Mengambil semua data user yang ada di dalam database lalu di filter
       FirebaseDatabase.instance.ref().child("user").onValue.listen((event) async {
         // Menyimpan data pada device menggunakan SharedPreferences
@@ -26,8 +26,6 @@ class Auth {
           var getUser = event.snapshot.child(user.user!.uid).value as Map;
           // Menyimpan beberapa data yg penting ke device agar tidak selalu login
           pref.setString("id_user", user.user!.uid.toString());
-          pref.setString("nama", getUser['nama'].toString());
-          pref.setString("email", getUser['email'].toString());
           pref.setString("no_telepon", getUser['no_telepon'].toString());
           pref.setInt("gaji_pokok", getUser['gaji_pokok']);
           EasyLoading.showSuccess('Welcome Back', dismissOnTap: true);
@@ -59,10 +57,10 @@ class Auth {
       await FirebaseAuth.instanceFor(app: app)
           .createUserWithEmailAndPassword(email: data['email'], password: data['password'])
           .then((value) {
+        // Setting Nama di firebase Authentication
+        value.user!.updateDisplayName(data['nama']);
         // Insert User to database
-         FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
-          "nama": data['nama'],
-          "email": data['email'],
+        FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
           "no_telepon": data['no_telepon'],
           "gaji_pokok": data['gaji_pokok'],
         }).whenComplete(() {

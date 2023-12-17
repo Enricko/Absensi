@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/system/update_data.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -81,7 +80,7 @@ class _EditProfileState extends State<EditProfile> {
           .onValue
           .listen((event) {
         var snapshot = event.snapshot.value as Map;
-        nameController.text = snapshot['nama'];
+        nameController.text = FirebaseAuth.instance.currentUser!.displayName.toString();
         gajiController.text = snapshot['gaji_pokok'].toString();
         phoneNumberController.text = snapshot['no_telepon'];
 
