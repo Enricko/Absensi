@@ -120,15 +120,46 @@ class _HomeScreenState extends State<HomeScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              const Text("Total Bulan ini",
+                              Text("Total Bulan ini",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 13,
                                       fontWeight: FontWeight.w300)),
-                              Text(
-                                "${currencyFormatter.format(data['gaji_pokok'])}",
-                                style: const TextStyle(color: Colors.white),
-                              )
+                              StreamBuilder(
+                                stream: FirebaseDatabase.instance
+                                    .ref()
+                                    .child("lembur") // Parent di database
+                                    .child(id_user) // Id user
+                                    .child(DateFormat('yyyy-MM', "id")
+                                        .format(DateTime.now())) // Bulan dan tahun saat ini
+                                    .onValue,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData &&
+                                      (snapshot.data! as DatabaseEvent).snapshot.value != null) {
+                                    Map<dynamic, dynamic> dataTotal = Map<dynamic, dynamic>.from(
+                                        (snapshot.data! as DatabaseEvent).snapshot.value
+                                            as Map<dynamic, dynamic>);
+                                    // Memperulangkan data menggunakan foreach
+                                    int totalJam = 0;
+                                    int totalGaji = 0;
+                                    dataTotal.forEach((key, value) {
+                                      // Setiap data yang di perulangkan bakal di simpan ke dalam list
+                                      final currentData = Map<String, dynamic>.from(value);
+                                      // Mensetting variable dengan total lembur dan gaji)
+                                      totalJam += int.parse(currentData['lembur'].toString());
+                                      totalGaji += int.parse(currentData['total'].toString());
+                                    });
+                                    return Text(
+                                      "${currencyFormatter.format(data['gaji_pokok'] + totalGaji)}",
+                                      style: const TextStyle(color: Colors.white),
+                                    );
+                                  }
+                                  return Text(
+                                    "Rp. 0",
+                                    style: const TextStyle(color: Colors.white),
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ],
