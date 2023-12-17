@@ -14,30 +14,35 @@ class Auth {
       // UI Loading
       EasyLoading.show(status: 'loading...');
       // Login menggunakan function signInWithEmailAndPassword() yang telah di sediakan oleh firebase
-      var user = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: data['email'], password: data['password']);
-          
-      // Mengambil semua data user yang ada di dalam database lalu di filter
-      FirebaseDatabase.instance.ref().child("user").onValue.listen((event) async {
-        // Menyimpan data pada device menggunakan SharedPreferences
-        SharedPreferences pref = await SharedPreferences.getInstance();
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: data['email'], password: data['password'])
+          .then((user) async {
+        // Mengambil semua data user yang ada di dalam database lalu di filter
+        await FirebaseDatabase.instance.ref().child("user").onValue.listen((event) async {
+          // Menyimpan data pada device menggunakan SharedPreferences
+          SharedPreferences pref = await SharedPreferences.getInstance();
 
-        if (event.snapshot.hasChild(user.user!.uid)) {
-          var getUser = event.snapshot.child(user.user!.uid).value as Map;
-          // Menyimpan beberapa data yg penting ke device agar tidak selalu login
-          pref.setString("id_user", user.user!.uid.toString());
-          pref.setString("no_telepon", getUser['no_telepon'].toString());
-          pref.setInt("gaji_pokok", getUser['gaji_pokok']);
-          EasyLoading.showSuccess('Welcome Back', dismissOnTap: true);
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
-          return; // Berhenti jika data-nya sesuai / data-nya ketemu
-        }
+          if (event.snapshot.hasChild(user.user!.uid)) {
+            var getUser = event.snapshot.child(user.user!.uid).value as Map;
+            // Menyimpan beberapa data yg penting ke device agar tidak selalu login
+            pref.setString("id_user", user.user!.uid.toString());
+            pref.setString("no_telepon", getUser['no_telepon'].toString());
+            pref.setInt("gaji_pokok", getUser['gaji_pokok']);
+            EasyLoading.showSuccess('Welcome Back', dismissOnTap: true);
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
+            return; // Berhenti jika data-nya sesuai / data-nya ketemu
+          }
+        });
+      }).onError((error, stackTrace) {
+        EasyLoading.showError('Email/Password anda salah!',
+            dismissOnTap: true, duration: const Duration(seconds: 5));
+        return null;
       });
 
       // Mengarah ke halaman dashboard jika berhasil
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
-      EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
+      EasyLoading.showError('Email/Password anda salah!',
           dismissOnTap: true, duration: const Duration(seconds: 5));
     }
   }
@@ -54,7 +59,7 @@ class Auth {
           await Firebase.initializeApp(name: 'AuthUser', options: Firebase.app().options);
 
       // Insert User to FirebaseAuth
-      await FirebaseAuth.instanceFor(app: app)
+      FirebaseAuth.instanceFor(app: app)
           .createUserWithEmailAndPassword(email: data['email'], password: data['password'])
           .then((value) {
         // Setting Nama di firebase Authentication
@@ -74,6 +79,9 @@ class Auth {
           EasyLoading.showError('$error', dismissOnTap: true, duration: const Duration(seconds: 5));
         });
       }).onError((error, stackTrace) {
+        // Jika logic mengalami error, kode yang di bawah ini bakal jalan
+        EasyLoading.showError('$error', dismissOnTap: true, duration: const Duration(seconds: 5));
+      }).catchError((error) {
         // Jika logic mengalami error, kode yang di bawah ini bakal jalan
         EasyLoading.showError('$error', dismissOnTap: true, duration: const Duration(seconds: 5));
       });

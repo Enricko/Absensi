@@ -21,10 +21,8 @@ class UpdateData {
         "gaji_pokok": data['gaji_pokok'],
       }).whenComplete(() {
         // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
-        EasyLoading.showSuccess('Profile telah di Edit',
-            dismissOnTap: true, duration: const Duration(seconds: 5));
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => Menu(indexPage: 2)));
+        EasyLoading.showSuccess('Profile telah di Edit', dismissOnTap: true, duration: const Duration(seconds: 5));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu(indexPage: 2)));
         return;
       }).onError((error, stackTrace) {
         EasyLoading.showError("Something went wrong : $error",
@@ -32,8 +30,7 @@ class UpdateData {
       });
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
-      EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
-          dismissOnTap: true, duration: const Duration(seconds: 5));
+      EasyLoading.showError('Ada Sesuatu Kesalahan : $e', dismissOnTap: true, duration: const Duration(seconds: 5));
     }
   }
 
@@ -47,22 +44,19 @@ class UpdateData {
 
       // Update Email by Verification pada Firebase Auth
       await user!.verifyBeforeUpdateEmail(data['email']).then((value) {
-        // Update data profile ke Firebase Database
-        FirebaseDatabase.instance.ref().child("user").child(id_user).update(data).whenComplete(() {
-          // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
-          EasyLoading.showSuccess('Mohon cek verifikasi di email baru untuk mengubah email',
-              dismissOnTap: true, duration: const Duration(seconds: 5));
-          Navigator.pop(context);
-          return;
-        }).onError((error, stackTrace) {
-          EasyLoading.showError("Something went wrong : $error",
-              dismissOnTap: true, duration: const Duration(seconds: 5));
-        });
+        // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
+        EasyLoading.showSuccess('Mohon cek verifikasi di email baru untuk mengubah email',
+            dismissOnTap: true, duration: const Duration(seconds: 5));
+        Navigator.pop(context);
+        return;
+      }).onError((error, stackTrace) {
+        // Menampilkan error yang terjadi pada block code di atas
+        EasyLoading.showError('Ada Sesuatu Kesalahan : $error',
+            dismissOnTap: true, duration: const Duration(seconds: 5));
       });
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
-      EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
-          dismissOnTap: true, duration: const Duration(seconds: 5));
+      EasyLoading.showError('Ada Sesuatu Kesalahan : $e', dismissOnTap: true, duration: const Duration(seconds: 5));
     }
   }
 
@@ -75,14 +69,12 @@ class UpdateData {
       // Get Current User
       final user = FirebaseAuth.instance.currentUser;
       // User Credentials
-      final cred =
-          EmailAuthProvider.credential(email: user!.email!, password: data['old_password']);
+      final cred = EmailAuthProvider.credential(email: user!.email!, password: data['old_password']);
       // Update data profile ke Firebase Database
       await user.reauthenticateWithCredential(cred).then((value) async {
         await user.updatePassword(data['new_password']).then((_) {
           // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
-          EasyLoading.showSuccess('Password telah di Edit',
-              dismissOnTap: true, duration: const Duration(seconds: 5));
+          EasyLoading.showSuccess('Password telah di Edit', dismissOnTap: true, duration: const Duration(seconds: 5));
           Navigator.pop(context);
           return;
         }).onError((error, stackTrace) {
@@ -90,20 +82,11 @@ class UpdateData {
               dismissOnTap: true, duration: const Duration(seconds: 5));
         });
       }).onError((error, stackTrace) {
-        EasyLoading.showError("Password Lama Salah",
-            dismissOnTap: true, duration: const Duration(seconds: 5));
+        EasyLoading.showError("Password Lama Salah", dismissOnTap: true, duration: const Duration(seconds: 5));
       });
-      // FirebaseDatabase.instance
-      //     .ref()
-      //     .child("user")
-      //     .child(id_user)
-      //     .update(data)
-      //     .whenComplete(() {})
-      //     .onError((error, stackTrace) {});
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
-      EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
-          dismissOnTap: true, duration: const Duration(seconds: 5));
+      EasyLoading.showError('Ada Sesuatu Kesalahan : $e', dismissOnTap: true, duration: const Duration(seconds: 5));
     }
   }
 }
