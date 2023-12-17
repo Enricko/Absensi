@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 13,
                                       fontWeight: FontWeight.w300)),
                               Text(
-                                "${currencyFormatter.format(int.parse(data['gaji_pokok']))}",
+                                "${currencyFormatter.format(data['gaji_pokok'])}",
                                 style: const TextStyle(color: Colors.white),
                               )
                             ],
@@ -625,7 +625,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.black,
                               ),
                               Text(
-                                "- Jam",
+                                "0 Jam",
                                 style: const TextStyle(color: Colors.blue),
                               ),
                               const Text(
@@ -665,7 +665,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.black,
                               ),
                               Text(
-                                "-",
+                                "Rp.0",
                                 style: const TextStyle(color: Colors.blue),
                               ),
                               const Text(

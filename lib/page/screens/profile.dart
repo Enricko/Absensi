@@ -1,6 +1,7 @@
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
-import 'package:absensi/page/screens/edit_emailpass.dart';
+import 'package:absensi/page/screens/edit_email.dart';
+import 'package:absensi/page/screens/edit_pass.dart';
 import 'package:absensi/page/screens/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -134,10 +135,17 @@ class _ProfileState extends State<Profile> {
                 ),
                 TileProfile(
                   ontap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => EditEmailPass()));
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => EditEmail()));
                   },
                   url: 'assets/icon_email.svg',
-                  title: 'Edit Email Password',
+                  title: 'Edit Email',
+                ),
+                TileProfile(
+                  ontap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => EditPassword()));
+                  },
+                  url: 'assets/icon_password.svg',
+                  title: 'Edit Password',
                 ),
                 TileProfile(
                   ontap: () async {
