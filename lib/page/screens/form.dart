@@ -102,7 +102,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
     // return "Rp. 0";
   }
 
-   resultLembur(int gajiPokok) {
+  resultLembur(int gajiPokok) {
     if (timeController.text != "") {
       // rumus lembur 1
       var a = 1 * 1.5 * gajiPokok * (1 / 173);
@@ -138,10 +138,10 @@ class _FormAbsensiState extends State<FormAbsensi> {
       'keterangan': keterangan,
       'lembur': int.parse(time),
       'total': total,
-      'lembur1' :lembur1,
-      'lembur2' :lembur2,
-      "totalLembur1" :totalLembur1,
-      "totalLembur2" :totalLembur2,
+      'lembur1': lembur1,
+      'lembur2': lembur2,
+      "totalLembur1": totalLembur1.ceil(),
+      "totalLembur2": totalLembur2.ceil(),
     };
     print(lembur1);
     print(lembur2);
@@ -561,9 +561,8 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                           (snapshot.data! as DatabaseEvent).snapshot.value
                                               as Map<dynamic, dynamic>);
                                       if (data['gaji_pokok'] != null) {
-                                        totalGajiLembur = int.parse(
-                                            totalLembur(data['gaji_pokok'])
-                                                .replaceAll(RegExp(r'[^0-9]'), ''));
+                                        totalGajiLembur = int.parse(totalLembur(data['gaji_pokok'])
+                                            .replaceAll(RegExp(r'[^0-9]'), ''));
                                         resultLembur(data['gaji_pokok']);
                                         return Text(
                                           "${totalLembur(data['gaji_pokok'])}",

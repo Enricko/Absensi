@@ -19,10 +19,6 @@ class SumBulanan extends StatefulWidget {
 class _SumBulananState extends State<SumBulanan> {
   String id_user = "";
 
-  var lembur1 = 0;
-  var totalLembur1 = 0;
-  var lembur2 = 0;
-  var totalLembur2 = 0;
   List<Map<dynamic, dynamic>> keterangan = [];
   List<Map<dynamic, dynamic>> lembur = [];
   List<Map<dynamic, dynamic>> totalLembur = [];
@@ -54,8 +50,7 @@ class _SumBulananState extends State<SumBulanan> {
     if (FirebaseAuth.instance.currentUser == null) {
       FirebaseAuth.instance.currentUser;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
       });
     }
   }
@@ -96,8 +91,7 @@ class _SumBulananState extends State<SumBulanan> {
             ),
             Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -106,23 +100,15 @@ class _SumBulananState extends State<SumBulanan> {
                 child: Column(
                   children: [
                     StreamBuilder(
-                        stream: FirebaseDatabase.instance
-                            .ref()
-                            .child("user")
-                            .child(id_user)
-                            .onValue,
+                        stream:
+                            FirebaseDatabase.instance.ref().child("user").child(id_user).onValue,
                         builder: (context, snapshot) {
                           // Mengecek apakah data nya ada atau tidak
                           if (snapshot.hasData &&
-                              (snapshot.data! as DatabaseEvent)
-                                      .snapshot
-                                      .value !=
-                                  null) {
-                            Map<dynamic, dynamic> data =
-                                Map<dynamic, dynamic>.from(
-                                    (snapshot.data! as DatabaseEvent)
-                                        .snapshot
-                                        .value as Map<dynamic, dynamic>);
+                              (snapshot.data! as DatabaseEvent).snapshot.value != null) {
+                            Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                                (snapshot.data! as DatabaseEvent).snapshot.value
+                                    as Map<dynamic, dynamic>);
                             return Row(
                               children: [
                                 SvgPicture.asset(
@@ -136,8 +122,7 @@ class _SumBulananState extends State<SumBulanan> {
                                   "Gaji Pokok",
                                   style: TextStyle(color: Colors.black38),
                                 )),
-                                Text(
-                                    "${currencyFormatter.format(data['gaji_pokok'])}"),
+                                Text("${currencyFormatter.format(data['gaji_pokok'])}"),
                               ],
                             );
                           }
@@ -169,21 +154,21 @@ class _SumBulananState extends State<SumBulanan> {
                               .onValue,
                           builder: (context, snapshot) {
                             // Mengecek apakah data nya ada atau tidak
-                            if (snapshot.hasData &&
-                                (snapshot.data!).snapshot.value != null) {
+                            if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
                               // Variable data mempermudah memanggil data pada database
-                              Map<dynamic, dynamic> data =
-                                  Map<dynamic, dynamic>.from(
-                                      (snapshot.data! as DatabaseEvent)
-                                          .snapshot
-                                          .value as Map<dynamic, dynamic>);
+                              Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
+                                  (snapshot.data! as DatabaseEvent).snapshot.value
+                                      as Map<dynamic, dynamic>);
                               // Mengubah map menjadi list
                               List<Map<dynamic, dynamic>> dataList = [];
+                              int lembur1 = 0;
+                              int totalLembur1 = 0;
+                              int lembur2 = 0;
+                              int totalLembur2 = 0;
                               // Memperulangkan data menggunakan foreach
                               data.forEach((key, value) {
                                 // Setiap data yang di perulangkan bakal di simpan ke dalam list
-                                final currentData =
-                                    Map<String, dynamic>.from(value);
+                                final currentData = Map<String, dynamic>.from(value);
                                 // Mensetting variable dengan total lembur dan gaji)
                                 dataList.add({
                                   'tanggal': currentData['tanggal'],
@@ -213,12 +198,10 @@ class _SumBulananState extends State<SumBulanan> {
                                       ),
                                       Expanded(
                                           child: Text(
-                                            "Lembur ke 1",
-                                            style: TextStyle(
-                                                color: Colors.black38),
-                                          )),
-                                      Text(
-                                          "$lembur1 Jam"),
+                                        "Lembur ke 1",
+                                        style: TextStyle(color: Colors.black38),
+                                      )),
+                                      Text("$lembur1 Jam"),
                                     ],
                                   ),
                                   SizedBox(
@@ -234,14 +217,12 @@ class _SumBulananState extends State<SumBulanan> {
                                       ),
                                       Expanded(
                                           child: Text(
-                                            "Total Lembur ke 1",
-                                            style: TextStyle(
-                                                color: Colors.black38),
-                                          )),
+                                        "Total Lembur ke 1",
+                                        style: TextStyle(color: Colors.black38),
+                                      )),
                                       Text(
                                         "${currencyFormatter.format(totalLembur1)}",
-                                        style:
-                                        TextStyle(color: Colors.blue),
+                                        style: TextStyle(color: Colors.blue),
                                       ),
                                     ],
                                   ),
@@ -262,12 +243,10 @@ class _SumBulananState extends State<SumBulanan> {
                                       ),
                                       Expanded(
                                           child: Text(
-                                            "Lembur ke 2",
-                                            style: TextStyle(
-                                                color: Colors.black38),
-                                          )),
-                                      Text(
-                                          "$lembur2 Jam"),
+                                        "Lembur ke 2",
+                                        style: TextStyle(color: Colors.black38),
+                                      )),
+                                      Text("$lembur2 Jam"),
                                     ],
                                   ),
                                   SizedBox(
@@ -283,14 +262,12 @@ class _SumBulananState extends State<SumBulanan> {
                                       ),
                                       Expanded(
                                           child: Text(
-                                            "Total Lembur ke 2",
-                                            style: TextStyle(
-                                                color: Colors.black38),
-                                          )),
+                                        "Total Lembur ke 2",
+                                        style: TextStyle(color: Colors.black38),
+                                      )),
                                       Text(
                                         "${currencyFormatter.format(totalLembur2)}",
-                                        style:
-                                        TextStyle(color: Colors.blue),
+                                        style: TextStyle(color: Colors.blue),
                                       ),
                                     ],
                                   ),
@@ -330,12 +307,10 @@ class _SumBulananState extends State<SumBulanan> {
                     .onValue,
                 builder: (context, snapshot) {
                   // Mengecek apakah data nya ada atau tidak
-                  if (snapshot.hasData &&
-                      (snapshot.data!).snapshot.value != null) {
+                  if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
                     // Variable data mempermudah memanggil data pada database
                     Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                        (snapshot.data! as DatabaseEvent).snapshot.value
-                            as Map<dynamic, dynamic>);
+                        (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
                     // Mengubah map menjadi list
                     List<Map<dynamic, dynamic>> dataList = [];
                     // Memperulangkan data menggunakan foreach
@@ -363,18 +338,15 @@ class _SumBulananState extends State<SumBulanan> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (ctx) => SumHarian(
-                                            tanggal: widget.tanggal,
-                                            id: dataList[index]['id'])));
+                                            tanggal: widget.tanggal, id: dataList[index]['id'])));
                               },
                               child: Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        color: Color(0xFF2FA4D9), width: 1)),
+                                    border: Border.all(color: Color(0xFF2FA4D9), width: 1)),
                                 //efek scrolling
                                 child: Column(
                                   children: [
@@ -396,11 +368,9 @@ class _SumBulananState extends State<SumBulanan> {
                                             Expanded(
                                                 child: Text(
                                               "Absensi",
-                                              style: TextStyle(
-                                                  color: Colors.black38),
+                                              style: TextStyle(color: Colors.black38),
                                             )),
-                                            Text(
-                                                "${dataList[index]['absensi']}"),
+                                            Text("${dataList[index]['absensi']}"),
                                           ],
                                         ),
                                         SizedBox(
@@ -417,8 +387,7 @@ class _SumBulananState extends State<SumBulanan> {
                                             Expanded(
                                                 child: Text(
                                               "Lembur",
-                                              style: TextStyle(
-                                                  color: Colors.black38),
+                                              style: TextStyle(color: Colors.black38),
                                             )),
                                             Text(
                                               "${dataList[index]['lembur']} Jam",
@@ -439,13 +408,11 @@ class _SumBulananState extends State<SumBulanan> {
                                             Expanded(
                                                 child: Text(
                                               "Total Lembur ke ${index + 1}",
-                                              style: TextStyle(
-                                                  color: Colors.black38),
+                                              style: TextStyle(color: Colors.black38),
                                             )),
                                             Text(
                                               "${currencyFormatter.format(dataList[index]['total'])}",
-                                              style:
-                                                  TextStyle(color: Colors.blue),
+                                              style: TextStyle(color: Colors.blue),
                                             ),
                                           ],
                                         ),
