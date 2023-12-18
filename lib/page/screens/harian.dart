@@ -162,7 +162,7 @@ class _SumHarianState extends State<SumHarian> {
                                   ),
                                   Expanded(
                                       child: Text(
-                                    "Tanggal",
+                                    "Jam",
                                     style: TextStyle(color: Colors.black38),
                                   )),
                                   Text("${index == 0?data['lembur1']:data['lembur2']} Jam"),
@@ -206,6 +206,24 @@ class _SumHarianState extends State<SumHarian> {
                   Text(
                     "${currencyFormatter.format(data['total'])}",
                     style: TextStyle(color: Colors.blue),
+                  ),
+                  SizedBox(height: 30,),
+                  Text("Rumus Lembur 1", style: TextStyle(color: Colors.black38)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "1,5 x Gaji Pokok / 173",
+                    style: TextStyle(color: Colors.black54,fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(height: 30,),
+                  Text("Rumus Lembur 2", style: TextStyle(color: Colors.black38)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "2 x Gaji Pokok / 173",
+                    style: TextStyle(color: Colors.black54,fontWeight: FontWeight.w600),
                   ),
                 ],
               );

@@ -101,7 +101,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
     // }
     // return "Rp. 0";
   }
-
+//function hasil lembur berdasar rumus lembur
   resultLembur(int gajiPokok) {
     if (timeController.text != "") {
       // rumus lembur 1

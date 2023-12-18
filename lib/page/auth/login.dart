@@ -50,9 +50,10 @@ class _LoginPageState extends State<LoginPage> {
     Auth.login(data, context);
   }
 
-  void cekUser() {
+  void cekUser()async {
+    await FirebaseAuth.instance.currentUser;
     // Logic cek Data User apakah sudah pernah login
-    if (FirebaseAuth.instance.currentUser != null) {
+     if (FirebaseAuth.instance.currentUser != null) {
       FirebaseAuth.instance.currentUser;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));

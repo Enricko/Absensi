@@ -332,149 +332,138 @@ class _HomeScreenState extends State<HomeScreen> {
                               return ListView.builder(
                                 itemCount: dataList.length,
                                 itemBuilder: (context, index) {
-                                  return Stack(
+                                  return Column(
                                     children: [
-                                      Column(
-                                        children: [
-                                          // Card Lemburan
-                                          Container(
-                                            width: double.infinity,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10, vertical: 20),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(8),
-                                              border: const Border(
-                                                left:
-                                                    BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                                top:
-                                                    BorderSide(width: 11, color: Color(0xFF2FA4D9)),
-                                                right:
-                                                    BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                                bottom:
-                                                    BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                              ),
-                                            ),
-                                            child: Column(
+                                      // Card Lemburan
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: const Border(
+                                            left:
+                                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                            top:
+                                                BorderSide(width: 11, color: Color(0xFF2FA4D9)),
+                                            right:
+                                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                            bottom:
+                                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                          ),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Row(
                                               children: [
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      "assets/Calendar.svg",
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    const Expanded(
-                                                        child: Text(
-                                                      "Tanggal",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
-                                                    Text("${dataList[index]['tanggal']}"),
-                                                  ],
+                                                SvgPicture.asset(
+                                                  "assets/Calendar.svg",
                                                 ),
-                                                const Divider(),
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      "assets/Fingerprint.svg",
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    const Expanded(
-                                                        child: Text(
-                                                      "Absensi",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
-                                                    Text("${dataList[index]['absensi']}"),
-                                                  ],
+                                                const SizedBox(
+                                                  width: 8,
                                                 ),
-                                                const Divider(),
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      "assets/ClockClockwise.svg",
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    const Expanded(
-                                                        child: Text(
-                                                      "Lembur",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
-                                                    Text("${dataList[index]['lembur']} Jam"),
-                                                  ],
+                                                const Expanded(
+                                                    child: Text(
+                                                  "Tanggal",
+                                                  style: TextStyle(color: Colors.black38),
+                                                )),
+                                                Text("${dataList[index]['tanggal']}"),
+                                              ],
+                                            ),
+                                            const Divider(),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  "assets/Fingerprint.svg",
                                                 ),
-                                                const Divider(),
-                                                Row(
-                                                  children: [
-                                                    SvgPicture.asset(
-                                                      "assets/u_money-stack.svg",
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    const Expanded(
-                                                        child: Text(
-                                                      "Total",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
-                                                    Text(
-                                                      "${currencyFormatter.format(dataList[index]['total'])}",
-                                                      style: const TextStyle(color: Colors.blue),
-                                                    ),
-                                                  ],
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                const Expanded(
+                                                    child: Text(
+                                                  "Absensi",
+                                                  style: TextStyle(color: Colors.black38),
+                                                )),
+                                                Text("${dataList[index]['absensi']} + (${dataList[index]['keterangan']})"),
+                                              ],
+                                            ),
+                                            const Divider(),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  "assets/ClockClockwise.svg",
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                const Expanded(
+                                                    child: Text(
+                                                  "Lembur",
+                                                  style: TextStyle(color: Colors.black38),
+                                                )),
+                                                Text("${dataList[index]['lembur']} Jam"),
+                                              ],
+                                            ),
+                                            const Divider(),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  "assets/u_money-stack.svg",
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                const Expanded(
+                                                    child: Text(
+                                                  "Total",
+                                                  style: TextStyle(color: Colors.black38),
+                                                )),
+                                                Text(
+                                                  "${currencyFormatter.format(dataList[index]['total'])}",
+                                                  style: const TextStyle(color: Colors.blue),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
-                                      ),
-                                      Align(
-                                        alignment: Alignment(1.05, 0),
-                                        heightFactor: .5,
-                                        child: Tooltip(
-                                          message: "Delete Lembur",
-                                          child: GestureDetector(
-                                            child: Container(
-                                              width: 40,
-                                              height: 40,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.redAccent,
-                                                  borderRadius: BorderRadius.circular(15)),
-                                              child: Icon(Icons.delete, color: Colors.white),
-                                            ),
-                                            onTap: () {
-                                              Alerts.showAlertYesNoDelete(
-                                                  title: "Are you sure you want to Logout Delete?",
-                                                  onPressYes: () async {
-                                                    FirebaseDatabase.instance
-                                                        .ref()
-                                                        .child("lembur") // Parent di database
-                                                        .child(id_user) // Id user
-                                                        .child(DateFormat('yyyy-MM', "id")
-                                                            .format(DateTime.now()))
-                                                        .child(dataList[index]['key'])
-                                                        .remove()
-                                                        .whenComplete(() {
-                                                      EasyLoading.showSuccess(
-                                                          'Data Lembur berhasil di hapus',
-                                                          dismissOnTap: true);
-                                                    });
-                                                    Navigator.pop(context);
-                                                  },
-                                                  onPressNo: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  context: context);
-                                            },
-                                          ),
+                                            const Divider(),
+                                            IconButton(
+                                              icon: Icon(Icons.delete),
+                                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red),
+                                              foregroundColor: MaterialStateProperty.all(Colors.white),
+                                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15),
+                                                ),
+                                                ),
+                                              ),
+                                              onPressed: (){
+                                                Alerts.showAlertYesNoDelete(
+                                                    title: "Are you sure you want to Logout Delete?",
+                                                    onPressYes: () async {
+                                                      FirebaseDatabase.instance
+                                                          .ref()
+                                                          .child("lembur") // Parent di database
+                                                          .child(id_user) // Id user
+                                                          .child(DateFormat('yyyy-MM', "id")
+                                                          .format(DateTime.now()))
+                                                          .child(dataList[index]['key'])
+                                                          .remove()
+                                                          .whenComplete(() {
+                                                        EasyLoading.showSuccess(
+                                                            'Data Lembur berhasil di hapus',
+                                                            dismissOnTap: true);
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                    onPressNo: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    context: context);
+                                              }),
+                                          ],
                                         ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
                                       ),
                                     ],
                                   );
