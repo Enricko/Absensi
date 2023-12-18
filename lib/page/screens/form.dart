@@ -31,6 +31,12 @@ class _FormAbsensiState extends State<FormAbsensi> {
   String id_user = "";
   int totalGajiLembur = 0;
 
+  // deklarasi per rumus lembur
+  int lembur1 = 0;
+  double totalLembur1 = 0;
+  int lembur2 = 0;
+  double totalLembur2 = 0;
+
   // variable boolean
   bool isMasuk = true;
 
@@ -96,6 +102,28 @@ class _FormAbsensiState extends State<FormAbsensi> {
     // return "Rp. 0";
   }
 
+   resultLembur(int gajiPokok) {
+    if (timeController.text != "") {
+      // rumus lembur 1
+      var a = 1 * 1.5 * gajiPokok * (1 / 173);
+      // rumus lembur 2
+      var b = (int.parse(timeController.text) - 1) * 2 * gajiPokok * (1 / 173);
+
+      // Lembur Di hari libur
+      if (keterangan == "Hari Libur") {
+        lembur2 = int.parse(timeController.text);
+        totalLembur2 = (int.parse(timeController.text) * 2 * gajiPokok * (1 / 173));
+      }
+      // Lembur Di hari biasa
+      else if (keterangan == "Hari Biasa") {
+        lembur1 = 1;
+        lembur2 = int.parse(timeController.text) - 1;
+        totalLembur1 = a;
+        totalLembur2 = b;
+      }
+    }
+  }
+
   void simpanLembur() {
     var date = dateController.text != ''
         ? dateController.text
@@ -110,7 +138,13 @@ class _FormAbsensiState extends State<FormAbsensi> {
       'keterangan': keterangan,
       'lembur': int.parse(time),
       'total': total,
+      'lembur1' :lembur1,
+      'lembur2' :lembur2,
+      "totalLembur1" :totalLembur1,
+      "totalLembur2" :totalLembur2,
     };
+    print(lembur1);
+    print(lembur2);
     InsertData.lembur(data, id_user, context);
   }
 
@@ -530,6 +564,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                         totalGajiLembur = int.parse(
                                             totalLembur(data['gaji_pokok'])
                                                 .replaceAll(RegExp(r'[^0-9]'), ''));
+                                        resultLembur(data['gaji_pokok']);
                                         return Text(
                                           "${totalLembur(data['gaji_pokok'])}",
                                           style: TextStyle(color: Colors.blue),

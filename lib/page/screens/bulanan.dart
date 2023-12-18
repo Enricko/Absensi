@@ -11,12 +11,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SumBulanan extends StatefulWidget {
   const SumBulanan({Key? key, required this.tanggal}) : super(key: key);
   final String tanggal;
+
   @override
   State<SumBulanan> createState() => _SumBulananState();
 }
 
 class _SumBulananState extends State<SumBulanan> {
   String id_user = "";
+
+  var lembur1 = 0;
+  var totalLembur1 = 0;
+  var lembur2 = 0;
+  var totalLembur2 = 0;
+  List<Map<dynamic, dynamic>> keterangan = [];
+  List<Map<dynamic, dynamic>> lembur = [];
+  List<Map<dynamic, dynamic>> totalLembur = [];
+
+  List<String> summaries = [];
+  List<String> listHariBiasa = [];
+  List<String> listHariLibur = [];
 
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
@@ -41,7 +54,8 @@ class _SumBulananState extends State<SumBulanan> {
     if (FirebaseAuth.instance.currentUser == null) {
       FirebaseAuth.instance.currentUser;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LoginPage()));
       });
     }
   }
@@ -54,7 +68,7 @@ class _SumBulananState extends State<SumBulanan> {
 
     ///mengeksekusi function sebelum function build
     getPref();
-        // Load InterstitialAd Ads
+    // Load InterstitialAd Ads
     InterstitialAds.loadAd();
   }
 
@@ -82,7 +96,8 @@ class _SumBulananState extends State<SumBulanan> {
             ),
             Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -91,15 +106,23 @@ class _SumBulananState extends State<SumBulanan> {
                 child: Column(
                   children: [
                     StreamBuilder(
-                        stream:
-                            FirebaseDatabase.instance.ref().child("user").child(id_user).onValue,
+                        stream: FirebaseDatabase.instance
+                            .ref()
+                            .child("user")
+                            .child(id_user)
+                            .onValue,
                         builder: (context, snapshot) {
                           // Mengecek apakah data nya ada atau tidak
                           if (snapshot.hasData &&
-                              (snapshot.data! as DatabaseEvent).snapshot.value != null) {
-                            Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                                (snapshot.data! as DatabaseEvent).snapshot.value
-                                    as Map<dynamic, dynamic>);
+                              (snapshot.data! as DatabaseEvent)
+                                      .snapshot
+                                      .value !=
+                                  null) {
+                            Map<dynamic, dynamic> data =
+                                Map<dynamic, dynamic>.from(
+                                    (snapshot.data! as DatabaseEvent)
+                                        .snapshot
+                                        .value as Map<dynamic, dynamic>);
                             return Row(
                               children: [
                                 SvgPicture.asset(
@@ -137,105 +160,156 @@ class _SumBulananState extends State<SumBulanan> {
                         }),
                     Divider(),
                     SizedBox(
-                      height: 160,
                       child: StreamBuilder(
-                        stream: FirebaseDatabase.instance
-                            .ref()
-                            .child("lembur") // Parent di database
-                            .child(id_user) // Id user
-                            .child(widget.tanggal) // Bulan dan tahun saat ini
-                            .onValue,
-                        builder: (context, snapshot) {
-                          // Mengecek apakah data nya ada atau tidak
-                          if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
-                            // Variable data mempermudah memanggil data pada database
-                            Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                                (snapshot.data! as DatabaseEvent).snapshot.value
-                                    as Map<dynamic, dynamic>);
-                            // Mengubah map menjadi list
-                            List<Map<dynamic, dynamic>> dataList = [];
-                            // Memperulangkan data menggunakan foreach
-                            data.forEach((key, value) {
-                              // Setiap data yang di perulangkan bakal di simpan ke dalam list
-                              final currentData = Map<String, dynamic>.from(value);
-                              // Mensetting variable dengan total lembur dan gaji)
-                              dataList.add({
-                                'tanggal': currentData['tanggal'],
-                                'absensi': currentData['absensi'],
-                                'keterangan': currentData['keterangan'],
-                                'lembur': currentData['lembur'],
-                                'total': currentData['total'],
+                          stream: FirebaseDatabase.instance
+                              .ref()
+                              .child("lembur") // Parent di database
+                              .child(id_user) // Id user
+                              .child(widget.tanggal) // Bulan dan tahun saat ini
+                              .onValue,
+                          builder: (context, snapshot) {
+                            // Mengecek apakah data nya ada atau tidak
+                            if (snapshot.hasData &&
+                                (snapshot.data!).snapshot.value != null) {
+                              // Variable data mempermudah memanggil data pada database
+                              Map<dynamic, dynamic> data =
+                                  Map<dynamic, dynamic>.from(
+                                      (snapshot.data! as DatabaseEvent)
+                                          .snapshot
+                                          .value as Map<dynamic, dynamic>);
+                              // Mengubah map menjadi list
+                              List<Map<dynamic, dynamic>> dataList = [];
+                              // Memperulangkan data menggunakan foreach
+                              data.forEach((key, value) {
+                                // Setiap data yang di perulangkan bakal di simpan ke dalam list
+                                final currentData =
+                                    Map<String, dynamic>.from(value);
+                                // Mensetting variable dengan total lembur dan gaji)
+                                dataList.add({
+                                  'tanggal': currentData['tanggal'],
+                                  'absensi': currentData['absensi'],
+                                  'keterangan': currentData['keterangan'],
+                                  'lembur': currentData['lembur'],
+                                  'total': currentData['total'],
+                                });
+                                // set data ke masing masing variable
+                                lembur1 += int.parse(currentData['lembur1'].toString());
+                                lembur2 += int.parse(currentData['lembur2'].toString());
+                                totalLembur1 += int.parse(currentData['totalLembur1'].toString());
+                                totalLembur2 += int.parse(currentData['totalLembur2'].toString());
                               });
-                            });
-                            return ListView.builder(
-                              //membuat container fit dengan tinggi listview
-                              shrinkWrap: true,
-                              //jumlah item listview
-                              itemCount: dataList.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          "assets/Calendar.svg",
-                                        ),
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                          "Lembur ke ${index + 1}",
-                                          style: TextStyle(color: Colors.black38),
-                                        )),
-                                        Text("${dataList[index]['lembur']} Jam"),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          "assets/u_money-stack.svg",
-                                        ),
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                          "Total Lembur ke ${index + 1}",
-                                          style: TextStyle(color: Colors.black38),
-                                        )),
-                                        Text(
-                                          "${currencyFormatter.format(dataList[index]['total'])}",
-                                          style: TextStyle(color: Colors.blue),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Divider(),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                          if (snapshot.hasData) {
-                            // Tampilkan kosong jika snapshot return data tapi data di database kosong
+                              return Column(
+                                children: [
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/Calendar.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Lembur ke 1",
+                                            style: TextStyle(
+                                                color: Colors.black38),
+                                          )),
+                                      Text(
+                                          "$lembur1 Jam"),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/u_money-stack.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Total Lembur ke 1",
+                                            style: TextStyle(
+                                                color: Colors.black38),
+                                          )),
+                                      Text(
+                                        "${currencyFormatter.format(totalLembur1)}",
+                                        style:
+                                        TextStyle(color: Colors.blue),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Divider(),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/Calendar.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Lembur ke 2",
+                                            style: TextStyle(
+                                                color: Colors.black38),
+                                          )),
+                                      Text(
+                                          "$lembur2 Jam"),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/u_money-stack.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Total Lembur ke 2",
+                                            style: TextStyle(
+                                                color: Colors.black38),
+                                          )),
+                                      Text(
+                                        "${currencyFormatter.format(totalLembur2)}",
+                                        style:
+                                        TextStyle(color: Colors.blue),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                ],
+                              );
+                            }
+                            if (snapshot.hasData) {
+                              // Tampilkan kosong jika snapshot return data tapi data di database kosong
+                              return const Center(
+                                child: Text("Tidak ada lembur bulan ini"),
+                              );
+                            }
                             return const Center(
-                              child: Text("Tidak ada lembur bulan ini"),
+                              child: CircularProgressIndicator(),
                             );
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                      ),
+                          }),
                     ),
                   ],
                 )),
@@ -256,10 +330,12 @@ class _SumBulananState extends State<SumBulanan> {
                     .onValue,
                 builder: (context, snapshot) {
                   // Mengecek apakah data nya ada atau tidak
-                  if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
+                  if (snapshot.hasData &&
+                      (snapshot.data!).snapshot.value != null) {
                     // Variable data mempermudah memanggil data pada database
                     Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                        (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+                        (snapshot.data! as DatabaseEvent).snapshot.value
+                            as Map<dynamic, dynamic>);
                     // Mengubah map menjadi list
                     List<Map<dynamic, dynamic>> dataList = [];
                     // Memperulangkan data menggunakan foreach
@@ -284,15 +360,21 @@ class _SumBulananState extends State<SumBulanan> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
-                                    context, MaterialPageRoute(builder: (ctx) => SumHarian(tanggal:widget.tanggal,id:dataList[index]['id'])));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (ctx) => SumHarian(
+                                            tanggal: widget.tanggal,
+                                            id: dataList[index]['id'])));
                               },
                               child: Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 20),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Color(0xFF2FA4D9), width: 1)),
+                                    border: Border.all(
+                                        color: Color(0xFF2FA4D9), width: 1)),
                                 //efek scrolling
                                 child: Column(
                                   children: [
@@ -314,9 +396,11 @@ class _SumBulananState extends State<SumBulanan> {
                                             Expanded(
                                                 child: Text(
                                               "Absensi",
-                                              style: TextStyle(color: Colors.black38),
+                                              style: TextStyle(
+                                                  color: Colors.black38),
                                             )),
-                                            Text("${dataList[index]['absensi']}"),
+                                            Text(
+                                                "${dataList[index]['absensi']}"),
                                           ],
                                         ),
                                         SizedBox(
@@ -333,7 +417,8 @@ class _SumBulananState extends State<SumBulanan> {
                                             Expanded(
                                                 child: Text(
                                               "Lembur",
-                                              style: TextStyle(color: Colors.black38),
+                                              style: TextStyle(
+                                                  color: Colors.black38),
                                             )),
                                             Text(
                                               "${dataList[index]['lembur']} Jam",
@@ -354,11 +439,13 @@ class _SumBulananState extends State<SumBulanan> {
                                             Expanded(
                                                 child: Text(
                                               "Total Lembur ke ${index + 1}",
-                                              style: TextStyle(color: Colors.black38),
+                                              style: TextStyle(
+                                                  color: Colors.black38),
                                             )),
                                             Text(
                                               "${currencyFormatter.format(dataList[index]['total'])}",
-                                              style: TextStyle(color: Colors.blue),
+                                              style:
+                                                  TextStyle(color: Colors.blue),
                                             ),
                                           ],
                                         ),
