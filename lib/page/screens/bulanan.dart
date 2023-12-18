@@ -1,9 +1,11 @@
+import 'package:absensi/include/alerts.dart';
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/harian.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -330,101 +332,146 @@ class _SumBulananState extends State<SumBulanan> {
                     return ListView.builder(
                       itemCount: dataList.length,
                       itemBuilder: (context, index) {
-                        return Column(
+                        return Stack(
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (ctx) => SumHarian(
-                                            tanggal: widget.tanggal, id: dataList[index]['id'])));
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Color(0xFF2FA4D9), width: 1)),
-                                //efek scrolling
-                                child: Column(
-                                  children: [
-                                    Text("${dataList[index]['tanggal']}"),
-                                    Divider(),
-                                    Column(
+                            Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (ctx) => SumHarian(
+                                                tanggal: widget.tanggal,
+                                                id: dataList[index]['id'])));
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(color: Color(0xFF2FA4D9), width: 1)),
+                                    //efek scrolling
+                                    child: Column(
                                       children: [
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
+                                        Text("${dataList[index]['tanggal']}"),
+                                        Divider(),
+                                        Column(
                                           children: [
-                                            SvgPicture.asset(
-                                              "assets/Fingerprint.svg",
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  "assets/Fingerprint.svg",
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Expanded(
+                                                    child: Text(
+                                                  "Absensi",
+                                                  style: TextStyle(color: Colors.black38),
+                                                )),
+                                                Text("${dataList[index]['absensi']}"),
+                                              ],
                                             ),
                                             SizedBox(
-                                              width: 8,
+                                              height: 5,
                                             ),
-                                            Expanded(
-                                                child: Text(
-                                              "Absensi",
-                                              style: TextStyle(color: Colors.black38),
-                                            )),
-                                            Text("${dataList[index]['absensi']}"),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                              "assets/Calendar.svg",
-                                            ),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "Lembur",
-                                              style: TextStyle(color: Colors.black38),
-                                            )),
-                                            Text(
-                                              "${dataList[index]['lembur']} Jam",
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                              "assets/Calendar.svg",
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  "assets/Calendar.svg",
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Expanded(
+                                                    child: Text(
+                                                  "Lembur",
+                                                  style: TextStyle(color: Colors.black38),
+                                                )),
+                                                Text(
+                                                  "${dataList[index]['lembur']} Jam",
+                                                ),
+                                              ],
                                             ),
                                             SizedBox(
-                                              width: 8,
+                                              height: 5,
                                             ),
-                                            Expanded(
-                                                child: Text(
-                                              "Total Lembur ke ${index + 1}",
-                                              style: TextStyle(color: Colors.black38),
-                                            )),
-                                            Text(
-                                              "${currencyFormatter.format(dataList[index]['total'])}",
-                                              style: TextStyle(color: Colors.blue),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  "assets/Calendar.svg",
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Expanded(
+                                                    child: Text(
+                                                  "Total Lembur ke ${index + 1}",
+                                                  style: TextStyle(color: Colors.black38),
+                                                )),
+                                                Text(
+                                                  "${currencyFormatter.format(dataList[index]['total'])}",
+                                                  style: TextStyle(color: Colors.blue),
+                                                ),
+                                              ],
                                             ),
                                           ],
-                                        ),
+                                        )
                                       ],
-                                    )
-                                  ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            ),
+                            Align(
+                              alignment: Alignment(1.05, 0),
+                              heightFactor: .5,
+                              child: Tooltip(
+                                message: "Delete Lembur",
+                                child: GestureDetector(
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Colors.redAccent,
+                                        borderRadius: BorderRadius.circular(15)),
+                                    child: Icon(Icons.delete, color: Colors.white),
+                                  ),
+                                  onTap: () {
+                                    Alerts.showAlertYesNoDelete(
+                                        title: "Are you sure you want to Logout Delete?",
+                                        onPressYes: () async {
+                                          FirebaseDatabase.instance
+                                              .ref()
+                                              .child("lembur") // Parent di database
+                                              .child(id_user) // Id user
+                                              .child(widget.tanggal) // Bulan dan tahun saat ini
+                                              .child(dataList[index]['id'])
+                                              .remove()
+                                              .whenComplete(() {
+                                            EasyLoading.showSuccess('Data Lembur berhasil di hapus',
+                                                dismissOnTap: true);
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        onPressNo: () {
+                                          Navigator.pop(context);
+                                        },
+                                        context: context);
+                                  },
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            )
                           ],
                         );
                       },

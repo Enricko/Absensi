@@ -1,3 +1,4 @@
+import 'package:absensi/include/alerts.dart';
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/edit_email.dart';
@@ -6,6 +7,7 @@ import 'package:absensi/page/screens/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,11 +69,9 @@ class _ProfileState extends State<Profile> {
                 fit: BoxFit.cover, // Use BoxFit.cover to fill the container
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 58),
-              child:
-              StreamBuilder(
+              child: StreamBuilder(
                 // Query untuk mengambil data pada firebase
                 stream: FirebaseDatabase.instance.ref().child("user").child(id_user).onValue,
                 builder: (context, snapshot) {
@@ -84,15 +84,17 @@ class _ProfileState extends State<Profile> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(FirebaseAuth.instance.currentUser!.displayName ?? "-", style: TextStyle(color: Colors.white)),
+                            Text(FirebaseAuth.instance.currentUser!.displayName ?? "-",
+                                style: TextStyle(color: Colors.white)),
                             Text("Karyawan",
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 13, fontWeight: FontWeight.w300)),
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w300)),
                           ],
                         ),
                         CircleAvatar()
@@ -103,7 +105,6 @@ class _ProfileState extends State<Profile> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -149,9 +150,17 @@ class _ProfileState extends State<Profile> {
                 ),
                 TileProfile(
                   ontap: () async {
-                    await auth.signOut();
-                    Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (ctx) => LoginPage()));
+                    Alerts.showAlertYesNo(
+                        title: "Are you sure you want to Logout?",
+                        onPressYes: () async {
+                          await auth.signOut();
+                          Navigator.pushReplacement(
+                              context, MaterialPageRoute(builder: (ctx) => LoginPage()));
+                        },
+                        onPressNo: () {
+                          Navigator.pop(context);
+                        },
+                        context: context);
                   },
                   url: 'assets/icon_logout.svg',
                   title: 'Log Out',
