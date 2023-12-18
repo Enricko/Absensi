@@ -54,7 +54,7 @@ class _SumHarianState extends State<SumHarian> {
 
     ///mengeksekusi function sebelum function build
     getPref();
-        // Load InterstitialAd Ads
+    // Load InterstitialAd Ads
     InterstitialAds.loadAd();
   }
 
@@ -111,30 +111,30 @@ class _SumHarianState extends State<SumHarian> {
                         //membuat container fit dengan tinggi listview
                         shrinkWrap: true,
                         //jumlah item listview
-                        itemCount: 1,
+                        itemCount: 2,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
-                              // SizedBox(
-                              //   height: 5,
-                              // ),
-                              // Row(
-                              //   children: [
-                              //     SvgPicture.asset(
-                              //       "assets/Calendar.svg",
-                              //     ),
-                              //     SizedBox(
-                              //       width: 8,
-                              //     ),
-                              //     Expanded(
-                              //         child: Text(
-                              //       "Lembur Ke",
-                              //       style: TextStyle(color: Colors.black38),
-                              //     )),
-                              //     Text("1"),
-                              //   ],
-                              // ),
-                              // Divider(),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/Calendar.svg",
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
+                                      child: Text(
+                                    "Lembur Ke",
+                                    style: TextStyle(color: Colors.black38),
+                                  )),
+                                  Text("${index + 1}"),
+                                ],
+                              ),
+                              Divider(),
                               Row(
                                 children: [
                                   SvgPicture.asset(
@@ -165,7 +165,7 @@ class _SumHarianState extends State<SumHarian> {
                                     "Tanggal",
                                     style: TextStyle(color: Colors.black38),
                                   )),
-                                  Text("${data['lembur']} Jam"),
+                                  Text("${index == 0?data['lembur1']:data['lembur2']} Jam"),
                                 ],
                               ),
                               Divider(),
@@ -183,7 +183,7 @@ class _SumHarianState extends State<SumHarian> {
                                     style: TextStyle(color: Colors.black38),
                                   )),
                                   Text(
-                                    "${currencyFormatter.format(data['total'])}",
+                                    "${currencyFormatter.format(index == 0?data['totalLembur1']:data['totalLembur2'])}",
                                     style: TextStyle(color: Colors.blue),
                                   ),
                                 ],
@@ -211,14 +211,14 @@ class _SumHarianState extends State<SumHarian> {
               );
             }
             if (snapshot.hasData) {
-                    // Tampilkan kosong jika snapshot return data tapi data di database kosong
-                    return const Center(
-                      child: Text("Tidak ada lembur hari ini"),
-                    );
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+              // Tampilkan kosong jika snapshot return data tapi data di database kosong
+              return const Center(
+                child: Text("Tidak ada lembur hari ini"),
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           },
         ),
       ),
