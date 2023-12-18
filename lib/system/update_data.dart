@@ -22,7 +22,8 @@ class UpdateData {
       }).whenComplete(() {
         // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
         EasyLoading.showSuccess('Profile telah di Edit', dismissOnTap: true, duration: const Duration(seconds: 5));
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu(indexPage: 2)));
+        Navigator.pop(context);
+        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu(indexPage: 2)));
         return;
       }).onError((error, stackTrace) {
         EasyLoading.showError("Something went wrong : $error",

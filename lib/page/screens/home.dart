@@ -386,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   "Absensi",
                                                   style: TextStyle(color: Colors.black38),
                                                 )),
-                                                Text("${dataList[index]['absensi']} + (${dataList[index]['keterangan']})"),
+                                                Text("${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
                                               ],
                                             ),
                                             const Divider(),

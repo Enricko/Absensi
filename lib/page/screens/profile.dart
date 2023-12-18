@@ -154,6 +154,7 @@ class _ProfileState extends State<Profile> {
                         title: "Are you sure you want to Logout?",
                         onPressYes: () async {
                           await auth.signOut();
+                          Navigator.pop(context);
                           Navigator.pushReplacement(
                               context, MaterialPageRoute(builder: (ctx) => LoginPage()));
                         },
