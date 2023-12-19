@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:absensi/include/banner_ads.dart";
 import "package:absensi/page/auth/signup.dart";
+import "package:absensi/page/screens/forgot_pass.dart";
 import "package:absensi/page/screens/home.dart";
 import "package:absensi/system/auth.dart";
 import "package:firebase_auth/firebase_auth.dart";
@@ -100,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       // Image Asset Login
                       Image.asset(
-                        "assets/man_computer.png",
+                        "assets/man_computer.jpeg",
                         height: 275,
                         width: 275,
                         fit: BoxFit.contain,
@@ -272,7 +273,9 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         alignment: Alignment.centerRight,
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (ctx)=>ForgotPass()));
+                          },
                           child: Text(
                             "Lupa Password?",
                             textAlign: TextAlign.right,

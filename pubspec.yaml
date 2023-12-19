@@ -56,7 +56,6 @@ flutter:
     - assets/Fingerprint.svg
     - assets/ClockClockwise.svg
     - assets/Background.png
-    - assets/man_computer.png
     - assets/icon_call.svg
     - assets/icon_email.svg
     - assets/icon_logout.svg
@@ -65,6 +64,8 @@ flutter:
     - assets/lottie/mail.json
     - assets/lottie/animation_delete.json
     - assets/lottie/animation_success.json
+    - assets/man_computer.jpeg
+
 
 
   fonts:

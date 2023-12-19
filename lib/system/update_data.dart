@@ -51,7 +51,7 @@ class UpdateData {
         // Update Email by Verification pada Firebase Auth
         await user.verifyBeforeUpdateEmail(data['email']).then((value) {
           // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
-          EasyLoading.showSuccess('Mohon cek verifikasi di email baru untuk mengubah email',
+          EasyLoading.showSuccess('Mohon cek Email Verifikasi untuk aktivasi Email Baru',
               dismissOnTap: true, duration: const Duration(seconds: 5));
           Navigator.pop(context);
           return;
@@ -107,11 +107,13 @@ class UpdateData {
 
   static forgetPassword(String email, BuildContext context) async {
     try {
+      EasyLoading.show(status: 'loading...');
       // Forget Password
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email).whenComplete(() {
+
         EasyLoading.showSuccess('Email reset password telah di kirim ke email tujuan!',
-            dismissOnTap: true, duration: const Duration(seconds: 5));
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+            dismissOnTap: true);
+        Navigator.pop(context);
       }).onError((error, stackTrace){
         EasyLoading.showError("Email yang anda masukkan tidak ditemukan / tidak valid",
             dismissOnTap: true, duration: const Duration(seconds: 5));

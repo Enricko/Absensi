@@ -22,6 +22,7 @@ class EditEmail extends StatefulWidget {
 class _EditEmailState extends State<EditEmail> {
   String id_user = "";
   TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   // Form Key untuk Validasi Form Input
   final formkey = GlobalKey<FormState>();
@@ -66,7 +67,7 @@ class _EditEmailState extends State<EditEmail> {
           .onValue
           .listen((event) {
         var snapshot = event.snapshot.value as Map;
-        emailController.text = FirebaseAuth.instance.currentUser!.email!;
+        // emailController.text = FirebaseAuth.instance.currentUser!.email!;
 
         // nameController.text = snapshot.value;
       });
@@ -77,11 +78,10 @@ class _EditEmailState extends State<EditEmail> {
 
   //function update data
   void editEmail() {
-    // Mengubah Controller menjadi String/int
-    var email = emailController.text;
     // Menjadikan Map agar mudah di pindah ke function lain
     var data = {
       'email': emailController.text,
+      'password': passwordController.text
     };
     // Menjalankan Logic Class Function Update Email
     UpdateData.email(data, id_user, context);
@@ -120,7 +120,7 @@ class _EditEmailState extends State<EditEmail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Email"),
+                    Text("Email Baru"),
                     SizedBox(
                       height: 5,
                     ),
@@ -145,7 +145,7 @@ class _EditEmailState extends State<EditEmail> {
                         },
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(10, 3, 10, 3),
-                            hintText: "Email",
+                            hintText: "Email Baru",
                             hintStyle: TextStyle(fontSize: 13),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
@@ -163,10 +163,50 @@ class _EditEmailState extends State<EditEmail> {
                             fillColor: Colors.white),
                       ),
                     ),
-                    Text(
-                      "Mohon cek verifikasi di email baru untuk mengubah email",
-                      textAlign: TextAlign.center,
-                    )
+                    SizedBox(height: 5,),
+                    Text("Password"),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: TextFormField(
+                        controller: passwordController,
+                        keyboardType: TextInputType.visiblePassword,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty || value == "") {
+                            return "Jam Lembur harus di isi!";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(10, 3, 10, 3),
+                            hintText: "Password",
+                            hintStyle: TextStyle(fontSize: 13),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(width: 1, color: Colors.black38),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(width: 1, color: Colors.black38),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(width: 1, color: Colors.redAccent),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -196,7 +236,7 @@ class _EditEmailState extends State<EditEmail> {
                         editEmail();
                       }
                     },
-                    child: Text("Simpan")),
+                    child: Text("Kirim Email Verifikasi")),
               )
             ],
           )),
