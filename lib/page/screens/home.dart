@@ -328,6 +328,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 }
                               });
+                              // Sorting Tanggal biar teratur
+                              dataList.sort((a, b) {
+                                var aDate =
+                                    DateFormat("EEEE, dd MMMM yyyy", 'id').parse(a['tanggal']);
+                                var bDate =
+                                    DateFormat("EEEE, dd MMMM yyyy", 'id').parse(b['tanggal']);
+                                return aDate.compareTo(bDate);
+                              });
 
                               return ListView.builder(
                                 itemCount: dataList.length,
@@ -343,14 +351,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.circular(8),
                                           border: const Border(
-                                            left:
-                                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                            top:
-                                                BorderSide(width: 11, color: Color(0xFF2FA4D9)),
-                                            right:
-                                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                            bottom:
-                                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                            left: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                            top: BorderSide(width: 11, color: Color(0xFF2FA4D9)),
+                                            right: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                            bottom: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
                                           ),
                                         ),
                                         child: Column(
@@ -386,7 +390,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   "Absensi",
                                                   style: TextStyle(color: Colors.black38),
                                                 )),
-                                                Text("${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
+                                                Text(
+                                                    "${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
                                               ],
                                             ),
                                             const Divider(),
@@ -428,37 +433,42 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             const Divider(),
                                             IconButton(
-                                              icon: Icon(Icons.delete),
-                                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red),
-                                              foregroundColor: MaterialStateProperty.all(Colors.white),
-                                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15),
+                                                icon: Icon(Icons.delete),
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(Colors.red),
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all(Colors.white),
+                                                  shape: MaterialStateProperty.all(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(15),
+                                                    ),
+                                                  ),
                                                 ),
-                                                ),
-                                              ),
-                                              onPressed: (){
-                                                Alerts.showAlertYesNoDelete(
-                                                    title: "Are you sure you want to Logout Delete?",
-                                                    onPressYes: () async {
-                                                      FirebaseDatabase.instance
-                                                          .ref()
-                                                          .child("lembur") // Parent di database
-                                                          .child(id_user) // Id user
-                                                          .child(DateFormat('yyyy-MM', "id")
-                                                          .format(DateTime.now()))
-                                                          .child(dataList[index]['key'])
-                                                          .remove()
-                                                          .whenComplete(() {
-                                                        EasyLoading.showSuccess(
-                                                            'Data Lembur berhasil di hapus',
-                                                            dismissOnTap: true);
-                                                      });
-                                                      Navigator.pop(context);
-                                                    },
-                                                    onPressNo: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    context: context);
-                                              }),
+                                                onPressed: () {
+                                                  Alerts.showAlertYesNoDelete(
+                                                      title: "Are you sure you want to Delete?",
+                                                      onPressYes: () async {
+                                                        FirebaseDatabase.instance
+                                                            .ref()
+                                                            .child("lembur") // Parent di database
+                                                            .child(id_user) // Id user
+                                                            .child(DateFormat('yyyy-MM', "id")
+                                                                .format(DateTime.now()))
+                                                            .child(dataList[index]['key'])
+                                                            .remove()
+                                                            .whenComplete(() {
+                                                          EasyLoading.showSuccess(
+                                                              'Data Lembur berhasil di hapus',
+                                                              dismissOnTap: true);
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                      onPressNo: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      context: context);
+                                                }),
                                           ],
                                         ),
                                       ),

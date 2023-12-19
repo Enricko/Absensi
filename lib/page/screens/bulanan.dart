@@ -329,6 +329,11 @@ class _SumBulananState extends State<SumBulanan> {
                         'total': currentData['total'],
                       });
                     });
+                    dataList.sort((a, b) {
+                      var aDate = DateFormat("EEEE, dd MMMM yyyy", 'id').parse(a['tanggal']);
+                      var bDate = DateFormat("EEEE, dd MMMM yyyy", 'id').parse(b['tanggal']);
+                      return aDate.compareTo(bDate);
+                    });
                     return ListView.builder(
                       itemCount: dataList.length,
                       itemBuilder: (context, index) {
@@ -340,13 +345,11 @@ class _SumBulananState extends State<SumBulanan> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (ctx) => SumHarian(
-                                            tanggal: widget.tanggal,
-                                            id: dataList[index]['id'])));
+                                            tanggal: widget.tanggal, id: dataList[index]['id'])));
                               },
                               child: Container(
                                 width: double.infinity,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(8),
@@ -411,7 +414,7 @@ class _SumBulananState extends State<SumBulanan> {
                                             ),
                                             Expanded(
                                                 child: Text(
-                                              "Total Lembur ke ${index + 1}",
+                                              "Total Lembur",
                                               style: TextStyle(color: Colors.black38),
                                             )),
                                             Text(
@@ -426,25 +429,32 @@ class _SumBulananState extends State<SumBulanan> {
                                           children: [
                                             IconButton(
                                                 icon: Icon(Icons.delete),
-                                                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red),
-                                                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                                                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15),
-                                                  ),
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(Colors.red),
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all(Colors.white),
+                                                  shape: MaterialStateProperty.all(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(15),
+                                                    ),
                                                   ),
                                                 ),
-                                                onPressed: (){
+                                                onPressed: () {
                                                   Alerts.showAlertYesNoDelete(
-                                                      title: "Are you sure you want to Logout Delete?",
+                                                      title: "Are you sure you want to Delete?",
                                                       onPressYes: () async {
                                                         FirebaseDatabase.instance
                                                             .ref()
                                                             .child("lembur") // Parent di database
                                                             .child(id_user) // Id user
-                                                            .child(widget.tanggal) // Bulan dan tahun saat ini
+                                                            .child(widget
+                                                                .tanggal) // Bulan dan tahun saat ini
                                                             .child(dataList[index]['id'])
                                                             .remove()
                                                             .whenComplete(() {
-                                                          EasyLoading.showSuccess('Data Lembur berhasil di hapus',
+                                                          EasyLoading.showSuccess(
+                                                              'Data Lembur berhasil di hapus',
                                                               dismissOnTap: true);
                                                         });
                                                         Navigator.pop(context);
