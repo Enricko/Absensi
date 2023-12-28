@@ -68,6 +68,7 @@ class Auth {
         FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
           "no_telepon": data['no_telepon'],
           "gaji_pokok": data['gaji_pokok'],
+          "waktu_kerja": data['waktu_kerja'],
         }).whenComplete(() {
           // Jika logic telah selesai berjalan, kode yang di bawah ini bakal jalan
           EasyLoading.showSuccess('Tambah Akun Berhasil',

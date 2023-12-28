@@ -4,6 +4,7 @@ import 'package:absensi/include/banner_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/home.dart';
 import 'package:absensi/system/auth.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController nomorController = TextEditingController();
   final TextEditingController gajiController = TextEditingController();
 
+  String? waktuKerja;
+
   // Logic form input SignUp
   void signUp(BuildContext context) {
     // Mengubah Controller menjadi String/huruf
@@ -54,6 +57,7 @@ class _SignUpPageState extends State<SignUpPage> {
       "password": password,
       "no_telepon": nomor,
       "gaji_pokok": gaji,
+      "waktu_kerja": waktuKerja,
     };
     // Menjalankan Logic Class Function Auth Login
     Auth.signUp(data, context);
@@ -63,8 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
     // Logic cek Data User apakah sudah pernah login
     if (FirebaseAuth.instance.currentUser != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
       });
     }
   }
@@ -296,9 +299,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 suffixIcon: IconButton(
-                                  icon: Icon((invisible == true)
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off),
+                                  icon: Icon((invisible == true) ? Icons.visibility_outlined : Icons.visibility_off),
                                   onPressed: () {
                                     setState(() {
                                       invisible = !invisible;
@@ -419,6 +420,62 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              "Waktu Kerja",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Color(0xFF696F79),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            DropdownSearch<String>(
+                              items: [
+                                "5 Hari",
+                                "6 Hari",
+                              ],
+                              validator: (value) {
+                                if (value == null || value.isEmpty || value == "") {
+                                  return "Waktu Kerja harus di isi!";
+                                }
+                                return null;
+                              },
+                              popupProps: PopupPropsMultiSelection.menu(
+                                fit: FlexFit.loose,
+                                showSearchBox: false,
+                                itemBuilder: (context, item, isSelected) => ListTile(
+                                  title: Text(item),
+                                ),
+                              ),
+                              dropdownBuilder: (context, selectedItem) => Text(
+                                waktuKerja ?? "Pilih Waktu Kerja Anda",
+                                style: TextStyle(fontSize: 15, color: Colors.black38),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  waktuKerja = value!;
+                                });
+                              },
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                enabled: false,
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                    borderSide: BorderSide(color: Colors.black38, width: 1)),
+                                errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                    borderSide: BorderSide(color: Colors.redAccent, width: 1)),
+                              )),
+                            ),
                           ],
                         ),
                       ),
@@ -497,6 +554,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             ],
                           ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 100,
                       ),
                     ],
                   ),
