@@ -26,6 +26,9 @@ class _SignUpPageState extends State<SignUpPage> {
   // invisible agar icon mata pada password dapat di gunakan semestinya
   bool invisible = true;
 
+// variable waktu kerja
+  String? keterangan;
+
   // ignorePointer agar tidak spam click
   bool ignorePointer = false;
   Timer? ignorePointerTimer;
@@ -478,6 +481,64 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ],
                         ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Text(
+                        "Waktu Lembur",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Color(0xFF696F79),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      DropdownSearch<String>(
+                        items: [
+                          "5 Hari",
+                          "6 Hari",
+                        ],
+                        validator: (value) {
+                          if (value == null || value.isEmpty || value == "") {
+                            return "Waktu lembur harus di isi!";
+                          }
+                          return null;
+                        },
+                        popupProps: PopupPropsMultiSelection.menu(
+                          fit: FlexFit.loose,
+                          showSearchBox: false,
+                          itemBuilder: (context, item, isSelected) => ListTile(
+                            title: Text(item,),
+                          ),
+                        ),
+                        dropdownBuilder: (context, selectedItem) => Text(
+                          keterangan ?? "Pilih Waktu Lembur Anda",
+                          style: TextStyle(fontSize: 15, color: Colors.black),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            keterangan = value!;
+                          });
+                        },
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                            dropdownSearchDecoration: InputDecoration(
+                              enabled: false,
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(13),
+                                  borderSide: BorderSide(color: Colors.deepPurple, width: 1)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(13),
+                                  borderSide: BorderSide(color: Colors.black, width: 1)),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(13),
+                                  borderSide: BorderSide(color: Colors.redAccent, width: 1)),
+                              filled: true,
+                              fillColor: Colors.white
+                            )),
                       ),
                       const SizedBox(
                         height: 15,
