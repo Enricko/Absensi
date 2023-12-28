@@ -480,6 +480,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 25,),
                       SizedBox(
                         width: double.infinity,
                         height: 50,

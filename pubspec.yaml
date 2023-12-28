@@ -36,6 +36,7 @@ dependencies:
   flutter_styled_toast: ^2.2.1
   lottie: ^2.7.0
   fl_chart: ^0.66.0
+  syncfusion_flutter_charts: ^24.1.43
 
 
 dev_dependencies:

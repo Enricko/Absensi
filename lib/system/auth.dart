@@ -21,7 +21,9 @@ class Auth {
         await FirebaseDatabase.instance.ref().child("user").onValue.listen((event) async {
           // Menyimpan data pada device menggunakan SharedPreferences
           SharedPreferences pref = await SharedPreferences.getInstance();
-
+          print(user.user!.uid);
+          print(user.user!.displayName);
+          print(event.snapshot.value);
           if (event.snapshot.hasChild(user.user!.uid)) {
             var getUser = event.snapshot.child(user.user!.uid).value as Map;
             // Menyimpan beberapa data yg penting ke device agar tidak selalu login
@@ -34,16 +36,16 @@ class Auth {
           }
         });
       }).onError((error, stackTrace) {
-        EasyLoading.showError('Email/Password anda salah!',
-            dismissOnTap: true, duration: const Duration(seconds: 5));
+        EasyLoading.showError('Email/Password anda salah!', dismissOnTap: true, duration: const Duration(seconds: 5));
         return null;
+      }).timeout(Duration(seconds: 1), onTimeout: () {
+        print("object");
       });
 
       // Mengarah ke halaman dashboard jika berhasil
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
-      EasyLoading.showError('Email/Password anda salah!',
-          dismissOnTap: true, duration: const Duration(seconds: 5));
+      EasyLoading.showError('Email/Password anda salah!', dismissOnTap: true, duration: const Duration(seconds: 5));
     }
   }
 
@@ -55,8 +57,7 @@ class Auth {
       EasyLoading.show(status: 'loading...');
 
       // Initialize Firebase Authentication
-      FirebaseApp app =
-          await Firebase.initializeApp(name: 'AuthUser', options: Firebase.app().options);
+      FirebaseApp app = await Firebase.initializeApp(name: 'AuthUser', options: Firebase.app().options);
 
       // Insert User to FirebaseAuth
       FirebaseAuth.instanceFor(app: app)
@@ -71,8 +72,7 @@ class Auth {
           "waktu_kerja": data['waktu_kerja'],
         }).whenComplete(() {
           // Jika logic telah selesai berjalan, kode yang di bawah ini bakal jalan
-          EasyLoading.showSuccess('Tambah Akun Berhasil',
-              dismissOnTap: true, duration: const Duration(seconds: 5));
+          EasyLoading.showSuccess('Tambah Akun Berhasil', dismissOnTap: true, duration: const Duration(seconds: 5));
           // Mengarah ke Login Page jika Sign Up Berhasil
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
         }).onError((error, stackTrace) {
@@ -88,8 +88,7 @@ class Auth {
       });
     } on Exception catch (e) {
       // Menampilkan error yang terjadi pada block code di atas
-      EasyLoading.showError('Ada Sesuatu Kesalahan : $e',
-          dismissOnTap: true, duration: const Duration(seconds: 5));
+      EasyLoading.showError('Ada Sesuatu Kesalahan : $e', dismissOnTap: true, duration: const Duration(seconds: 5));
     }
   }
 }
