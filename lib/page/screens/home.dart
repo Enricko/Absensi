@@ -257,38 +257,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        // StreamBuilder(
-                        //     stream: FirebaseDatabase.instance
-                        //         .ref()
-                        //         .child("lembur") // Parent di database
-                        //         .child(id_user) // Id user
-                        //         .child(DateFormat('yyyy-MM', "id")
-                        //             .format(DateTime.now())) // Bulan dan tahun saat ini
-                        //         .onValue,
-                        //     builder: (context, snapshot) {
-                        //       // Mengecek apakah data nya ada atau tidak
-                        //       if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
-                        //         // Variable data mempermudah memanggil data pada database
-                        //         Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                        //             (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
-                        //         return LineDiagram(
-                        //           data: data,
-                        //         );
-                        //       }
-                        //       if (snapshot.hasData) {
-                        //         // Tampilkan kosong jika snapshot return data tapi data di database kosong
-                        //         return Column(
-                        //           children: [
-                        //             Center(
-                        //               child: Text("Tidak ada data lembur minggu ini"),
-                        //             ),
-                        //           ],
-                        //         );
-                        //       }
-                        //       return const Center(
-                        //         child: CircularProgressIndicator(),
-                        //       );
-                        //     }),
                         Expanded(
                           child: StreamBuilder(
                             // Query untuk mengambil data pada firebase
@@ -337,154 +305,161 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return aDate.compareTo(bDate);
                                 });
 
-                                return ListView.builder(
-                                  itemCount: dataList.length,
-                                  itemBuilder: (context, index) {
-                                    return Column(
-                                      children: [
-                                        if (index == 0)
-                                          LineChartWeekly(
-                                            data: data,
-                                          ),
-                                        // Card Lemburan
-                                        Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(8),
-                                            border: const Border(
-                                              left: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                              top: BorderSide(width: 11, color: Color(0xFF2FA4D9)),
-                                              right: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                              bottom: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                if (dataList.length != 0) {
+                                  return ListView.builder(
+                                    itemCount: dataList.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          if (index == 0)
+                                            LineChartWeekly(
+                                              data: data,
                                             ),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    "assets/Calendar.svg",
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  const Expanded(
-                                                      child: Text(
-                                                    "Tanggal",
-                                                    style: TextStyle(color: Colors.black38),
-                                                  )),
-                                                  Text("${dataList[index]['tanggal']}"),
-                                                ],
+                                          // Card Lemburan
+                                          Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: const Border(
+                                                left: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                                top: BorderSide(width: 11, color: Color(0xFF2FA4D9)),
+                                                right: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                                bottom: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
                                               ),
-                                              const Divider(),
-                                              Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    "assets/Fingerprint.svg",
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  const Expanded(
-                                                      child: Text(
-                                                    "Absensi",
-                                                    style: TextStyle(color: Colors.black38),
-                                                  )),
-                                                  Text(
-                                                      "${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
-                                                ],
-                                              ),
-                                              const Divider(),
-                                              Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    "assets/ClockClockwise.svg",
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  const Expanded(
-                                                      child: Text(
-                                                    "Lembur",
-                                                    style: TextStyle(color: Colors.black38),
-                                                  )),
-                                                  Text("${dataList[index]['lembur']} Jam"),
-                                                ],
-                                              ),
-                                              const Divider(),
-                                              Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    "assets/u_money-stack.svg",
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  const Expanded(
-                                                      child: Text(
-                                                    "Total",
-                                                    style: TextStyle(color: Colors.black38),
-                                                  )),
-                                                  Text(
-                                                    "${currencyFormatter.format(dataList[index]['total'])}",
-                                                    style: const TextStyle(color: Colors.blue),
-                                                  ),
-                                                ],
-                                              ),
-                                              const Divider(),
-                                              IconButton(
-                                                icon: Icon(Icons.delete),
-                                                style: ButtonStyle(
-                                                  backgroundColor: MaterialStateProperty.all(Colors.red),
-                                                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                                                  shape: MaterialStateProperty.all(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(15),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "assets/Calendar.svg",
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    const Expanded(
+                                                        child: Text(
+                                                      "Tanggal",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
+                                                    Text("${dataList[index]['tanggal']}"),
+                                                  ],
+                                                ),
+                                                const Divider(),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "assets/Fingerprint.svg",
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    const Expanded(
+                                                        child: Text(
+                                                      "Absensi",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
+                                                    Text(
+                                                        "${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
+                                                  ],
+                                                ),
+                                                const Divider(),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "assets/ClockClockwise.svg",
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    const Expanded(
+                                                        child: Text(
+                                                      "Lembur",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
+                                                    Text("${dataList[index]['lembur']} Jam"),
+                                                  ],
+                                                ),
+                                                const Divider(),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      "assets/u_money-stack.svg",
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    const Expanded(
+                                                        child: Text(
+                                                      "Total",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
+                                                    Text(
+                                                      "${currencyFormatter.format(dataList[index]['total'])}",
+                                                      style: const TextStyle(color: Colors.blue),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const Divider(),
+                                                IconButton(
+                                                  icon: Icon(Icons.delete),
+                                                  style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                                                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                                                    shape: MaterialStateProperty.all(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                      ),
                                                     ),
                                                   ),
+                                                  onPressed: () {
+                                                    Alerts.showAlertYesNoDelete(
+                                                      title: "Are you sure you want to Delete?",
+                                                      onPressYes: () async {
+                                                        FirebaseDatabase.instance
+                                                            .ref()
+                                                            .child("lembur") // Parent di database
+                                                            .child(id_user) // Id user
+                                                            .child(DateFormat('yyyy-MM', "id").format(DateTime.now()))
+                                                            .child(dataList[index]['key'])
+                                                            .remove()
+                                                            .whenComplete(() {
+                                                          EasyLoading.showSuccess('Data Lembur berhasil di hapus',
+                                                              dismissOnTap: true);
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                      onPressNo: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      context: context,
+                                                    );
+                                                  },
                                                 ),
-                                                onPressed: () {
-                                                  Alerts.showAlertYesNoDelete(
-                                                    title: "Are you sure you want to Delete?",
-                                                    onPressYes: () async {
-                                                      FirebaseDatabase.instance
-                                                          .ref()
-                                                          .child("lembur") // Parent di database
-                                                          .child(id_user) // Id user
-                                                          .child(DateFormat('yyyy-MM', "id").format(DateTime.now()))
-                                                          .child(dataList[index]['key'])
-                                                          .remove()
-                                                          .whenComplete(() {
-                                                        EasyLoading.showSuccess('Data Lembur berhasil di hapus',
-                                                            dismissOnTap: true);
-                                                      });
-                                                      Navigator.pop(context);
-                                                    },
-                                                    onPressNo: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    context: context,
-                                                  );
-                                                },
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
                               }
                               if (snapshot.hasData) {
                                 // Tampilkan kosong jika snapshot return data tapi data di database kosong
                                 return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    LineChartWeekly(
+                                      data: Map<dynamic, dynamic>.from(
+                                          (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>),
+                                    ),
                                     Center(
                                       child: Text(
                                           "Tidak ada lembur ${selectButton == SelectButton.harian ? 'hari' : 'bulan'} ini"),
