@@ -90,7 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void hitungGaji( jumlah,total, jam){
 
-      gajiPokok = (int.parse(total) * 173 / int.parse(jumlah) *int.parse(jam));
+      gajiPokok = ((int.parse(total) * 173 )/ (int.parse(jumlah) *int.parse(jam)));
       gajiController.text = currencyFormatter.format(gajiPokok);
   }
 
