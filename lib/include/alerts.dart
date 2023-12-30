@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 class Alerts {
@@ -30,6 +31,20 @@ class Alerts {
       curve: Curves.elasticOut,
     );
   }
+
+  static dialogShow(Widget child, BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+            insetPadding: EdgeInsets.all(50),
+            backgroundColor: Colors.white,
+            elevation: 1,
+            child: child);
+      },
+    );
+    }
 
   static showAlertYesNo(
       {required String title,

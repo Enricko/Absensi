@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:absensi/include/alerts.dart';
 import 'package:absensi/include/banner_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/home.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:intl/intl.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -40,6 +42,12 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController nomorController = TextEditingController();
   final TextEditingController gajiController = TextEditingController();
 
+  //variable hitung gaji pokok
+  final TextEditingController jumlahLemburController = TextEditingController();
+  final TextEditingController totalLemburController = TextEditingController();
+  final TextEditingController jamLemburController = TextEditingController();
+  double? gajiPokok ;
+
   // Logic form input SignUp
   void signUp(BuildContext context) {
     // Mengubah Controller menjadi String/huruf
@@ -49,7 +57,8 @@ class _SignUpPageState extends State<SignUpPage> {
     var nomor = nomorController.text;
 
     // Mengubah format gaji jadi integer
-    var gaji = int.parse(gajiController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+    var gaji = gajiController;
+    // int.parse(gajiController.text.replaceAll(RegExp(r'[^0-9]'), ''));
 
     // Menjadikan Map agar mudah di pindah ke function lain
     var data = {
@@ -71,6 +80,18 @@ class _SignUpPageState extends State<SignUpPage> {
             .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
       });
     }
+  }
+
+  NumberFormat currencyFormatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
+  void hitungGaji( jumlah,total, jam){
+
+      gajiPokok = (int.parse(total) * 173 / int.parse(jumlah) *int.parse(jam));
+      gajiController.text = gajiPokok.toString();
   }
 
   // Code yang bakal di jalankan pertama kali halaman ini dibuka
@@ -372,6 +393,64 @@ class _SignUpPageState extends State<SignUpPage> {
                               height: 10,
                             ),
                             const Text(
+                              "Waktu Lembur",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Color(0xFF696F79),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            DropdownSearch<String>(
+                              items: [
+                                "5 Hari",
+                                "6 Hari",
+                              ],
+                              validator: (value) {
+                                if (value == null || value.isEmpty || value == "") {
+                                  return "Waktu lembur harus di isi!";
+                                }
+                                return null;
+                              },
+                              popupProps: PopupPropsMultiSelection.menu(
+                                fit: FlexFit.loose,
+                                showSearchBox: false,
+                                itemBuilder: (context, item, isSelected) => ListTile(
+                                  title: Text(item,),
+                                ),
+                              ),
+                              dropdownBuilder: (context, selectedItem) => Text(
+                                keterangan ?? "Pilih Waktu Lembur Anda",
+                                style: TextStyle(fontSize: 15, color: Colors.black),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  keterangan = value!;
+                                });
+                              },
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                      enabled: false,
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(13),
+                                          borderSide: BorderSide(color: Colors.deepPurple, width: 1)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(13),
+                                          borderSide: BorderSide(color: Colors.black, width: 1)),
+                                      errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(13),
+                                          borderSide: BorderSide(color: Colors.redAccent, width: 1)),
+                                      filled: true,
+                                      fillColor: Colors.white
+                                  )),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
                               "Gaji Pokok",
                               textAlign: TextAlign.left,
                               style: TextStyle(
@@ -383,107 +462,244 @@ class _SignUpPageState extends State<SignUpPage> {
                             const SizedBox(
                               height: 10,
                             ),
-                            TextFormField(
-                              controller: gajiController,
-                              keyboardType: TextInputType.number,
-                              validator: (value) {
-                                if (value == null || value.isEmpty || value == "") {
-                                  return "Gaji Pokok harus di isi!";
-                                }
-                                return null;
-                              },
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(10),
-                                CurrencyTextInputFormatter(
-                                  locale: 'ID',
-                                  decimalDigits: 0,
-                                  symbol: 'Rp. ',
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: gajiController,
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty || value == "") {
+                                        return "Gaji Pokok harus di isi!";
+                                      }
+                                      return null;
+                                    },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(10),
+                                      CurrencyTextInputFormatter(
+                                        locale: 'ID',
+                                        decimalDigits: 0,
+                                        symbol: 'Rp. ',
+                                      ),
+                                    ],
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      enabled: false,
+                                      fillColor: const Color(0xFFFCFDFE),
+                                      hintText: "Gaji Pokok",
+                                      hintStyle: const TextStyle(
+                                        color: Color(0xFF696F79),
+                                        fontSize: 14,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(13),
+                                        borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                        borderRadius: BorderRadius.circular(13),
+                                      ),
+                                    ),
+                                  ),
                                 ),
+                                SizedBox(width: 8,),
+                                SizedBox(
+                                  width: 100,
+                                  child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                          backgroundColor: MaterialStateProperty.all(Color(0xFF2FA4D9)),
+                                      foregroundColor:  MaterialStateProperty.all(Colors.white),
+                                      ),
+                                      onPressed: (){
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: true,
+                                          builder: (BuildContext context) {
+                                            return StatefulBuilder(
+                                                builder: (context, setState) {
+                                                  return Dialog(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.all(
+                                                            Radius.circular(10))),
+                                                    insetPadding: EdgeInsets.all(10),
+                                                    backgroundColor: Colors.white,
+                                                    elevation: 1,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(15),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                        children: [
+                                                          const Text(
+                                                            "Jumlah Lembur",
+                                                            textAlign: TextAlign.left,
+                                                            style: TextStyle(
+                                                              color: Color(0xFF696F79),
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          TextFormField(
+                                                            controller: jumlahLemburController,
+                                                            keyboardType: TextInputType.number,
+                                                            validator: (value) {
+                                                              if (value == null || value.isEmpty || value == "") {
+                                                                return "Jumlah Lembur harus di isi!";
+                                                              }
+                                                              return null;
+                                                            },
+                                                            decoration: InputDecoration(
+                                                              filled: true,
+                                                              fillColor: const Color(0xFFFCFDFE),
+                                                              hintText: "Masukan Jumlah Lembur Anda",
+                                                              hintStyle: const TextStyle(
+                                                                color: Color(0xFF696F79),
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w400,
+                                                              ),
+                                                              isDense: true,
+                                                              contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                                              border: OutlineInputBorder(
+                                                                borderRadius: BorderRadius.circular(13),
+                                                                borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                                              ),
+                                                              errorBorder: OutlineInputBorder(
+                                                                borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                                                borderRadius: BorderRadius.circular(13),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 10,),
+                                                          const Text(
+                                                            "Total Lembur",
+                                                            textAlign: TextAlign.left,
+                                                            style: TextStyle(
+                                                              color: Color(0xFF696F79),
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          TextFormField(
+                                                            controller: totalLemburController,
+                                                            keyboardType: TextInputType.number,
+                                                            validator: (value) {
+                                                              if (value == null || value.isEmpty || value == "") {
+                                                                return "Total Lembur harus di isi!";
+                                                              }
+                                                              return null;
+                                                            },
+                                                            decoration: InputDecoration(
+                                                              filled: true,
+                                                              fillColor: const Color(0xFFFCFDFE),
+                                                              hintText: "Masukan Total Lembur Anda",
+                                                              hintStyle: const TextStyle(
+                                                                color: Color(0xFF696F79),
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w400,
+                                                              ),
+                                                              isDense: true,
+                                                              contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                                              border: OutlineInputBorder(
+                                                                borderRadius: BorderRadius.circular(13),
+                                                                borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                                              ),
+                                                              errorBorder: OutlineInputBorder(
+                                                                borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                                                borderRadius: BorderRadius.circular(13),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 10,),
+                                                          const Text(
+                                                            "Jam Lembur",
+                                                            textAlign: TextAlign.left,
+                                                            style: TextStyle(
+                                                              color: Color(0xFF696F79),
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          TextFormField(
+                                                            controller: jamLemburController,
+                                                            keyboardType: TextInputType.number,
+                                                            validator: (value) {
+                                                              if (value == null || value.isEmpty || value == "") {
+                                                                return "Jam Lembur harus di isi!";
+                                                              }
+                                                              return null;
+                                                            },
+                                                            decoration: InputDecoration(
+                                                              filled: true,
+                                                              fillColor: const Color(0xFFFCFDFE),
+                                                              hintText: "Masukan Jam Lembur Anda",
+                                                              hintStyle: const TextStyle(
+                                                                color: Color(0xFF696F79),
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w400,
+                                                              ),
+                                                              isDense: true,
+                                                              contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                                              border: OutlineInputBorder(
+                                                                borderRadius: BorderRadius.circular(13),
+                                                                borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                                              ),
+                                                              errorBorder: OutlineInputBorder(
+                                                                borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                                                borderRadius: BorderRadius.circular(13),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 20,),
+                                                          SizedBox(
+                                                            width: double.infinity,
+                                                            child: ElevatedButton(
+                                                              style: ButtonStyle(
+                                                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                                                backgroundColor: MaterialStateProperty.all(Color(0xFF2FA4D9)),
+                                                                foregroundColor:  MaterialStateProperty.all(Colors.white),
+                                                              ),
+                                                              onPressed: (){
+                                                                hitungGaji(jumlahLemburController.text, totalLemburController.text, jamLemburController.text);
+                                                              setState((){});
+                                                                }, child: Text("Hitung"),),
+                                                          ),
+                                                          SizedBox(height: 10,),
+                                                            (gajiPokok == null)
+                                                          ? SizedBox()
+                                                              :
+                                                            Text(currencyFormatter.format(gajiPokok))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                });
+                                          },
+                                        );
+
+                                      }, child: Text("Hitung",style: TextStyle(fontWeight: FontWeight.bold),)),
+                                )
                               ],
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: const Color(0xFFFCFDFE),
-                                hintText: "Masukan Besaran gaji Pokok Anda",
-                                hintStyle: const TextStyle(
-                                  color: Color(0xFF696F79),
-                                  fontSize: 14,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                isDense: true,
-                                contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(13),
-                                  borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-                                  borderRadius: BorderRadius.circular(13),
-                                ),
-                              ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      const Text(
-                        "Waktu Lembur",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Color(0xFF696F79),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      DropdownSearch<String>(
-                        items: [
-                          "5 Hari",
-                          "6 Hari",
-                        ],
-                        validator: (value) {
-                          if (value == null || value.isEmpty || value == "") {
-                            return "Waktu lembur harus di isi!";
-                          }
-                          return null;
-                        },
-                        popupProps: PopupPropsMultiSelection.menu(
-                          fit: FlexFit.loose,
-                          showSearchBox: false,
-                          itemBuilder: (context, item, isSelected) => ListTile(
-                            title: Text(item,),
-                          ),
-                        ),
-                        dropdownBuilder: (context, selectedItem) => Text(
-                          keterangan ?? "Pilih Waktu Lembur Anda",
-                          style: TextStyle(fontSize: 15, color: Colors.black),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            keterangan = value!;
-                          });
-                        },
-                        dropdownDecoratorProps: DropDownDecoratorProps(
-                            dropdownSearchDecoration: InputDecoration(
-                              enabled: false,
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(13),
-                                  borderSide: BorderSide(color: Colors.deepPurple, width: 1)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(13),
-                                  borderSide: BorderSide(color: Colors.black, width: 1)),
-                              errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(13),
-                                  borderSide: BorderSide(color: Colors.redAccent, width: 1)),
-                              filled: true,
-                              fillColor: Colors.white
-                            )),
-                      ),
+
                       const SizedBox(
                         height: 15,
                       ),
