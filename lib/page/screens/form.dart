@@ -54,7 +54,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
     decimalDigits: 0,
   );
 
-  String totalLembur(int gajiPokok) {
+  String totalLembur(int gajiPokok,String waktuLembur) {
     if (timeController.text != "") {
       // Lembur jam pertama
       var a = 1 * 1.5 * gajiPokok * (1 / 173);
@@ -63,18 +63,42 @@ class _FormAbsensiState extends State<FormAbsensi> {
       // Lembur Di hari biasa
       var hariBiasa = currencyFormatter.format(a + b);
 
-      // Lembur Di hari libur
-      var hariLibur =
-          currencyFormatter.format(int.parse(timeController.text) * 2 * gajiPokok * (1 / 173));
+      // // Lembur Di hari libur
+      // var hariLibur =
+      //     currencyFormatter.format(int.parse(timeController.text) * 2 * gajiPokok * (1 / 173));
 
-      // Lembur Di hari libur
-      if (keterangan == "Hari Libur") {
-        return "$hariLibur";
-      }
+      
       // Lembur Di hari biasa
-      else if (keterangan == "Hari Biasa") {
+      if (keterangan == "Hari Biasa") {
         return "$hariBiasa";
-      } else {
+      }
+      // Lembur Di hari libur
+      else if (keterangan == "Hari Libur") {
+        if (waktuLembur == "5 Hari") {
+          if (int.parse(timeController.text) <= 8 ) {
+            return currencyFormatter.format(int.parse(timeController.text) * 2 * gajiPokok * (1 / 173));
+          }
+          if (int.parse(timeController.text) == 9 ) {
+            return currencyFormatter.format(int.parse(timeController.text) * 3 * gajiPokok * (1 / 173));
+          }
+          if (int.parse(timeController.text) > 9 ) {
+            return currencyFormatter.format(int.parse(timeController.text) * 4 * gajiPokok * (1 / 173));
+          }
+        } 
+        if (waktuLembur == "6 Hari") {
+          if (int.parse(timeController.text) <= 7 ) {
+            return currencyFormatter.format(int.parse(timeController.text) * 2 * gajiPokok * (1 / 173));
+          }
+          if (int.parse(timeController.text) == 8 ) {
+            return currencyFormatter.format(int.parse(timeController.text) * 3 * gajiPokok * (1 / 173));
+          }
+          if (int.parse(timeController.text) > 8  ) {
+            return currencyFormatter.format(int.parse(timeController.text) * 4 * gajiPokok * (1 / 173));
+          }
+        }  
+        // return "$hariLibur";
+      }
+      else {
         return "Rp. 0";
       }
     }
@@ -561,11 +585,11 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                           (snapshot.data! as DatabaseEvent).snapshot.value
                                               as Map<dynamic, dynamic>);
                                       if (data['gaji_pokok'] != null) {
-                                        totalGajiLembur = int.parse(totalLembur(data['gaji_pokok'])
+                                        totalGajiLembur = int.parse(totalLembur(data['gaji_pokok'],data['waktu_lembur'])
                                             .replaceAll(RegExp(r'[^0-9]'), ''));
                                         resultLembur(data['gaji_pokok']);
                                         return Text(
-                                          "${totalLembur(data['gaji_pokok'])}",
+                                          "${totalLembur(data['gaji_pokok'],data['waktu_lembur'])}",
                                           style: TextStyle(color: Colors.blue),
                                         );
                                       }

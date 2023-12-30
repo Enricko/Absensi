@@ -29,7 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool invisible = true;
 
 // variable waktu kerja
-  String? keterangan;
+  String? keteranganLembur;
 
   // ignorePointer agar tidak spam click
   bool ignorePointer = false;
@@ -49,7 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // double? jamLembur;
   // final TextEditingController jamLemburController = TextEditingController();
-  double? gajiPokok;
+  String? gajiPokok;
 
   // Logic form input SignUp
   void signUp(BuildContext context) {
@@ -58,10 +58,10 @@ class _SignUpPageState extends State<SignUpPage> {
     var email = emailController.text;
     var password = passwordController.text;
     var nomor = nomorController.text;
+    var waktuLembur = keteranganLembur;
 
     // Mengubah format gaji jadi integer
-    var gaji = gajiController;
-    // int.parse(gajiController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+    var gaji = int.parse(gajiController.text.replaceAll(RegExp(r'[^0-9]'), ''));
 
     // Menjadikan Map agar mudah di pindah ke function lain
     var data = {
@@ -70,7 +70,9 @@ class _SignUpPageState extends State<SignUpPage> {
       "password": password,
       "no_telepon": nomor,
       "gaji_pokok": gaji,
+      "waktu_lembur": waktuLembur,
     };
+    print(waktuLembur);
     // Menjalankan Logic Class Function Auth Login
     Auth.signUp(data, context);
   }
@@ -98,22 +100,22 @@ class _SignUpPageState extends State<SignUpPage> {
           // gajiPokok = ((int.parse(total) * 173 )/ (int.parse(jumlah) *int.parse(jam)));
           // gajiController.text = currencyFormatter.format(gajiPokok);
           if (valueJamLembur == "Lembur 1") {
-            gajiController.text = currencyFormatter
+            gajiPokok = currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 1.5));
             return currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 1.5));
           } else if (valueJamLembur == "Lembur 2") {
-            gajiController.text = currencyFormatter
+            gajiPokok = currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 2));
             return currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 2));
           } else if (valueJamLembur == "Lembur 3") {
-            gajiController.text = currencyFormatter
+            gajiPokok = currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 3));
             return currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 3));
           } else if (valueJamLembur == "Lembur 4") {
-            gajiController.text = currencyFormatter
+            gajiPokok = currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 4));
             return currencyFormatter
                 .format((int.parse(total) * 173) / (int.parse(jumlah) * 4));
@@ -531,13 +533,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                               dropdownBuilder: (context, selectedItem) => Text(
-                                keterangan ?? "Pilih Waktu Lembur Anda",
+                                keteranganLembur ?? "Pilih Waktu Lembur Anda",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.black),
                               ),
                               onChanged: (value) {
                                 setState(() {
-                                  keterangan = value!;
+                                  keteranganLembur = value!;
                                 });
                               },
                               dropdownDecoratorProps: DropDownDecoratorProps(
@@ -714,6 +716,15 @@ class _SignUpPageState extends State<SignUpPage> {
                                                           fillColor:
                                                               const Color(
                                                                   0xFFFCFDFE),
+                                                          suffixText: "Jam",
+                                                          suffixStyle:
+                                                              TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .blue),
                                                           hintText:
                                                               "Masukan Jumlah Lembur Anda",
                                                           hintStyle:
@@ -787,6 +798,17 @@ class _SignUpPageState extends State<SignUpPage> {
                                                           }
                                                           return null;
                                                         },
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter
+                                                              .digitsOnly,
+                                                          LengthLimitingTextInputFormatter(
+                                                              10),
+                                                          CurrencyTextInputFormatter(
+                                                            locale: 'ID',
+                                                            decimalDigits: 0,
+                                                            symbol: 'Rp. ',
+                                                          ),
+                                                        ],
                                                         onChanged: (value) {
                                                           setState(() {
                                                             totalLemburController
@@ -965,12 +987,21 @@ class _SignUpPageState extends State<SignUpPage> {
                                                       SizedBox(
                                                         height: 20,
                                                       ),
-                                                      Text(hitungGaji(
+                                                      Text(
+                                                        "Gaji Pokok = ${hitungGaji(
                                                           jumlahLemburController
                                                               .text,
                                                           totalLemburController
-                                                              .text)),
-                                                      SizedBox(height: 10,),
+                                                              .text
+                                                              .replaceAll(
+                                                              RegExp(
+                                                                  r'[^0-9]'),
+                                                              ''),
+                                                        )}"
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
                                                       SizedBox(
                                                         width: double.infinity,
                                                         child: ElevatedButton(
@@ -993,6 +1024,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             Navigator.of(
                                                                     context)
                                                                 .pop();
+                                                            gajiController
+                                                                    .text =
+                                                                gajiPokok!;
                                                             setState(() {});
                                                           },
                                                           child: Text("Simpan"),
