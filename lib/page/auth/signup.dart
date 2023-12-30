@@ -45,8 +45,11 @@ class _SignUpPageState extends State<SignUpPage> {
   //variable hitung gaji pokok
   final TextEditingController jumlahLemburController = TextEditingController();
   final TextEditingController totalLemburController = TextEditingController();
-  final TextEditingController jamLemburController = TextEditingController();
-  double? gajiPokok ;
+  String? valueJamLembur;
+
+  // double? jamLembur;
+  // final TextEditingController jamLemburController = TextEditingController();
+  double? gajiPokok;
 
   // Logic form input SignUp
   void signUp(BuildContext context) {
@@ -76,8 +79,8 @@ class _SignUpPageState extends State<SignUpPage> {
     // Logic cek Data User apakah sudah pernah login
     if (FirebaseAuth.instance.currentUser != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomeScreen()));
       });
     }
   }
@@ -88,11 +91,89 @@ class _SignUpPageState extends State<SignUpPage> {
     decimalDigits: 0,
   );
 
-  void hitungGaji( jumlah,total, jam){
-
-      gajiPokok = ((int.parse(total) * 173 )/ (int.parse(jumlah) *int.parse(jam)));
-      gajiController.text = currencyFormatter.format(gajiPokok);
+  String hitungGaji(jumlah, total) {
+    if (totalLemburController.text.isNotEmpty) {
+      if (jumlahLemburController.text.isNotEmpty) {
+        if (valueJamLembur != null) {
+          // gajiPokok = ((int.parse(total) * 173 )/ (int.parse(jumlah) *int.parse(jam)));
+          // gajiController.text = currencyFormatter.format(gajiPokok);
+          if (valueJamLembur == "Lembur 1") {
+            gajiController.text = currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 1.5));
+            return currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 1.5));
+          } else if (valueJamLembur == "Lembur 2") {
+            gajiController.text = currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 2));
+            return currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 2));
+          } else if (valueJamLembur == "Lembur 3") {
+            gajiController.text = currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 3));
+            return currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 3));
+          } else if (valueJamLembur == "Lembur 4") {
+            gajiController.text = currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 4));
+            return currencyFormatter
+                .format((int.parse(total) * 173) / (int.parse(jumlah) * 4));
+          } else {
+            return "Rp. 0";
+          }
+        }
+        return "Rp. 0";
+      }
+      return "Rp. 0";
+    }
+    return "Rp. 0";
   }
+
+  // String totalLembur(jumlah,total, jam) {
+  //   if (jamLembur != null) {
+  //     var a = 1 * 1.5 * gajiPokok * (1 / 173);
+  //     var b = (int.parse(timeController.text) - 1) * 2 * gajiPokok * (1 / 173);
+  //     // Lembur Di hari biasa
+  //     // var hariBiasa = currencyFormatter.format(a + b);
+  //     var lembur1 = currencyFormatter.format(((int.parse(total) * 173 )/ (int.parse(jumlah) *int.parse(jam))));
+  //
+  //     // Lembur Di hari libur
+  //     var hariLibur =
+  //     currencyFormatter.format(int.parse(timeController.text) * 2 * gajiPokok * (1 / 173));
+  //
+  //     // Lembur Di hari libur
+  //     if (keterangan == "Hari Libur") {
+  //       return "$hariLibur";
+  //     }
+  //     // Lembur Di hari biasa
+  //     else if (keterangan == "Hari Biasa") {
+  //       return "$hariBiasa";
+  //     } else {
+  //       return "Rp. 0";
+  //     }
+  //   }
+  //   return "Rp. 0";
+  //
+  //   // if (timeController.text != "") {
+  //   //   var lembur1 = 1 * 1.5 * (1 / 173) * gajiPokok;
+  //   //
+  //   //   var lembur2 =
+  //   //   currencyFormatter.format(int.parse(timeController.text) * 2 * (1 / 173) * gajiPokok);
+  //   //
+  //   //   var lembur3 = currencyFormatter
+  //   //       .format(lembur1 + (int.parse(timeController.text) - 1) * 2 * (1 / 173) * gajiPokok);
+  //   //   if (dateController.text != '') {
+  //   //     // Format Date
+  //   //     var dateFormat = DateFormat.EEEE('id')
+  //   //         .format(DateFormat('EEEE, dd MMMM yyyy', "id").parse(dateController.text));
+  //   //     // Jika Sabtu/Minggu maka return di bawah ini
+  //   //     if (dateFormat == 'Minggu' || dateFormat == 'Sabtu') {
+  //   //       return "$lembur2";
+  //   //     }
+  //   //   }
+  //   //   return "$lembur3";
+  //   // }
+  //   // return "Rp. 0";
+  // }
 
   // Code yang bakal di jalankan pertama kali halaman ini dibuka
   @override
@@ -125,7 +206,8 @@ class _SignUpPageState extends State<SignUpPage> {
             children: [
               SingleChildScrollView(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -207,7 +289,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               controller: namaController,
                               keyboardType: TextInputType.text,
                               validator: (value) {
-                                if (value == null || value.isEmpty || value == "") {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == "") {
                                   return "Nama Lengkap harus di isi!";
                                 }
                                 return null;
@@ -223,13 +307,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 isDense: true,
-                                contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(15, 30, 15, 0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(13),
-                                  borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Color(0xFFDEDEDE)),
                                 ),
                                 errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Colors.redAccent),
                                   borderRadius: BorderRadius.circular(13),
                                 ),
                               ),
@@ -254,10 +341,13 @@ class _SignUpPageState extends State<SignUpPage> {
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
-                                if (value == null || value.isEmpty || value == "") {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == "") {
                                   return "The Email field is required.";
                                 }
-                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                    .hasMatch(value)) {
                                   return 'Mohon masukkan email yang valid!';
                                 }
                                 return null;
@@ -273,13 +363,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 isDense: true,
-                                contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(15, 30, 15, 0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(13),
-                                  borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Color(0xFFDEDEDE)),
                                 ),
                                 errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Colors.redAccent),
                                   borderRadius: BorderRadius.circular(13),
                                 ),
                               ),
@@ -305,7 +398,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               obscureText: invisible,
                               keyboardType: TextInputType.visiblePassword,
                               validator: (value) {
-                                if (value == null || value.isEmpty || value == "") {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == "") {
                                   return "Password harus di isi!";
                                 }
                                 return null;
@@ -331,13 +426,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                   },
                                 ),
                                 isDense: true,
-                                contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(15, 30, 15, 0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(13),
-                                  borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Color(0xFFDEDEDE)),
                                 ),
                                 errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Colors.redAccent),
                                   borderRadius: BorderRadius.circular(13),
                                 ),
                               ),
@@ -362,7 +460,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               controller: nomorController,
                               keyboardType: TextInputType.phone,
                               validator: (value) {
-                                if (value == null || value.isEmpty || value == "") {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == "") {
                                   return "Nomor Telepon harus di isi!";
                                 }
                                 return null;
@@ -378,13 +478,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 isDense: true,
-                                contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(15, 30, 15, 0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(13),
-                                  borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Color(0xFFDEDEDE)),
                                 ),
                                 errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Colors.redAccent),
                                   borderRadius: BorderRadius.circular(13),
                                 ),
                               ),
@@ -410,7 +513,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                 "6 Hari",
                               ],
                               validator: (value) {
-                                if (value == null || value.isEmpty || value == "") {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == "") {
                                   return "Waktu lembur harus di isi!";
                                 }
                                 return null;
@@ -418,13 +523,17 @@ class _SignUpPageState extends State<SignUpPage> {
                               popupProps: PopupPropsMultiSelection.menu(
                                 fit: FlexFit.loose,
                                 showSearchBox: false,
-                                itemBuilder: (context, item, isSelected) => ListTile(
-                                  title: Text(item,),
+                                itemBuilder: (context, item, isSelected) =>
+                                    ListTile(
+                                  title: Text(
+                                    item,
+                                  ),
                                 ),
                               ),
                               dropdownBuilder: (context, selectedItem) => Text(
                                 keterangan ?? "Pilih Waktu Lembur Anda",
-                                style: TextStyle(fontSize: 15, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.black),
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -435,17 +544,24 @@ class _SignUpPageState extends State<SignUpPage> {
                                   dropdownSearchDecoration: InputDecoration(
                                       enabled: false,
                                       focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(13),
-                                          borderSide: BorderSide(color: Colors.deepPurple, width: 1)),
+                                          borderRadius:
+                                              BorderRadius.circular(13),
+                                          borderSide: BorderSide(
+                                              color: Colors.deepPurple,
+                                              width: 1)),
                                       enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(13),
-                                          borderSide: BorderSide(color: Colors.black, width: 1)),
+                                          borderRadius:
+                                              BorderRadius.circular(13),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1)),
                                       errorBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(13),
-                                          borderSide: BorderSide(color: Colors.redAccent, width: 1)),
+                                          borderRadius:
+                                              BorderRadius.circular(13),
+                                          borderSide: BorderSide(
+                                              color: Colors.redAccent,
+                                              width: 1)),
                                       filled: true,
-                                      fillColor: Colors.white
-                                  )),
+                                      fillColor: Colors.white)),
                             ),
                             const SizedBox(
                               height: 10,
@@ -467,10 +583,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Expanded(
                                   child: TextFormField(
                                     controller: gajiController,
-
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
-                                      if (value == null || value.isEmpty || value == "") {
+                                      if (value == null ||
+                                          value.isEmpty ||
+                                          value == "") {
                                         return "Gaji Pokok harus di isi!";
                                       }
                                       return null;
@@ -485,7 +602,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                     ],
                                     decoration: InputDecoration(
-
                                       filled: true,
                                       enabled: false,
                                       fillColor: const Color(0xFFFCFDFE),
@@ -497,204 +613,404 @@ class _SignUpPageState extends State<SignUpPage> {
                                         fontWeight: FontWeight.w400,
                                       ),
                                       isDense: true,
-                                      contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          15, 30, 15, 0),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(13),
-                                        borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                        borderSide: const BorderSide(
+                                            width: 1, color: Color(0xFFDEDEDE)),
                                       ),
                                       errorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                        borderSide: const BorderSide(
+                                            width: 1, color: Colors.redAccent),
                                         borderRadius: BorderRadius.circular(13),
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 8,),
+                                SizedBox(
+                                  width: 8,
+                                ),
                                 SizedBox(
                                   width: 100,
                                   child: ElevatedButton(
                                       style: ButtonStyle(
-                                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                          backgroundColor: MaterialStateProperty.all(Color(0xFF2FA4D9)),
-                                      foregroundColor:  MaterialStateProperty.all(Colors.white),
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10))),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Color(0xFF2FA4D9)),
+                                        foregroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
                                       ),
-                                      onPressed: (){
+                                      onPressed: () {
                                         showDialog(
                                           context: context,
                                           barrierDismissible: true,
                                           builder: (BuildContext context) {
                                             return StatefulBuilder(
                                                 builder: (context, setState) {
-                                                  return Dialog(
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.all(
-                                                            Radius.circular(10))),
-                                                    insetPadding: EdgeInsets.all(10),
-                                                    backgroundColor: Colors.white,
-                                                    elevation: 1,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(15),
-                                                      child: Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                        children: [
-                                                          const Text(
-                                                            "Jumlah Lembur",
-                                                            textAlign: TextAlign.left,
-                                                            style: TextStyle(
-                                                              color: Color(0xFF696F79),
-                                                              fontSize: 14,
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          TextFormField(
-                                                            controller: jumlahLemburController,
-                                                            keyboardType: TextInputType.number,
-                                                            validator: (value) {
-                                                              if (value == null || value.isEmpty || value == "") {
-                                                                return "Jumlah Lembur harus di isi!";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            decoration: InputDecoration(
-                                                              filled: true,
-                                                              fillColor: const Color(0xFFFCFDFE),
-                                                              hintText: "Masukan Jumlah Lembur Anda",
-                                                              hintStyle: const TextStyle(
-                                                                color: Color(0xFF696F79),
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w400,
-                                                              ),
-                                                              isDense: true,
-                                                              contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
-                                                              border: OutlineInputBorder(
-                                                                borderRadius: BorderRadius.circular(13),
-                                                                borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
-                                                              ),
-                                                              errorBorder: OutlineInputBorder(
-                                                                borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-                                                                borderRadius: BorderRadius.circular(13),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 10,),
-                                                          const Text(
-                                                            "Total Lembur",
-                                                            textAlign: TextAlign.left,
-                                                            style: TextStyle(
-                                                              color: Color(0xFF696F79),
-                                                              fontSize: 14,
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          TextFormField(
-                                                            controller: totalLemburController,
-                                                            keyboardType: TextInputType.number,
-                                                            validator: (value) {
-                                                              if (value == null || value.isEmpty || value == "") {
-                                                                return "Total Lembur harus di isi!";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            decoration: InputDecoration(
-                                                              filled: true,
-                                                              fillColor: const Color(0xFFFCFDFE),
-                                                              hintText: "Masukan Total Lembur Anda",
-                                                              hintStyle: const TextStyle(
-                                                                color: Color(0xFF696F79),
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w400,
-                                                              ),
-                                                              isDense: true,
-                                                              contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
-                                                              border: OutlineInputBorder(
-                                                                borderRadius: BorderRadius.circular(13),
-                                                                borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
-                                                              ),
-                                                              errorBorder: OutlineInputBorder(
-                                                                borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-                                                                borderRadius: BorderRadius.circular(13),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 10,),
-                                                          const Text(
-                                                            "Jam Lembur",
-                                                            textAlign: TextAlign.left,
-                                                            style: TextStyle(
-                                                              color: Color(0xFF696F79),
-                                                              fontSize: 14,
-                                                              fontWeight: FontWeight.w600,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          TextFormField(
-                                                            controller: jamLemburController,
-                                                            keyboardType: TextInputType.number,
-                                                            validator: (value) {
-                                                              if (value == null || value.isEmpty || value == "") {
-                                                                return "Jam Lembur harus di isi!";
-                                                              }
-                                                              return null;
-                                                            },
-                                                            decoration: InputDecoration(
-                                                              filled: true,
-                                                              fillColor: const Color(0xFFFCFDFE),
-                                                              hintText: "Masukan Jam Lembur Anda",
-                                                              hintStyle: const TextStyle(
-                                                                color: Color(0xFF696F79),
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w400,
-                                                              ),
-                                                              isDense: true,
-                                                              contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
-                                                              border: OutlineInputBorder(
-                                                                borderRadius: BorderRadius.circular(13),
-                                                                borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
-                                                              ),
-                                                              errorBorder: OutlineInputBorder(
-                                                                borderSide: const BorderSide(width: 1, color: Colors.redAccent),
-                                                                borderRadius: BorderRadius.circular(13),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 20,),
-                                                          SizedBox(
-                                                            width: double.infinity,
-                                                            child: ElevatedButton(
-                                                              style: ButtonStyle(
-                                                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                                                backgroundColor: MaterialStateProperty.all(Color(0xFF2FA4D9)),
-                                                                foregroundColor:  MaterialStateProperty.all(Colors.white),
-                                                              ),
-                                                              onPressed: (){
-                                                                hitungGaji(jumlahLemburController.text, totalLemburController.text, jamLemburController.text);
-                                                              setState((){});
-                                                                }, child: Text("Hitung"),),
-                                                          ),
-                                                          SizedBox(height: 10,),
-                                                            (gajiPokok == null)
-                                                          ? SizedBox()
-                                                              :
-                                                            Text(currencyFormatter.format(gajiPokok))
-                                                        ],
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10))),
+                                                insetPadding:
+                                                    EdgeInsets.all(10),
+                                                backgroundColor: Colors.white,
+                                                elevation: 1,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(15),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      const Text(
+                                                        "Jumlah Lembur",
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: TextStyle(
+                                                          color:
+                                                              Color(0xFF696F79),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  );
-                                                });
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      TextFormField(
+                                                        controller:
+                                                            jumlahLemburController,
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty ||
+                                                              value == "") {
+                                                            return "Jumlah Lembur harus di isi!";
+                                                          }
+                                                          return null;
+                                                        },
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            jumlahLemburController
+                                                                .text = value;
+                                                          });
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          filled: true,
+                                                          fillColor:
+                                                              const Color(
+                                                                  0xFFFCFDFE),
+                                                          hintText:
+                                                              "Masukan Jumlah Lembur Anda",
+                                                          hintStyle:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xFF696F79),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                          isDense: true,
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(15,
+                                                                  30, 15, 0),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        13),
+                                                            borderSide:
+                                                                const BorderSide(
+                                                                    width: 1,
+                                                                    color: Color(
+                                                                        0xFFDEDEDE)),
+                                                          ),
+                                                          errorBorder:
+                                                              OutlineInputBorder(
+                                                            borderSide:
+                                                                const BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors
+                                                                        .redAccent),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        13),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      const Text(
+                                                        "Total Lembur",
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: TextStyle(
+                                                          color:
+                                                              Color(0xFF696F79),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      TextFormField(
+                                                        controller:
+                                                            totalLemburController,
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty ||
+                                                              value == "") {
+                                                            return "Total Lembur harus di isi!";
+                                                          }
+                                                          return null;
+                                                        },
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            totalLemburController
+                                                                .text = value;
+                                                          });
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          filled: true,
+                                                          fillColor:
+                                                              const Color(
+                                                                  0xFFFCFDFE),
+                                                          hintText:
+                                                              "Masukan Total Lembur Anda",
+                                                          hintStyle:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xFF696F79),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                          isDense: true,
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(15,
+                                                                  30, 15, 0),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        13),
+                                                            borderSide:
+                                                                const BorderSide(
+                                                                    width: 1,
+                                                                    color: Color(
+                                                                        0xFFDEDEDE)),
+                                                          ),
+                                                          errorBorder:
+                                                              OutlineInputBorder(
+                                                            borderSide:
+                                                                const BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors
+                                                                        .redAccent),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        13),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      const Text(
+                                                        "Jam Lembur",
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: TextStyle(
+                                                          color:
+                                                              Color(0xFF696F79),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      DropdownSearch<String>(
+                                                        items: [
+                                                          "Lembur 1",
+                                                          "Lembur 2",
+                                                          "Lembur 3",
+                                                          "Lembur 4",
+                                                        ],
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty ||
+                                                              value == "") {
+                                                            return "Jam lembur harus di isi!";
+                                                          }
+                                                          return null;
+                                                        },
+                                                        popupProps:
+                                                            PopupPropsMultiSelection
+                                                                .menu(
+                                                          fit: FlexFit.loose,
+                                                          showSearchBox: false,
+                                                          itemBuilder: (context,
+                                                                  item,
+                                                                  isSelected) =>
+                                                              ListTile(
+                                                            title: Text(
+                                                              item,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        dropdownBuilder: (context,
+                                                                selectedItem) =>
+                                                            Text(
+                                                          valueJamLembur ??
+                                                              "Pilih Jam Lembur Anda",
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
+                                                        onChanged: (value) {
+                                                          print(value);
+                                                          setState(() {
+                                                            valueJamLembur =
+                                                                value!;
+                                                          });
+                                                        },
+                                                        dropdownDecoratorProps: DropDownDecoratorProps(
+                                                            dropdownSearchDecoration: InputDecoration(
+                                                                enabled: false,
+                                                                focusedBorder: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            13),
+                                                                    borderSide: BorderSide(
+                                                                        color: Colors
+                                                                            .deepPurple,
+                                                                        width:
+                                                                            1)),
+                                                                enabledBorder: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            13),
+                                                                    borderSide: BorderSide(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        width:
+                                                                            1)),
+                                                                errorBorder: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(13),
+                                                                    borderSide: BorderSide(color: Colors.redAccent, width: 1)),
+                                                                filled: true,
+                                                                fillColor: Colors.white)),
+                                                      ),
+                                                      // TextFormField(
+                                                      //   controller: jamLemburController,
+                                                      //   keyboardType: TextInputType.number,
+                                                      //   validator: (value) {
+                                                      //     if (value == null || value.isEmpty || value == "") {
+                                                      //       return "Jam Lembur harus di isi!";
+                                                      //     }
+                                                      //     return null;
+                                                      //   },
+                                                      //   decoration: InputDecoration(
+                                                      //     filled: true,
+                                                      //     fillColor: const Color(0xFFFCFDFE),
+                                                      //     hintText: "Masukan Jam Lembur Anda",
+                                                      //     hintStyle: const TextStyle(
+                                                      //       color: Color(0xFF696F79),
+                                                      //       fontSize: 14,
+                                                      //       fontWeight: FontWeight.w400,
+                                                      //     ),
+                                                      //     isDense: true,
+                                                      //     contentPadding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+                                                      //     border: OutlineInputBorder(
+                                                      //       borderRadius: BorderRadius.circular(13),
+                                                      //       borderSide: const BorderSide(width: 1, color: Color(0xFFDEDEDE)),
+                                                      //     ),
+                                                      //     errorBorder: OutlineInputBorder(
+                                                      //       borderSide: const BorderSide(width: 1, color: Colors.redAccent),
+                                                      //       borderRadius: BorderRadius.circular(13),
+                                                      //     ),
+                                                      //   ),
+                                                      // ),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Text(hitungGaji(
+                                                          jumlahLemburController
+                                                              .text,
+                                                          totalLemburController
+                                                              .text)),
+                                                      SizedBox(height: 10,),
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: ElevatedButton(
+                                                          style: ButtonStyle(
+                                                            shape: MaterialStateProperty.all(
+                                                                RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10))),
+                                                            backgroundColor:
+                                                                MaterialStateProperty
+                                                                    .all(Color(
+                                                                        0xFF2FA4D9)),
+                                                            foregroundColor:
+                                                                MaterialStateProperty
+                                                                    .all(Colors
+                                                                        .white),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            setState(() {});
+                                                          },
+                                                          child: Text("Simpan"),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            });
                                           },
                                         );
-
-                                      }, child: Text("Hitung",style: TextStyle(fontWeight: FontWeight.bold),)),
+                                      },
+                                      child: Text(
+                                        "Hitung",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )),
                                 )
                               ],
                             ),
@@ -714,7 +1030,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             if (formkey.currentState!.validate()) {
                               setState(() {
                                 ignorePointer = true;
-                                ignorePointerTimer = Timer(const Duration(seconds: 2), () {
+                                ignorePointerTimer =
+                                    Timer(const Duration(seconds: 2), () {
                                   setState(() {
                                     ignorePointer = false;
                                   });
