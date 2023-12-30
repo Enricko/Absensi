@@ -91,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
   void hitungGaji( jumlah,total, jam){
 
       gajiPokok = (int.parse(total) * 173 / int.parse(jumlah) *int.parse(jam));
-      gajiController.text = gajiPokok.toString();
+      gajiController.text = currencyFormatter.format(gajiPokok);
   }
 
   // Code yang bakal di jalankan pertama kali halaman ini dibuka
@@ -467,6 +467,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Expanded(
                                   child: TextFormField(
                                     controller: gajiController,
+
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
                                       if (value == null || value.isEmpty || value == "") {
@@ -484,6 +485,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                     ],
                                     decoration: InputDecoration(
+
                                       filled: true,
                                       enabled: false,
                                       fillColor: const Color(0xFFFCFDFE),
