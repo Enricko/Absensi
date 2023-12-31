@@ -456,6 +456,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    if((snapshot.data!).snapshot.value != null)
                                     LineChartWeekly(
                                       data: Map<dynamic, dynamic>.from(
                                           (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>),

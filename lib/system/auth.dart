@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Auth {
   // Login Logic Functions
   static login(Map<dynamic, dynamic> data, BuildContext context) async {
+    print("cok");
     try {
       // UI Loading
       EasyLoading.show(status: 'loading...');
@@ -18,21 +21,23 @@ class Auth {
           .signInWithEmailAndPassword(email: data['email'], password: data['password'])
           .then((user) async {
         // Mengambil semua data user yang ada di dalam database lalu di filter
-        await FirebaseDatabase.instance.ref().child("user").onValue.listen((event) async {
+        FirebaseDatabase.instance.ref().child("user").child(user.user!.uid).onValue.listen((event) async {
           // Menyimpan data pada device menggunakan SharedPreferences
           SharedPreferences pref = await SharedPreferences.getInstance();
-          print(user.user!.uid);
-          print(user.user!.displayName);
-          print(event.snapshot.value);
-          if (event.snapshot.hasChild(user.user!.uid)) {
-            var getUser = event.snapshot.child(user.user!.uid).value as Map;
+          if (event.snapshot.exists) {
+            var getUser = event.snapshot.value as Map;
             // Menyimpan beberapa data yg penting ke device agar tidak selalu login
             pref.setString("id_user", user.user!.uid.toString());
             pref.setString("no_telepon", getUser['no_telepon'].toString());
             pref.setInt("gaji_pokok", getUser['gaji_pokok']);
             EasyLoading.showSuccess('Welcome Back', dismissOnTap: true);
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
-            return; // Berhenti jika data-nya sesuai / data-nya ketemu
+            return;
+          } else {
+            FirebaseDatabase.instance.ref().child("user").child(user.user!.uid).remove();
+            FirebaseAuth.instance.currentUser!.delete();
+            EasyLoading.showError('Maaf akun ada tidak ada', dismissOnTap: true);
+            return;
           }
         });
       }).onError((error, stackTrace) {
@@ -69,7 +74,7 @@ class Auth {
         FirebaseDatabase.instance.ref().child("user").child(value.user!.uid).set({
           "no_telepon": data['no_telepon'],
           "gaji_pokok": data['gaji_pokok'],
-          "waktu_kerja": data['waktu_kerja'],
+          "waktu_lembur": data['waktu_lembur'],
         }).whenComplete(() {
           // Jika logic telah selesai berjalan, kode yang di bawah ini bakal jalan
           EasyLoading.showSuccess('Tambah Akun Berhasil', dismissOnTap: true, duration: const Duration(seconds: 5));
