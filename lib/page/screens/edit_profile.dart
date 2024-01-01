@@ -696,7 +696,11 @@ class _EditProfileState extends State<EditProfile> {
                                                     //   ),
                                                     // ),
                                                     SizedBox(
-                                                      height: 20,
+                                                      height: 10,
+                                                    ),
+                                                    Divider(),
+                                                    SizedBox(
+                                                      height: 10,
                                                     ),
                                                     Text(
                                                         "Gaji Pokok = ${hitungGaji(
@@ -708,7 +712,7 @@ class _EditProfileState extends State<EditProfile> {
                                                               RegExp(
                                                                   r'[^0-9]'),
                                                               ''),
-                                                        )}"
+                                                        )}",
                                                     ),
                                                     SizedBox(
                                                       height: 10,

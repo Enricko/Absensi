@@ -985,7 +985,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                                       //   ),
                                                       // ),
                                                       SizedBox(
-                                                        height: 20,
+                                                        height: 10,
+                                                      ),
+                                                      Divider(),
+                                                      SizedBox(
+                                                        height: 10,
                                                       ),
                                                       Text(
                                                         "Gaji Pokok = ${hitungGaji(

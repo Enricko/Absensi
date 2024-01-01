@@ -167,6 +167,10 @@ class _SumBulananState extends State<SumBulanan> {
                               int totalLembur1 = 0;
                               int lembur2 = 0;
                               int totalLembur2 = 0;
+                              int lembur3 = 0;
+                              int totalLembur3 = 0;
+                              int lembur4 = 0;
+                              int totalLembur4 = 0;
                               // Memperulangkan data menggunakan foreach
                               data.forEach((key, value) {
                                 // Setiap data yang di perulangkan bakal di simpan ke dalam list
@@ -181,9 +185,13 @@ class _SumBulananState extends State<SumBulanan> {
                                 });
                                 // set data ke masing masing variable
                                 lembur1 += int.parse(currentData['lembur1'].toString());
-                                lembur2 += int.parse(currentData['lembur2'].toString());
                                 totalLembur1 += int.parse(currentData['totalLembur1'].toString());
+                                lembur2 += int.parse(currentData['lembur2'].toString());
                                 totalLembur2 += int.parse(currentData['totalLembur2'].toString());
+                                lembur3 += int.parse(currentData['lembur3'].toString());
+                                totalLembur3 += int.parse(currentData['totalLembur3'].toString());
+                                lembur4 += int.parse(currentData['lembur4'].toString());
+                                totalLembur4 += int.parse(currentData['totalLembur4'].toString());
                               });
                               return Column(
                                 children: [
@@ -275,6 +283,92 @@ class _SumBulananState extends State<SumBulanan> {
                                   ),
                                   SizedBox(
                                     height: 5,
+                                  ),Divider(),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/Calendar.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Lembur ke 3",
+                                            style: TextStyle(color: Colors.black38),
+                                          )),
+                                      Text("$lembur3 Jam"),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/u_money-stack.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Total Lembur ke 3",
+                                            style: TextStyle(color: Colors.black38),
+                                          )),
+                                      Text(
+                                        "${currencyFormatter.format(totalLembur3)}",
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Divider(),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/Calendar.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Lembur ke 4",
+                                            style: TextStyle(color: Colors.black38),
+                                          )),
+                                      Text("$lembur4 Jam"),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/u_money-stack.svg",
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                            "Total Lembur ke 4",
+                                            style: TextStyle(color: Colors.black38),
+                                          )),
+                                      Text(
+                                        "${currencyFormatter.format(totalLembur4)}",
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               );
@@ -377,7 +471,7 @@ class _SumBulananState extends State<SumBulanan> {
                                               "Absensi",
                                               style: TextStyle(color: Colors.black38),
                                             )),
-                                            Text("${dataList[index]['absensi']}"),
+                                            Text("${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
                                           ],
                                         ),
                                         SizedBox(
