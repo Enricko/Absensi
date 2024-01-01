@@ -311,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     itemBuilder: (context, index) {
                                       return Column(
                                         children: [
-                                          if (index == 0)
+                                          if (index == 0 && selectButton == SelectButton.harian)
                                             LineChartWeekly(
                                               data: data,
                                             ),
@@ -456,7 +456,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    if((snapshot.data!).snapshot.value != null)
+                                    if((snapshot.data!).snapshot.value != null && selectButton == SelectButton.harian)
                                     LineChartWeekly(
                                       data: Map<dynamic, dynamic>.from(
                                           (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>),
