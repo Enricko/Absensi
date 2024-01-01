@@ -25,7 +25,7 @@ class InsertData {
         EasyLoading.showSuccess('Lembur telah di tambahkan',
             dismissOnTap: true, duration: const Duration(seconds: 5));
         Navigator.pop(context);
-        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Menu()));
         return;
       }).onError((error, stackTrace) {
         EasyLoading.showError("Something went wrong : $error",
