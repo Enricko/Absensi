@@ -1,14 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
-extension DateTimeExtension on DateTime {
-  int get lastDayOfMonth => DateTime(year, month + 1, 0).day;
-
-  DateTime get lastDateOfMonth => DateTime(year, month + 1, 0);
-}
 
 class LineChartWeekly extends StatefulWidget {
   const LineChartWeekly({super.key, required this.data});
@@ -18,59 +10,29 @@ class LineChartWeekly extends StatefulWidget {
 }
 
 class _LineChartWeeklyState extends State<LineChartWeekly> {
-  final dbReference = FirebaseDatabase.instance.ref().child("lembur").child(FirebaseAuth.instance.currentUser!.uid);
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp ',
     decimalDigits: 0,
   );
-  Map<dynamic, dynamic> dataMap = {};
-  Map<String, dynamic> sortDataMap = {};
+  Map<String, dynamic> dataMap = {};
 
   bool showAvg = false;
   DateTime nowDate = DateTime.now();
-  DateTime semingguTerakhir = DateTime.now().subtract(Duration(days: 7));
-  DateTime bulanLalu = DateTime(DateTime.now().year, DateTime.now().month - 1);
-  // DateTime akhirBulan = DateTime(DateTime.now().year, DateTime.now().month).lastDateOfMonth;
-  // DateTime endWeek = DateTime.now().add(Duration(days: DateTime.daysPerWeek - DateTime.now().weekday));
-
-  Future<void> getData() async {
-    dbReference.child(DateFormat("yyyy-MM", 'id').format(bulanLalu)).onValue.listen((event) {
-      var snapshot = event.snapshot.value as Map;
-      if (snapshot != null) {
-        setState(() {
-          dataMap.addAll(snapshot);
-        });
-      }
-    });
-    // Bulan ini
-    dbReference.child(DateFormat("yyyy-MM", 'id').format(DateTime.now())).onValue.listen((event) {
-      var snapshot = event.snapshot.value as Map;
-      if (snapshot != null) {
-        setState(() {
-          dataMap.addAll(snapshot);
-        });
-      }
-    });
-  }
+  DateTime startWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday));
+  DateTime endWeek = DateTime.now().add(Duration(days: DateTime.daysPerWeek - DateTime.now().weekday));
 
   @override
   void initState() {
     super.initState();
-    // Bulan lalu
-    getData().then((value) {
-      Future.delayed(Duration(seconds: 2), () {
-        dataMap.forEach((key, value) {
-          var dataDate = DateFormat("EEEE, dd MMMM yyyy", 'id').parse(value['tanggal']);
-          if (semingguTerakhir.isBefore(dataDate) && nowDate.isAfter(dataDate)) {
-            setState(() {
-              var keyName = DateFormat("dd-MM-yyyy", 'id').format(dataDate).toLowerCase();
-              sortDataMap.putIfAbsent(keyName, () => value['total']);
-            });
-          }
-        });
-      });
+    print(widget.data);
+    widget.data.forEach((key, value) {
+      var dataDate = DateFormat("EEEE, dd MMMM yyyy", 'id').parse(value['tanggal']);
+      if (startWeek.isBefore(dataDate) && endWeek.isAfter(dataDate)) {
+        var keyName = DateFormat("EEEE", 'id').format(dataDate).toLowerCase();
+        dataMap[keyName] = value['lembur'];
+      }
     });
   }
 
@@ -105,44 +67,13 @@ class _LineChartWeeklyState extends State<LineChartWeekly> {
               LineSeries<LemburMingguan, String>(
                 // Bind data source
                 dataSource: <LemburMingguan>[
-                  LemburMingguan(
-                      'H-6',
-                      sortDataMap[DateFormat("dd-MM-yyyy", 'id')
-                              .format(DateTime.now().subtract(Duration(days: 6)))
-                              .toLowerCase()] ??
-                          0),
-                  LemburMingguan(
-                      'H-5',
-                      sortDataMap[DateFormat("dd-MM-yyyy", 'id')
-                              .format(DateTime.now().subtract(Duration(days: 5)))
-                              .toLowerCase()] ??
-                          0),
-                  LemburMingguan(
-                      'H-4',
-                      sortDataMap[DateFormat("dd-MM-yyyy", 'id')
-                              .format(DateTime.now().subtract(Duration(days: 4)))
-                              .toLowerCase()] ??
-                          0),
-                  LemburMingguan(
-                      'H-3',
-                      sortDataMap[DateFormat("dd-MM-yyyy", 'id')
-                              .format(DateTime.now().subtract(Duration(days: 3)))
-                              .toLowerCase()] ??
-                          0),
-                  LemburMingguan(
-                      'H-2',
-                      sortDataMap[DateFormat("dd-MM-yyyy", 'id')
-                              .format(DateTime.now().subtract(Duration(days: 2)))
-                              .toLowerCase()] ??
-                          0),
-                  LemburMingguan(
-                      'H-1',
-                      sortDataMap[DateFormat("dd-MM-yyyy", 'id')
-                              .format(DateTime.now().subtract(Duration(days: 1)))
-                              .toLowerCase()] ??
-                          0),
-                  LemburMingguan(
-                      'H', sortDataMap[DateFormat("dd-MM-yyyy", 'id').format(DateTime.now()).toLowerCase()] ?? 0),
+                  LemburMingguan('Sen', dataMap['senin'] ?? 0),
+                  LemburMingguan('Sel', dataMap['selasa'] ?? 0),
+                  LemburMingguan('Rab', dataMap['rabu'] ?? 0),
+                  LemburMingguan('Kam', dataMap['kamis'] ?? 0),
+                  LemburMingguan('Jum', dataMap['jumat'] ?? 0),
+                  LemburMingguan('Sab', dataMap['sabtu'] ?? 0),
+                  LemburMingguan('Min', dataMap['minggu'] ?? 0),
                 ],
                 xValueMapper: (LemburMingguan lembur, _) => lembur.hari,
                 yValueMapper: (LemburMingguan lembur, _) => lembur.jumlah,
