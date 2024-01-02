@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SumHarian extends StatefulWidget {
-  const SumHarian({Key? key, required this.tanggal, required this.id}) : super(key: key);
+  const SumHarian({Key? key, required this.tanggal, required this.id})
+      : super(key: key);
   final String tanggal, id;
 
   @override
@@ -36,12 +37,41 @@ class _SumHarianState extends State<SumHarian> {
     });
   }
 
+  getjamLembur(int index, data) {
+    switch (index) {
+      case 0:
+        return data["lembur1"];
+      case 1:
+        return data["lembur2"];
+      case 2:
+        return data["lembur3"];
+      case 3:
+        return data["lembur4"];
+      default:
+    }
+  }
+
+  gettotalLembur(int index, data) {
+    switch (index) {
+      case 0:
+        return data['totalLembur1'];
+      case 1:
+        return data['totalLembur2'];
+      case 2:
+        return data['totalLembur3'];
+      case 3:
+        return data['totalLembur4'];
+      default:
+    }
+  }
+
   void cekUser() {
     // Logic cek Data User apakah sudah pernah login
     if (FirebaseAuth.instance.currentUser == null) {
       FirebaseAuth.instance.currentUser;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LoginPage()));
       });
     }
   }
@@ -84,148 +114,143 @@ class _SumHarianState extends State<SumHarian> {
             if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
               // Variable data mempermudah memanggil data pada database
               Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                  (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+                  (snapshot.data! as DatabaseEvent).snapshot.value
+                      as Map<dynamic, dynamic>);
               // Mengubah map menjadi list
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("${data['tanggal']}"),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border(
-                          left: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                          top: BorderSide(width: 11, color: Color(0xFF2FA4D9)),
-                          right: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                          bottom: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+              // memberi action scroll
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("${data['tanggal']}"),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border(
+                            left:
+                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                            top:
+                                BorderSide(width: 11, color: Color(0xFF2FA4D9)),
+                            right:
+                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                            bottom:
+                                BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                          ),
                         ),
-                      ),
-                      //efek scrolling
-                      child: ListView.builder(
-                        //membuat container fit dengan tinggi listview
-                        shrinkWrap: true,
-                        //jumlah item listview
-                        itemCount: 2,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/Calendar.svg",
+                        //efek scrolling
+                        child: Column(
+                          children: [
+                            (getjamLembur(0, data) == 0)
+                                ? SizedBox()
+                                : CardHarian(
+                                    no: '1',
+                                    absensi: "${data['absensi']}",
+                                    jam: "${getjamLembur(0, data)}" " Jam",
+                                    total:
+                                        "${currencyFormatter.format(gettotalLembur(0, data))}",
                                   ),
-                                  SizedBox(
-                                    width: 8,
+                            (getjamLembur(1, data) == 0)
+                                ? SizedBox()
+                                : CardHarian(
+                                    no: '2',
+                                    absensi: "${data['absensi']}",
+                                    jam: "${getjamLembur(1, data)}" " Jam",
+                                    total:
+                                        "${currencyFormatter.format(gettotalLembur(1, data))}",
                                   ),
-                                  Expanded(
-                                      child: Text(
-                                    "Lembur Ke",
-                                    style: TextStyle(color: Colors.black38),
-                                  )),
-                                  Text("${index + 1}"),
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/Fingerprint.svg",
+                            (getjamLembur(2, data) == 0)
+                                ? SizedBox()
+                                : CardHarian(
+                                    no: '3',
+                                    absensi: "${data['absensi']}",
+                                    jam: "${getjamLembur(2, data)}" " Jam",
+                                    total:
+                                        "${currencyFormatter.format(gettotalLembur(2, data))}",
                                   ),
-                                  SizedBox(
-                                    width: 8,
+                            (getjamLembur(3, data) == 0)
+                                ? SizedBox()
+                                : CardHarian(
+                                    no: '4',
+                                    absensi: "${data['absensi']}",
+                                    jam: "${getjamLembur(3, data)}" " Jam",
+                                    total:
+                                        "${currencyFormatter.format(gettotalLembur(3, data))}",
                                   ),
-                                  Expanded(
-                                      child: Text(
-                                    "Absensi",
-                                    style: TextStyle(color: Colors.black38),
-                                  )),
-                                  Text("${data['absensi']}"),
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/ClockClockwise.svg",
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Expanded(
-                                      child: Text(
-                                    "Jam",
-                                    style: TextStyle(color: Colors.black38),
-                                  )),
-                                  Text("${index == 0?data['lembur1']:data['lembur2']} Jam"),
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/u_money-stack.svg",
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Expanded(
-                                      child: Text(
-                                    "Total",
-                                    style: TextStyle(color: Colors.black38),
-                                  )),
-                                  Text(
-                                    "${currencyFormatter.format(index == 0?data['totalLembur1']:data['totalLembur2'])}",
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Divider(color: Colors.blue),
-                            ],
-                          );
-                        },
-                      )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text("Total Lembur Hari ini:", style: TextStyle(color: Colors.black38)),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "${currencyFormatter.format(data['total'])}",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  SizedBox(height: 30,),
-                  Text("Rumus Lembur 1", style: TextStyle(color: Colors.black38)),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "1,5 x Gaji Pokok / 173",
-                    style: TextStyle(color: Colors.black54,fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(height: 30,),
-                  Text("Rumus Lembur 2", style: TextStyle(color: Colors.black38)),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "2 x Gaji Pokok / 173",
-                    style: TextStyle(color: Colors.black54,fontWeight: FontWeight.w600),
-                  ),
-                ],
+                          ],
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text("Total Lembur Hari ini:",
+                        style: TextStyle(color: Colors.black38)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "${currencyFormatter.format(data['total'])}",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Text("Rumus Lembur 1",
+                        style: TextStyle(color: Colors.black38)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "1,5 x Gaji Pokok / 173",
+                      style: TextStyle(
+                          color: Colors.black54, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Text("Rumus Lembur 2",
+                        style: TextStyle(color: Colors.black38)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "2 x Gaji Pokok / 173",
+                      style: TextStyle(
+                          color: Colors.black54, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Text("Rumus Lembur 3",
+                        style: TextStyle(color: Colors.black38)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "3 x Gaji Pokok / 173",
+                      style: TextStyle(
+                          color: Colors.black54, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Text("Rumus Lembur 4",
+                        style: TextStyle(color: Colors.black38)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "4 x Gaji Pokok / 173",
+                      style: TextStyle(
+                          color: Colors.black54, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
               );
             }
             if (snapshot.hasData) {
@@ -240,6 +265,113 @@ class _SumHarianState extends State<SumHarian> {
           },
         ),
       ),
+    );
+  }
+}
+
+class CardHarian extends StatelessWidget {
+  const CardHarian({
+    super.key,
+    required this.no,
+    required this.absensi,
+    required this.jam,
+    required this.total,
+  });
+
+  final String no;
+  final String absensi;
+  final String jam;
+  final String total;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 5,
+        ),
+        Row(
+          children: [
+            SvgPicture.asset(
+              "assets/Calendar.svg",
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Expanded(
+                child: Text(
+              "Lembur Ke",
+              style: TextStyle(color: Colors.black38),
+            )),
+            Text(no),
+          ],
+        ),
+        Divider(),
+        Row(
+          children: [
+            SvgPicture.asset(
+              "assets/Fingerprint.svg",
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Expanded(
+                child: Text(
+              "Absensi",
+              style: TextStyle(color: Colors.black38),
+            )),
+            Text(absensi
+                // "${data['absensi']}"
+                ),
+          ],
+        ),
+        Divider(),
+        Row(
+          children: [
+            SvgPicture.asset(
+              "assets/ClockClockwise.svg",
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Expanded(
+                child: Text(
+              "Jam",
+              style: TextStyle(color: Colors.black38),
+            )),
+            Text(
+                // "${getjamLembur(index, data)}"
+                jam),
+          ],
+        ),
+        Divider(),
+        Row(
+          children: [
+            SvgPicture.asset(
+              "assets/u_money-stack.svg",
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Expanded(
+                child: Text(
+              "Total",
+              style: TextStyle(color: Colors.black38),
+            )),
+            Text(
+              total,
+              // "${currencyFormatter.format(
+              //     gettotalLembur(index, data)
+              // )}",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        Divider(color: Colors.blue),
+      ],
     );
   }
 }

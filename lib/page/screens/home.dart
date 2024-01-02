@@ -35,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
     symbol: 'Rp ',
     decimalDigits: 0,
   );
+//list cek lemburan hari ini
+  List listHariLembur = [];
 
   Future<void> getPref() async {
     ///Inisiasi database local (SharedPreference)
@@ -73,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    // print(DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now()));
     return Scaffold(
       body: Stack(
         children: [
@@ -278,6 +281,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 data.forEach((key, value) {
                                   // Setiap data yang di perulangkan bakal di simpan ke dalam list
                                   final currentData = Map<String, dynamic>.from(value);
+                                  listHariLembur.add(
+                                      currentData['tanggal']
+                                  );
                                   // Mensetting variable dengan total lembur dan gaji)
                                   var parseDate = DateFormat("EEEE, dd MMMM yyyy", 'id').parse(currentData['tanggal']);
                                   var nowDate = DateFormat("EEEE, dd MMMM yyyy", 'id')
@@ -288,6 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   if (parseDate.isAtSameMomentAs(nowDate) ||
                                       parseDate.isAtSameMomentAs(yesterdayDate) ||
                                       selectButton == SelectButton.bulanan) {
+                                    print(listHariLembur);
                                     dataList.add({
                                       'key': key,
                                       'tanggal': currentData['tanggal'],
@@ -429,6 +436,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             .whenComplete(() {
                                                           EasyLoading.showSuccess('Data Lembur berhasil di hapus',
                                                               dismissOnTap: true);
+                                                        });
+                                                        setState(() {
+
                                                         });
                                                         Navigator.pop(context);
                                                       },
@@ -687,7 +697,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:
+      (listHariLembur.contains(DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())))
+      ? SizedBox()
+      :
+      FloatingActionButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         backgroundColor: Colors.blue,
         onPressed: () {

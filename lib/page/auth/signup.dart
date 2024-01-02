@@ -605,7 +605,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     ],
                                     decoration: InputDecoration(
                                       filled: true,
-                                      enabled: false,
+                                      // enabled: false,
                                       fillColor: const Color(0xFFFCFDFE),
                                       hintText: "Gaji Pokok",
                                       hintStyle: const TextStyle(

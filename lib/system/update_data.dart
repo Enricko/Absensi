@@ -20,6 +20,7 @@ class UpdateData {
       FirebaseDatabase.instance.ref().child("user").child(id_user).update({
         "no_telepon": data['no_telepon'],
         "gaji_pokok": data['gaji_pokok'],
+        "waktu_lembur": data['waktu_lembur']
       }).whenComplete(() {
         // Menampilkan alert berhasil jika codingan di atas berhasil dan selesai
         EasyLoading.showSuccess('Profile telah di Edit',

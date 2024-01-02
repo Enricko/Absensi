@@ -79,7 +79,8 @@ class Auth {
           // Jika logic telah selesai berjalan, kode yang di bawah ini bakal jalan
           EasyLoading.showSuccess('Tambah Akun Berhasil', dismissOnTap: true, duration: const Duration(seconds: 5));
           // Mengarah ke Login Page jika Sign Up Berhasil
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+          Navigator.pop(context);
+          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
         }).onError((error, stackTrace) {
           // Jika logic mengalami error, kode yang di bawah ini bakal jalan
           EasyLoading.showError('$error', dismissOnTap: true, duration: const Duration(seconds: 5));

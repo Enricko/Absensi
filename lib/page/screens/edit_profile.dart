@@ -34,6 +34,10 @@ class _EditProfileState extends State<EditProfile> {
   String? valueJamLembur;
   String? gajiPokok;
 
+  // variable waktu kerja
+  String? keteranganLembur;
+
+
   NumberFormat currencyFormatter = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp ',
@@ -89,8 +93,9 @@ class _EditProfileState extends State<EditProfile> {
           .listen((event) {
         var snapshot = event.snapshot.value as Map;
         nameController.text = FirebaseAuth.instance.currentUser!.displayName.toString();
-        gajiController.text = currencyFormatter.format(snapshot['gaji_pokok']);
         phoneNumberController.text = snapshot['no_telepon'];
+        keteranganLembur = snapshot['waktu_lembur'];
+        gajiController.text = currencyFormatter.format(snapshot['gaji_pokok']);
 
         // nameController.text = snapshot.value;
       });
@@ -142,11 +147,14 @@ class _EditProfileState extends State<EditProfile> {
     var name = nameController.text;
     var gajiPokok = int.parse(gajiController.text.replaceAll(RegExp(r'[^0-9]'), ''));
     var noTelepon = phoneNumberController.text;
+    var ketLembur = keteranganLembur;
+
    // Menjadikan Map agar mudah di pindah ke function lain
     var data = {
       'nama': name,
-      'gaji_pokok': gajiPokok,
       'no_telepon': noTelepon,
+      'waktu_lembur': ketLembur,
+      'gaji_pokok': gajiPokok,
     };
     // Menjalankan Logic Class Function Update Profile
     UpdateData.profile(data, id_user, context);
@@ -201,7 +209,11 @@ class _EditProfileState extends State<EditProfile> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Nama"),
+                      Text("Nama",style: TextStyle(
+                        color: Color(0xFF696F79),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),),
                       SizedBox(
                         height: 5,
                       ),
@@ -244,7 +256,11 @@ class _EditProfileState extends State<EditProfile> {
                               fillColor: Colors.white),
                         ),
                       ),
-                      Text("Nomor Telepon"),
+                      Text("Nomor Telepon",style: TextStyle(
+                          color: Color(0xFF696F79),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),),
                       SizedBox(
                         height: 5,
                       ),
@@ -287,7 +303,79 @@ class _EditProfileState extends State<EditProfile> {
                               fillColor: Colors.white),
                         ),
                       ),
-                      Text("Gaji Pokok"),
+                      SizedBox(height: 10,),
+                      const Text(
+                        "Waktu Lembur",
+                        style: TextStyle(
+                          color: Color(0xFF696F79),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      DropdownSearch<String>(
+                        items: [
+                          "5 Hari",
+                          "6 Hari",
+                        ],
+                        validator: (value) {
+                          if (keteranganLembur == null ||
+                              value == "") {
+                            return "Waktu lembur harus di isi!";
+                          }
+                          return null;
+                        },
+                        popupProps: PopupPropsMultiSelection.menu(
+                          fit: FlexFit.loose,
+                          showSearchBox: false,
+                          itemBuilder: (context, item, isSelected) =>
+                              ListTile(
+                                title: Text(
+                                  item,
+                                ),
+                              ),
+                        ),
+                        dropdownBuilder: (context, selectedItem) => Text(
+                          keteranganLembur ?? "Pilih Waktu Lembur Anda",
+                          style: TextStyle(
+                              fontSize: 15, color: Colors.black),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            keteranganLembur = value!;
+                          });
+                        },
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                            dropdownSearchDecoration: InputDecoration(
+                                enabled: false,
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(13),
+                                    borderSide: BorderSide(
+                                        color: Colors.deepPurple,
+                                        width: 1)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(13),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1)),
+                                errorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(13),
+                                    borderSide: BorderSide(
+                                        color: Colors.redAccent,
+                                        width: 1)),
+                                filled: true,
+                                fillColor: Colors.white)),
+                      ),
+                      SizedBox(height: 10,),
+                      Text("Gaji Pokok",style: TextStyle(
+                        color: Color(0xFF696F79),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),),
                       SizedBox(
                         height: 5,
                       ),
@@ -316,7 +404,7 @@ class _EditProfileState extends State<EditProfile> {
                               ],
                               decoration: InputDecoration(
                                 filled: true,
-                                enabled: false,
+                                // enabled: false,
                                 fillColor: const Color(0xFFFCFDFE),
                                 hintText: "Gaji Pokok",
                                 hintStyle: const TextStyle(
@@ -763,6 +851,7 @@ class _EditProfileState extends State<EditProfile> {
                           )
                         ],
                       ),
+
                       // Container(
                       //   margin: EdgeInsets.symmetric(vertical: 5),
                       //   width: double.infinity,
