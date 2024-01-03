@@ -7,13 +7,15 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FormAbsensi extends StatefulWidget {
-  const FormAbsensi({Key? key}) : super(key: key);
+  const FormAbsensi({Key? key, required this.listHariLembur}) : super(key: key);
+  final List listHariLembur;
 
   @override
   State<FormAbsensi> createState() => _FormAbsensiState();
@@ -58,7 +60,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
     decimalDigits: 0,
   );
 
-  String totalLembur(int gajiPokok,String waktuLembur) {
+  String totalLembur(int gajiPokok, String waktuLembur) {
     if (timeController.text != "") {
       // // Lembur jam pertama
       // var a = 1 * 1.5 * gajiPokok * (1 / 173);
@@ -84,62 +86,63 @@ class _FormAbsensiState extends State<FormAbsensi> {
       else if (keterangan == "Hari Libur") {
         if (waktuLembur == "5 Hari") {
           //8 Jam Pertama
-          if (int.parse(timeController.text) <= 8 ) {
+          if (int.parse(timeController.text) <= 8) {
             lembur2 = int.parse(timeController.text);
             totalLembur2 = int.parse(timeController.text) * rumusLembur2;
             return currencyFormatter.format(int.parse(timeController.text) * rumusLembur2);
           }
           //Jam ke 9
-          if (int.parse(timeController.text) == 9 ) {
+          if (int.parse(timeController.text) == 9) {
             lembur2 = 8;
             lembur3 = 1;
             totalLembur2 = 8 * rumusLembur2;
             totalLembur3 = 1 * rumusLembur3;
-            return currencyFormatter.format((8 * rumusLembur2)+(1 * rumusLembur3));
+            return currencyFormatter.format((8 * rumusLembur2) + (1 * rumusLembur3));
           }
           //lebih dari 9 jam
-          if (int.parse(timeController.text) > 9 ) {
+          if (int.parse(timeController.text) > 9) {
             lembur2 = 8;
             lembur4 = (int.parse(timeController.text) - 8);
             totalLembur2 = 8 * rumusLembur2;
             totalLembur4 = (int.parse(timeController.text) - 8) * rumusLembur4;
-            return currencyFormatter.format((8 * rumusLembur2) + (1 * rumusLembur3) + ((int.parse(timeController.text) - 9) * rumusLembur4));
+            return currencyFormatter.format(
+                (8 * rumusLembur2) + (1 * rumusLembur3) + ((int.parse(timeController.text) - 9) * rumusLembur4));
           }
-        } 
+        }
         if (waktuLembur == "6 Hari") {
           // 7 Jam pertama
-          if (int.parse(timeController.text) <= 7 ) {
+          if (int.parse(timeController.text) <= 7) {
             lembur2 = int.parse(timeController.text);
             totalLembur2 = int.parse(timeController.text) * rumusLembur2;
             return currencyFormatter.format(int.parse(timeController.text) * rumusLembur2);
           }
           //Jam ke 8
-          if (int.parse(timeController.text) == 8 ) {
+          if (int.parse(timeController.text) == 8) {
             lembur2 = 7;
             lembur3 = 1;
             totalLembur2 = 7 * rumusLembur2;
             totalLembur3 = 1 * rumusLembur3;
-            return currencyFormatter.format((7 * rumusLembur2)+(1 * rumusLembur3));
+            return currencyFormatter.format((7 * rumusLembur2) + (1 * rumusLembur3));
             // lembur3 = int.parse(timeController.text);
             // totalLembur3 = int.parse(timeController.text) * 3 * gajiPokok * (1 / 173);
             // return currencyFormatter.format(int.parse(timeController.text) * 3 * gajiPokok * (1 / 173));
           }
           //lebih dari 8 jam
-          if (int.parse(timeController.text) > 8 ) {
+          if (int.parse(timeController.text) > 8) {
             lembur2 = 7;
             lembur3 = 1;
             lembur4 = (int.parse(timeController.text) - 8);
             totalLembur2 = 7 * rumusLembur2;
             totalLembur3 = 1 * rumusLembur3;
             totalLembur4 = (int.parse(timeController.text) - 8) * rumusLembur4;
-            return currencyFormatter.format((7 * rumusLembur2) + (1 * rumusLembur3) + ((int.parse(timeController.text) - 8) * rumusLembur4));
+            return currencyFormatter.format(
+                (7 * rumusLembur2) + (1 * rumusLembur3) + ((int.parse(timeController.text) - 8) * rumusLembur4));
             // lembur4 = int.parse(timeController.text);
             // totalLembur4 = int.parse(timeController.text) * 4 * gajiPokok * (1 / 173);
             // return currencyFormatter.format(int.parse(timeController.text) * 4 * gajiPokok * (1 / 173));
           }
         }
-      }
-      else {
+      } else {
         return "Rp. 0";
       }
     }
@@ -190,31 +193,33 @@ class _FormAbsensiState extends State<FormAbsensi> {
 //   }
 
   void simpanLembur() {
-    var date = dateController.text != ''
-        ? dateController.text
-        : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
+    var date =
+        dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
     var time = timeController.text != '' ? timeController.text : "0";
     var absensi = "${selectedRadio != 1 ? 'Masuk' : 'Tidak Masuk'}";
     var total = totalGajiLembur;
-
-    var data = {
-      'tanggal': date,
-      'absensi': absensi,
-      'keterangan': keterangan,
-      'lembur': int.parse(time),
-      'total': total,
-      'lembur1': lembur1,
-      "totalLembur1": totalLembur1.ceil(),
-      'lembur2': lembur2,
-      "totalLembur2": totalLembur2.ceil(),
-      'lembur3': lembur3,
-      "totalLembur3": totalLembur3.ceil(),
-      'lembur4': lembur4,
-      "totalLembur4": totalLembur4.ceil(),
-    };
-    print(lembur1);
-    print(lembur2);
-    InsertData.lembur(data, id_user, context);
+    if (!widget.listHariLembur.contains(date.toString())) {
+      var data = {
+        'tanggal': date,
+        'absensi': absensi,
+        'keterangan': keterangan,
+        'lembur': int.parse(time),
+        'total': total,
+        'lembur1': lembur1,
+        "totalLembur1": totalLembur1.ceil(),
+        'lembur2': lembur2,
+        "totalLembur2": totalLembur2.ceil(),
+        'lembur3': lembur3,
+        "totalLembur3": totalLembur3.ceil(),
+        'lembur4': lembur4,
+        "totalLembur4": totalLembur4.ceil(),
+      };
+      print(lembur1);
+      print(lembur2);
+      InsertData.lembur(data, id_user, context);
+    }else{
+      EasyLoading.showError("Maaf tanggal tersebut sudah terdaftar.",dismissOnTap: true,duration: Duration(seconds: 3));
+    }
   }
 
   Future<void> getPref() async {
@@ -330,13 +335,11 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               initialDate: DateTime.now(),
                               firstDate: DateTime(1945),
                               lastDate: DateTime.now(),
-
                               initialEntryMode: DatePickerEntryMode.calendarOnly,
                             ).then((value) {
                               if (value != null) {
                                 //format tanggal hari, tanggal bulan tahun dalam bahasa indonesia
-                                String formatDate =
-                                    DateFormat('EEEE, dd MMMM yyyy', "id").format(value);
+                                String formatDate = DateFormat('EEEE, dd MMMM yyyy', "id").format(value);
                                 setState(() {
                                   dateController.text = formatDate;
                                 });
@@ -461,8 +464,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 hintText: "Masukan Jam Lembur",
                                 hintStyle: TextStyle(fontSize: 13),
                                 suffixText: "Jam",
-                                suffixStyle: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold, color: Colors.blue),
+                                suffixStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.blue),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
                                   borderSide: BorderSide(width: 1, color: Colors.black38),
@@ -552,13 +554,11 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
                                     ///kalau tidak masuk lembur , tanggal akan otomatis set pada hari itu
                                     (isMasuk == false)
-                                        ? DateFormat('EEEE, dd MMMM yyyy', 'id')
-                                            .format(DateTime.now())
+                                        ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
 
                                         ///apabila tanggal lembur bernilai "" maka akan otomatis set ke tanggal pada hari itu
                                         : dateController.text == ""
-                                            ? DateFormat('EEEE, dd MMMM yyyy', 'id')
-                                                .format(DateTime.now())
+                                            ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
                                             : dateController.text
                                     // "${dateController.text == '' ? 'Senin, 1 Januari 2000' : dateController.text}"
                                     ),
@@ -578,8 +578,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                   "Absensi",
                                   style: TextStyle(color: Colors.black38),
                                 )),
-                                Text(
-                                    "${selectedRadio == 0 ? 'Masuk (${keterangan})' : 'Tidak Masuk'}"),
+                                Text("${selectedRadio == 0 ? 'Masuk (${keterangan})' : 'Tidak Masuk'}"),
                               ],
                             ),
                             Divider(),
@@ -619,23 +618,18 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                   ),
                                 ),
                                 StreamBuilder(
-                                  stream: FirebaseDatabase.instance
-                                      .ref()
-                                      .child("user")
-                                      .child(id_user)
-                                      .onValue,
+                                  stream: FirebaseDatabase.instance.ref().child("user").child(id_user).onValue,
                                   builder: (context, snapshot) {
-                                    if (snapshot.hasData &&
-                                        (snapshot.data! as DatabaseEvent).snapshot.value != null) {
+                                    if (snapshot.hasData && (snapshot.data! as DatabaseEvent).snapshot.value != null) {
                                       Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                                          (snapshot.data! as DatabaseEvent).snapshot.value
-                                              as Map<dynamic, dynamic>);
+                                          (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
                                       if (data['gaji_pokok'] != null) {
-                                        totalGajiLembur = int.parse(totalLembur(data['gaji_pokok'],data['waktu_lembur'])
-                                            .replaceAll(RegExp(r'[^0-9]'), ''));
+                                        totalGajiLembur = int.parse(
+                                            totalLembur(data['gaji_pokok'], data['waktu_lembur'])
+                                                .replaceAll(RegExp(r'[^0-9]'), ''));
                                         // resultLembur(data['gaji_pokok']);
                                         return Text(
-                                          "${totalLembur(data['gaji_pokok'],data['waktu_lembur'])}",
+                                          "${totalLembur(data['gaji_pokok'], data['waktu_lembur'])}",
                                           style: TextStyle(color: Colors.blue),
                                         );
                                       }
