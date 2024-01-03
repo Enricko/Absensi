@@ -18,7 +18,7 @@ class InsertData {
           .child("lembur")
           .child(id_user)
           .child(DateFormat('yyyy-MM', 'id')
-              .format(DateFormat('EEEE, dd MMMM yyyy', "id").parse(data['tanggal'])))
+          .format(DateFormat('EEEE, dd MMMM yyyy', "id").parse(data['tanggal'])))
           .push()
           .set(data)
           .whenComplete(() {

@@ -102,13 +102,16 @@ class _FormAbsensiState extends State<FormAbsensi> {
           //lebih dari 9 jam
           if (int.parse(timeController.text) > 9) {
             lembur2 = 8;
-            lembur4 = (int.parse(timeController.text) - 8);
+            lembur3 = 1;
+            lembur4 = (int.parse(timeController.text) - 9);
             totalLembur2 = 8 * rumusLembur2;
-            totalLembur4 = (int.parse(timeController.text) - 8) * rumusLembur4;
+            totalLembur3 = 1 * rumusLembur3;
+            totalLembur4 = (int.parse(timeController.text) - 9) * rumusLembur4;
             return currencyFormatter.format(
                 (8 * rumusLembur2) + (1 * rumusLembur3) + ((int.parse(timeController.text) - 9) * rumusLembur4));
           }
         }
+        ///6 HARI DI HARI LIBUR
         if (waktuLembur == "6 Hari") {
           // 7 Jam pertama
           if (int.parse(timeController.text) <= 7) {
@@ -194,7 +197,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
   void simpanLembur() {
     var date =
-        dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
+    dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
     var time = timeController.text != '' ? timeController.text : "0";
     var absensi = "${selectedRadio != 1 ? 'Masuk' : 'Tidak Masuk'}";
     var total = totalGajiLembur;
@@ -421,17 +424,17 @@ class _FormAbsensiState extends State<FormAbsensi> {
                           },
                           dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
-                            enabled: false,
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(13),
-                                borderSide: BorderSide(color: Colors.blue, width: 1)),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(13),
-                                borderSide: BorderSide(color: Colors.black38, width: 1)),
-                            errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(13),
-                                borderSide: BorderSide(color: Colors.redAccent, width: 1)),
-                          )),
+                                enabled: false,
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                    borderSide: BorderSide(color: Colors.black38, width: 1)),
+                                errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                    borderSide: BorderSide(color: Colors.redAccent, width: 1)),
+                              )),
                         ),
                         SizedBox(
                           height: 10,
@@ -547,21 +550,21 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 ),
                                 Expanded(
                                     child: Text(
-                                  "Tanggal",
-                                  style: TextStyle(color: Colors.black38),
-                                )),
+                                      "Tanggal",
+                                      style: TextStyle(color: Colors.black38),
+                                    )),
                                 Text(
 
-                                    ///kalau tidak masuk lembur , tanggal akan otomatis set pada hari itu
+                                  ///kalau tidak masuk lembur , tanggal akan otomatis set pada hari itu
                                     (isMasuk == false)
                                         ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
 
-                                        ///apabila tanggal lembur bernilai "" maka akan otomatis set ke tanggal pada hari itu
+                                    ///apabila tanggal lembur bernilai "" maka akan otomatis set ke tanggal pada hari itu
                                         : dateController.text == ""
-                                            ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
-                                            : dateController.text
-                                    // "${dateController.text == '' ? 'Senin, 1 Januari 2000' : dateController.text}"
-                                    ),
+                                        ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
+                                        : dateController.text
+                                  // "${dateController.text == '' ? 'Senin, 1 Januari 2000' : dateController.text}"
+                                ),
                               ],
                             ),
                             Divider(),
@@ -575,9 +578,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 ),
                                 Expanded(
                                     child: Text(
-                                  "Absensi",
-                                  style: TextStyle(color: Colors.black38),
-                                )),
+                                      "Absensi",
+                                      style: TextStyle(color: Colors.black38),
+                                    )),
                                 Text("${selectedRadio == 0 ? 'Masuk (${keterangan})' : 'Tidak Masuk'}"),
                               ],
                             ),
@@ -592,14 +595,14 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 ),
                                 Expanded(
                                     child: Text(
-                                  "Lembur",
-                                  style: TextStyle(color: Colors.black38),
-                                )),
+                                      "Lembur",
+                                      style: TextStyle(color: Colors.black38),
+                                    )),
                                 Text((selectedRadio == 2)
                                     ? "0 Jam"
                                     : timeController.text == ''
-                                        ? '0'
-                                        : "${timeController.text} Jam"),
+                                    ? '0'
+                                    : "${timeController.text} Jam"),
                               ],
                             ),
                             Divider(),

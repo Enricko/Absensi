@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       .child("lembur") // Parent di database
                                       .child(id_user) // Id user
                                       .child(DateFormat('yyyy-MM', "id")
-                                          .format(DateTime.now())) // Bulan dan tahun saat ini
+                                      .format(DateTime.now())) // Bulan dan tahun saat ini
                                       .onValue,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData && (snapshot.data! as DatabaseEvent).snapshot.value != null) {
@@ -348,9 +348,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                      "Tanggal",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
+                                                          "Tanggal",
+                                                          style: TextStyle(color: Colors.black38),
+                                                        )),
                                                     Text("${dataList[index]['tanggal']}"),
                                                   ],
                                                 ),
@@ -365,9 +365,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                      "Absensi",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
+                                                          "Absensi",
+                                                          style: TextStyle(color: Colors.black38),
+                                                        )),
                                                     Text(
                                                         "${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
                                                   ],
@@ -383,9 +383,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                      "Lembur",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
+                                                          "Lembur",
+                                                          style: TextStyle(color: Colors.black38),
+                                                        )),
                                                     Text("${dataList[index]['lembur']} Jam"),
                                                   ],
                                                 ),
@@ -400,9 +400,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                      "Total",
-                                                      style: TextStyle(color: Colors.black38),
-                                                    )),
+                                                          "Total",
+                                                          style: TextStyle(color: Colors.black38),
+                                                        )),
                                                     Text(
                                                       "${currencyFormatter.format(dataList[index]['total'])}",
                                                       style: const TextStyle(color: Colors.blue),
@@ -708,68 +708,68 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // List<PieChartSectionData> showingSections(Map<dynamic, dynamic> data) {
-  //   return List.generate(4, (i) {
-  //     final isTouched = i == touchedIndex;
-  //     final fontSize = isTouched ? 25.0 : 16.0;
-  //     final radius = isTouched ? 60.0 : 50.0;
-  //     const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
-  //     switch (i) {
-  //       case 0:
-  //         return PieChartSectionData(
-  //           color: AppColors.contentColorBlue,
-  //           value: 40,
-  //           title: '40%',
-  //           radius: radius,
-  //           titleStyle: TextStyle(
-  //             fontSize: fontSize,
-  //             fontWeight: FontWeight.bold,
-  //             color: AppColors.mainTextColor1,
-  //             shadows: shadows,
-  //           ),
-  //         );
-  //       case 1:
-  //         return PieChartSectionData(
-  //           color: AppColors.contentColorYellow,
-  //           value: 30,
-  //           title: '30%',
-  //           radius: radius,
-  //           titleStyle: TextStyle(
-  //             fontSize: fontSize,
-  //             fontWeight: FontWeight.bold,
-  //             color: AppColors.mainTextColor1,
-  //             shadows: shadows,
-  //           ),
-  //         );
-  //       case 2:
-  //         return PieChartSectionData(
-  //           color: AppColors.contentColorPurple,
-  //           value: 15,
-  //           title: '15%',
-  //           radius: radius,
-  //           titleStyle: TextStyle(
-  //             fontSize: fontSize,
-  //             fontWeight: FontWeight.bold,
-  //             color: AppColors.mainTextColor1,
-  //             shadows: shadows,
-  //           ),
-  //         );
-  //       case 3:
-  //         return PieChartSectionData(
-  //           color: AppColors.contentColorGreen,
-  //           value: 15,
-  //           title: '15%',
-  //           radius: radius,
-  //           titleStyle: TextStyle(
-  //             fontSize: fontSize,
-  //             fontWeight: FontWeight.bold,
-  //             color: AppColors.mainTextColor1,
-  //             shadows: shadows,
-  //           ),
-  //         );
-  //       default:
-  //         throw Error();
-  //     }
-  //   });
-  // }
+// List<PieChartSectionData> showingSections(Map<dynamic, dynamic> data) {
+//   return List.generate(4, (i) {
+//     final isTouched = i == touchedIndex;
+//     final fontSize = isTouched ? 25.0 : 16.0;
+//     final radius = isTouched ? 60.0 : 50.0;
+//     const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
+//     switch (i) {
+//       case 0:
+//         return PieChartSectionData(
+//           color: AppColors.contentColorBlue,
+//           value: 40,
+//           title: '40%',
+//           radius: radius,
+//           titleStyle: TextStyle(
+//             fontSize: fontSize,
+//             fontWeight: FontWeight.bold,
+//             color: AppColors.mainTextColor1,
+//             shadows: shadows,
+//           ),
+//         );
+//       case 1:
+//         return PieChartSectionData(
+//           color: AppColors.contentColorYellow,
+//           value: 30,
+//           title: '30%',
+//           radius: radius,
+//           titleStyle: TextStyle(
+//             fontSize: fontSize,
+//             fontWeight: FontWeight.bold,
+//             color: AppColors.mainTextColor1,
+//             shadows: shadows,
+//           ),
+//         );
+//       case 2:
+//         return PieChartSectionData(
+//           color: AppColors.contentColorPurple,
+//           value: 15,
+//           title: '15%',
+//           radius: radius,
+//           titleStyle: TextStyle(
+//             fontSize: fontSize,
+//             fontWeight: FontWeight.bold,
+//             color: AppColors.mainTextColor1,
+//             shadows: shadows,
+//           ),
+//         );
+//       case 3:
+//         return PieChartSectionData(
+//           color: AppColors.contentColorGreen,
+//           value: 15,
+//           title: '15%',
+//           radius: radius,
+//           titleStyle: TextStyle(
+//             fontSize: fontSize,
+//             fontWeight: FontWeight.bold,
+//             color: AppColors.mainTextColor1,
+//             shadows: shadows,
+//           ),
+//         );
+//       default:
+//         throw Error();
+//     }
+//   });
+// }
 }
