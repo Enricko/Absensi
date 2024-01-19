@@ -5,8 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../include/reward_ads.dart';
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -60,6 +63,37 @@ class _HistoryState extends State<History> {
     getPref();
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
+    // Reward Ads
+    RewardAds.loadRewardAd();
+  }
+
+  void _showRewardedAd(List<Map<dynamic,dynamic>>dataList,index) {
+    if ( RewardAds.rewardedAd != null) {
+      RewardAds.rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          RewardAds.loadRewardAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          RewardAds.loadRewardAd();
+        },
+      );
+      RewardAds.rewardedAd!.show(
+        onUserEarnedReward: (ad, reward) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (ctx) => SumBulanan(
+                      tanggal: dataList[index]
+                      ['tanggal'])));
+        },
+      );
+      RewardAds.rewardedAd = null;
+    }
+    else{
+      print("gabisa");
+    }
   }
 
   @override
@@ -265,12 +299,7 @@ class _HistoryState extends State<History> {
                                                             MaterialStateProperty.all(Colors.white),
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (ctx) => SumBulanan(
-                                                                    tanggal: dataList[index]
-                                                                        ['tanggal'])));
+                                                        _showRewardedAd(dataList,index);
                                                       },
                                                       child: Text("Lihat Detail")),
                                                 )

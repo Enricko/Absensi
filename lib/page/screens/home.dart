@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:absensi/include/alerts.dart';
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
@@ -8,6 +10,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
     symbol: 'Rp ',
     decimalDigits: 0,
   );
+
+
 //list cek lemburan hari ini
   List listHariLembur = [];
 
@@ -70,7 +75,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
+    // _loadRewardAd();
   }
+
+  //
+
+
+
+
 
   @override
   Widget build(BuildContext context) {

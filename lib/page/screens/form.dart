@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
@@ -9,9 +10,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_ui_database/firebase_ui_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../include/reward_ads.dart';
 
 class FormAbsensi extends StatefulWidget {
   const FormAbsensi({Key? key, required this.listHariLembur}) : super(key: key);
@@ -45,6 +49,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
   // variable boolean
   bool isMasuk = true;
+
+  //reward ads
+  // late RewardedAd? _rewardedAd;
 
   // Form Input Controller
   TextEditingController dateController = TextEditingController();
@@ -249,6 +256,8 @@ class _FormAbsensiState extends State<FormAbsensi> {
   @override
   void initState() {
     super.initState();
+
+
     // Cek User apakah user sudah pernah login sebelumnya
     cekUser();
 
@@ -257,6 +266,79 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
+    // Reward Ads
+    RewardAds.loadRewardAd();
+
+  }
+
+  // void loadRewardedAd() async {
+  //   RewardedAd.load(
+  //       adUnitId : Platform.isAndroid
+  //           ? 'ca-app-pub-3940256099942544/5354046379'
+  //           : 'ca-app-pub-3940256099942544/6978759866',
+  //       request: AdRequest(),
+  //       rewardedAdLoadCallback: RewardedAdLoadCallback(
+  //           onAdLoaded: (ad){
+  //             setState(() {
+  //               _rewardedAd = ad;
+  //             });
+  //             // ad.fullScreenContentCallback = FullScreenContentCallback(
+  //             //     onAdShowedFullScreenContent: (ad) {},
+  //             //     onAdImpression: (ad) {},
+  //             //     onAdFailedToShowFullScreenContent: (ad, err) {
+  //             //       // ad.dispose();
+  //             //     },
+  //             //     onAdDismissedFullScreenContent: (ad) {
+  //             //       // ad.dispose();
+  //             //     },
+  //             //     onAdClicked: (ad) {});
+  //
+  //             // debugPrint('$ad loaded.');
+  //             // _rewardedAd = ad;
+  //             // Iklan bakal muncul jika ini mendapatkan 1 dan memiliki chance 1/3 atau 33.3%
+  //             // Kenapa saya kasih begini agar pindah page ti dak selalu iklan
+  //             // Agar user tidak terlalu merasa risih dengan iklan
+  //             // int random = Random().nextInt(5);
+  //             // print("random : $random");
+  //             // if (random == 1) {
+  //             //   _rewardedAd!.show();
+  //             // }
+  //             // _rewardedAd.show(onUserEarnedReward: (ad, reward) {
+  //             //
+  //             // },
+  //             // );
+  //           },
+  //           onAdFailedToLoad: (LoadAdError error) => setState((){
+  //             // _rewardedAd = null;
+  //             print("iklan null");
+  //           })
+  //       )
+  //   );
+  //
+  // }
+
+  void _showRewardedAd() {
+    if ( RewardAds.rewardedAd != null) {
+      RewardAds.rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          RewardAds.loadRewardAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          RewardAds.loadRewardAd();
+        },
+      );
+      RewardAds.rewardedAd!.show(
+        onUserEarnedReward: (ad, reward) {
+          simpanLembur();
+        },
+      );
+      RewardAds.rewardedAd = null;
+    }
+    else{
+      print("gabisa");
+    }
   }
 
   @override
@@ -682,8 +764,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 });
                               });
                             });
+                            _showRewardedAd();
                             // Menjalanan kan logic Simpan data lembur
-                            simpanLembur();
+                            // simpanLembur();
                           }
                         },
                         child: Text("Simpan")),

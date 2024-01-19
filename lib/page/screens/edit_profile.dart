@@ -10,9 +10,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../include/reward_ads.dart';
 import '../../system/insert_data.dart';
 
 class EditProfile extends StatefulWidget {
@@ -171,7 +173,34 @@ class _EditProfileState extends State<EditProfile> {
     getPref();
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
+    // Reward Ads
+    RewardAds.loadRewardAd();
   }
+
+  void _showRewardedAd() {
+    if ( RewardAds.rewardedAd != null) {
+      RewardAds.rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          RewardAds.loadRewardAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          RewardAds.loadRewardAd();
+        },
+      );
+      RewardAds.rewardedAd!.show(
+        onUserEarnedReward: (ad, reward) {
+          editProfile();
+        },
+      );
+      RewardAds.rewardedAd = null;
+    }
+    else{
+      print("gabisa");
+    }
+  }
+
 //function yang akan dijalankan ketika screen di hapus / di tinggalkan
   @override
   void dispose() {
@@ -926,8 +955,8 @@ class _EditProfileState extends State<EditProfile> {
                               });
                             });
                           });
-                          // Menjalanan kan logic SignUp
-                          editProfile();
+                          //show reward ads
+                          _showRewardedAd();
                         }
 
                       },

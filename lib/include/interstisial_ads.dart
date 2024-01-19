@@ -43,7 +43,7 @@ class InterstitialAds {
           // Iklan bakal muncul jika ini mendapatkan 1 dan memiliki chance 1/3 atau 33.3%
           // Kenapa saya kasih begini agar pindah page ti dak selalu iklan
           // Agar user tidak terlalu merasa risih dengan iklan
-          int random = Random().nextInt(5);
+          int random = Random().nextInt(10);
           print("random : $random");
           if (random == 1) {
             _interstitialAd!.show();
@@ -56,6 +56,8 @@ class InterstitialAds {
       ),
     );
   }
+
+
 }
 
 // class InterstitalAds extends StatefulWidget {
