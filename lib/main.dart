@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:absensi/include/reward_ads.dart';
 import 'package:absensi/page/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   // AdMob dengan Test ID
   // MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
   //     testDeviceIds: ['33BE2250B43518CCDA7DE426D04EE231']));
@@ -33,6 +35,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -118,6 +118,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
                 (8 * rumusLembur2) + (1 * rumusLembur3) + ((int.parse(timeController.text) - 9) * rumusLembur4));
           }
         }
+
         ///6 HARI DI HARI LIBUR
         if (waktuLembur == "6 Hari") {
           // 7 Jam pertama
@@ -204,7 +205,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
   void simpanLembur() {
     var date =
-    dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
+        dateController.text != '' ? dateController.text : DateFormat('EEEE, dd MMMM yyyy', "id").format(DateTime.now());
     var time = timeController.text != '' ? timeController.text : "0";
     var absensi = "${selectedRadio != 1 ? 'Masuk' : 'Tidak Masuk'}";
     var total = totalGajiLembur;
@@ -227,8 +228,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
       print(lembur1);
       print(lembur2);
       InsertData.lembur(data, id_user, context);
-    }else{
-      EasyLoading.showError("Maaf tanggal tersebut sudah terdaftar.",dismissOnTap: true,duration: Duration(seconds: 3));
+    } else {
+      EasyLoading.showError("Maaf tanggal tersebut sudah terdaftar.",
+          dismissOnTap: true, duration: Duration(seconds: 3));
     }
   }
 
@@ -257,7 +259,6 @@ class _FormAbsensiState extends State<FormAbsensi> {
   void initState() {
     super.initState();
 
-
     // Cek User apakah user sudah pernah login sebelumnya
     cekUser();
 
@@ -266,79 +267,10 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
-    // Reward Ads
-    RewardAds.loadRewardAd();
-
-  }
-
-  // void loadRewardedAd() async {
-  //   RewardedAd.load(
-  //       adUnitId : Platform.isAndroid
-  //           ? 'ca-app-pub-3940256099942544/5354046379'
-  //           : 'ca-app-pub-3940256099942544/6978759866',
-  //       request: AdRequest(),
-  //       rewardedAdLoadCallback: RewardedAdLoadCallback(
-  //           onAdLoaded: (ad){
-  //             setState(() {
-  //               _rewardedAd = ad;
-  //             });
-  //             // ad.fullScreenContentCallback = FullScreenContentCallback(
-  //             //     onAdShowedFullScreenContent: (ad) {},
-  //             //     onAdImpression: (ad) {},
-  //             //     onAdFailedToShowFullScreenContent: (ad, err) {
-  //             //       // ad.dispose();
-  //             //     },
-  //             //     onAdDismissedFullScreenContent: (ad) {
-  //             //       // ad.dispose();
-  //             //     },
-  //             //     onAdClicked: (ad) {});
-  //
-  //             // debugPrint('$ad loaded.');
-  //             // _rewardedAd = ad;
-  //             // Iklan bakal muncul jika ini mendapatkan 1 dan memiliki chance 1/3 atau 33.3%
-  //             // Kenapa saya kasih begini agar pindah page ti dak selalu iklan
-  //             // Agar user tidak terlalu merasa risih dengan iklan
-  //             // int random = Random().nextInt(5);
-  //             // print("random : $random");
-  //             // if (random == 1) {
-  //             //   _rewardedAd!.show();
-  //             // }
-  //             // _rewardedAd.show(onUserEarnedReward: (ad, reward) {
-  //             //
-  //             // },
-  //             // );
-  //           },
-  //           onAdFailedToLoad: (LoadAdError error) => setState((){
-  //             // _rewardedAd = null;
-  //             print("iklan null");
-  //           })
-  //       )
-  //   );
-  //
-  // }
-
-  void _showRewardedAd() {
-    if ( RewardAds.rewardedAd != null) {
-      RewardAds.rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          RewardAds.loadRewardAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          ad.dispose();
-          RewardAds.loadRewardAd();
-        },
-      );
-      RewardAds.rewardedAd!.show(
-        onUserEarnedReward: (ad, reward) {
-          simpanLembur();
-        },
-      );
-      RewardAds.rewardedAd = null;
-    }
-    else{
-      print("gabisa");
-    }
+    
+    // Load Interstitial Reward Ads
+    RewardAds.loadAd();
+    setState(() {});
   }
 
   @override
@@ -506,17 +438,17 @@ class _FormAbsensiState extends State<FormAbsensi> {
                           },
                           dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
-                                enabled: false,
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(13),
-                                    borderSide: BorderSide(color: Colors.blue, width: 1)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(13),
-                                    borderSide: BorderSide(color: Colors.black38, width: 1)),
-                                errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(13),
-                                    borderSide: BorderSide(color: Colors.redAccent, width: 1)),
-                              )),
+                            enabled: false,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(13),
+                                borderSide: BorderSide(color: Colors.blue, width: 1)),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(13),
+                                borderSide: BorderSide(color: Colors.black38, width: 1)),
+                            errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(13),
+                                borderSide: BorderSide(color: Colors.redAccent, width: 1)),
+                          )),
                         ),
                         SizedBox(
                           height: 10,
@@ -632,21 +564,21 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 ),
                                 Expanded(
                                     child: Text(
-                                      "Tanggal",
-                                      style: TextStyle(color: Colors.black38),
-                                    )),
+                                  "Tanggal",
+                                  style: TextStyle(color: Colors.black38),
+                                )),
                                 Text(
 
-                                  ///kalau tidak masuk lembur , tanggal akan otomatis set pada hari itu
+                                    ///kalau tidak masuk lembur , tanggal akan otomatis set pada hari itu
                                     (isMasuk == false)
                                         ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
 
-                                    ///apabila tanggal lembur bernilai "" maka akan otomatis set ke tanggal pada hari itu
+                                        ///apabila tanggal lembur bernilai "" maka akan otomatis set ke tanggal pada hari itu
                                         : dateController.text == ""
-                                        ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
-                                        : dateController.text
-                                  // "${dateController.text == '' ? 'Senin, 1 Januari 2000' : dateController.text}"
-                                ),
+                                            ? DateFormat('EEEE, dd MMMM yyyy', 'id').format(DateTime.now())
+                                            : dateController.text
+                                    // "${dateController.text == '' ? 'Senin, 1 Januari 2000' : dateController.text}"
+                                    ),
                               ],
                             ),
                             Divider(),
@@ -660,9 +592,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 ),
                                 Expanded(
                                     child: Text(
-                                      "Absensi",
-                                      style: TextStyle(color: Colors.black38),
-                                    )),
+                                  "Absensi",
+                                  style: TextStyle(color: Colors.black38),
+                                )),
                                 Text("${selectedRadio == 0 ? 'Masuk (${keterangan})' : 'Tidak Masuk'}"),
                               ],
                             ),
@@ -677,14 +609,14 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 ),
                                 Expanded(
                                     child: Text(
-                                      "Lembur",
-                                      style: TextStyle(color: Colors.black38),
-                                    )),
+                                  "Lembur",
+                                  style: TextStyle(color: Colors.black38),
+                                )),
                                 Text((selectedRadio == 2)
                                     ? "0 Jam"
                                     : timeController.text == ''
-                                    ? '0'
-                                    : "${timeController.text} Jam"),
+                                        ? '0'
+                                        : "${timeController.text} Jam"),
                               ],
                             ),
                             Divider(),
@@ -764,9 +696,15 @@ class _FormAbsensiState extends State<FormAbsensi> {
                                 });
                               });
                             });
-                            _showRewardedAd();
-                            // Menjalanan kan logic Simpan data lembur
-                            // simpanLembur();
+                            EasyLoading.show(status: "Loading...");
+                            RewardAds.rewardedInterstitialAd!.show(
+                                onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+                              // Reward the user for watching an ad.
+                              // Menjalanan kan logic Simpan data lembur
+                              simpanLembur();
+                            }).then((value){
+                              EasyLoading.dismiss();
+                            });
                           }
                         },
                         child: Text("Simpan")),

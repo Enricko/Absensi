@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:absensi/include/alerts.dart';
 import 'package:absensi/include/interstisial_ads.dart';
+import 'package:absensi/include/reward_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/system/chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
     decimalDigits: 0,
   );
 
-
 //list cek lemburan hari ini
   List listHariLembur = [];
 
@@ -75,14 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
+
     // _loadRewardAd();
   }
 
   //
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       .child("lembur") // Parent di database
                                       .child(id_user) // Id user
                                       .child(DateFormat('yyyy-MM', "id")
-                                      .format(DateTime.now())) // Bulan dan tahun saat ini
+                                          .format(DateTime.now())) // Bulan dan tahun saat ini
                                       .onValue,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData && (snapshot.data! as DatabaseEvent).snapshot.value != null) {
@@ -360,9 +357,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                          "Tanggal",
-                                                          style: TextStyle(color: Colors.black38),
-                                                        )),
+                                                      "Tanggal",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
                                                     Text("${dataList[index]['tanggal']}"),
                                                   ],
                                                 ),
@@ -377,9 +374,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                          "Absensi",
-                                                          style: TextStyle(color: Colors.black38),
-                                                        )),
+                                                      "Absensi",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
                                                     Text(
                                                         "${dataList[index]['absensi']} (${dataList[index]['keterangan']})"),
                                                   ],
@@ -395,9 +392,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                          "Lembur",
-                                                          style: TextStyle(color: Colors.black38),
-                                                        )),
+                                                      "Lembur",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
                                                     Text("${dataList[index]['lembur']} Jam"),
                                                   ],
                                                 ),
@@ -412,9 +409,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     const Expanded(
                                                         child: Text(
-                                                          "Total",
-                                                          style: TextStyle(color: Colors.black38),
-                                                        )),
+                                                      "Total",
+                                                      style: TextStyle(color: Colors.black38),
+                                                    )),
                                                     Text(
                                                       "${currencyFormatter.format(dataList[index]['total'])}",
                                                       style: const TextStyle(color: Colors.blue),
@@ -710,7 +707,7 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         backgroundColor: Colors.blue,
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (ctx) => FormAbsensi(listHariLembur:listHariLembur)));
+          Navigator.push(context, MaterialPageRoute(builder: (ctx) => FormAbsensi(listHariLembur: listHariLembur)));
         },
         child: const Icon(
           Icons.add,

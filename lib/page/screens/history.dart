@@ -4,6 +4,7 @@ import 'package:absensi/page/screens/bulanan.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
@@ -64,36 +65,8 @@ class _HistoryState extends State<History> {
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
     // Reward Ads
-    RewardAds.loadRewardAd();
-  }
-
-  void _showRewardedAd(List<Map<dynamic,dynamic>>dataList,index) {
-    if ( RewardAds.rewardedAd != null) {
-      RewardAds.rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          RewardAds.loadRewardAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          ad.dispose();
-          RewardAds.loadRewardAd();
-        },
-      );
-      RewardAds.rewardedAd!.show(
-        onUserEarnedReward: (ad, reward) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (ctx) => SumBulanan(
-                      tanggal: dataList[index]
-                      ['tanggal'])));
-        },
-      );
-      RewardAds.rewardedAd = null;
-    }
-    else{
-      print("gabisa");
-    }
+    RewardAds.loadAd();
+    setState(() {});
   }
 
   @override
@@ -198,19 +171,17 @@ class _HistoryState extends State<History> {
                                 if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
                                   // Variable data mempermudah memanggil data pada database
                                   Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                                      (snapshot.data! as DatabaseEvent).snapshot.value
-                                          as Map<dynamic, dynamic>);
+                                      (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
                                   // Mengubah map menjadi list
                                   List<Map<dynamic, dynamic>> dataList = [];
-                          
+
                                   // Memperulangkan data menggunakan foreach
                                   data.forEach((key, value) {
                                     // Mensetting variable dengan total lembur dan gaji)
-                          
+
                                     // Filter Tahun History
                                     var parseDateyear = DateFormat("yyyy", 'id').parse(key);
-                                    var formInputYear =
-                                        DateFormat("yyyy", 'id').parse(selectedYear.toString());
+                                    var formInputYear = DateFormat("yyyy", 'id').parse(selectedYear.toString());
                                     if (!years.contains(parseDateyear.year)) {
                                       years.add(parseDateyear.year);
                                     }
@@ -228,12 +199,16 @@ class _HistoryState extends State<History> {
                                   });
                                   // Filter Search Bulan
                                   dataList = dataList.where((value) {
-                                    if(filterSearchController.text == ""){
+                                    if (filterSearchController.text == "") {
                                       return true;
                                     }
-                                    return DateFormat('MMMM', 'id').format(DateFormat('yyyy-MM', "id").parse(value['tanggal'])).toString().toLowerCase().contains(filterSearchController.text.toLowerCase());
+                                    return DateFormat('MMMM', 'id')
+                                        .format(DateFormat('yyyy-MM', "id").parse(value['tanggal']))
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(filterSearchController.text.toLowerCase());
                                   }).toList();
-                          
+
                                   return ListView.builder(
                                     itemCount: dataList.length,
                                     itemBuilder: (context, index) {
@@ -242,8 +217,7 @@ class _HistoryState extends State<History> {
                                           // Card Lemburan
                                           Container(
                                             width: double.infinity,
-                                            padding:
-                                                const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.circular(8),
@@ -293,13 +267,23 @@ class _HistoryState extends State<History> {
                                                             borderRadius: BorderRadius.circular(12),
                                                           ),
                                                         ),
-                                                        backgroundColor:
-                                                            MaterialStateProperty.all(Colors.blue),
-                                                        foregroundColor:
-                                                            MaterialStateProperty.all(Colors.white),
+                                                        backgroundColor: MaterialStateProperty.all(Colors.blue),
+                                                        foregroundColor: MaterialStateProperty.all(Colors.white),
                                                       ),
                                                       onPressed: () {
-                                                        _showRewardedAd(dataList,index);
+                                                        EasyLoading.show(status: "Loading...");
+
+                                                        RewardAds.rewardedInterstitialAd!.show(onUserEarnedReward:
+                                                            (AdWithoutView ad, RewardItem rewardItem) {
+                                                          // Reward the user for watching an ad.
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      SumBulanan(tanggal: dataList[index]['tanggal'])));
+                                                        }).then((value) {
+                                                          EasyLoading.dismiss();
+                                                        });
                                                       },
                                                       child: Text("Lihat Detail")),
                                                 )
