@@ -53,7 +53,7 @@ class _EditProfileState extends State<EditProfile> {
   Timer? ignorePointerTimer;
 
   // Ads Counter
-  int _adViewCount = 0;
+  int _adViewCountProfile = 0;
 
   String? nama;
   String? gaji;
@@ -168,34 +168,34 @@ class _EditProfileState extends State<EditProfile> {
     InterstitialAds.loadAd();
     // Reward Ads
     RewardAds.loadAd();
-    _loadAdViewCount();
+    _loadAdViewCountProfile();
     setState(() {});
   }
 
-  Future<void> _loadAdViewCount() async {
+  Future<void> _loadAdViewCountProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _adViewCount = prefs.getInt('adViewCount') ?? 0;
+      _adViewCountProfile = prefs.getInt('adViewCountProfile') ?? 0;
     });
   }
 
-  Future<void> _incrementAdViewCount() async {
+  Future<void> _incrementAdViewCountProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int updatedCount = (_adViewCount + 1); // set limit 3 kali sehari
-    if (prefs.getString('adViewCountDate') != null) {
-      if (prefs.getInt('adViewCount')! >= 1 &&
-          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDate').toString()))) {
-        prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+    int updatedCount = (_adViewCountProfile + 1); // set limit 3 kali sehari
+    if (prefs.getString('adViewCountDateProfile') != null) {
+      if (prefs.getInt('adViewCountProfile')! >= 1 &&
+          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDateProfile').toString()))) {
+        prefs.setString('adViewCountDateProfile', DateTime.now().add(Duration(days: 1)).toString());
         updatedCount = 1;
       }
     } else {
-      prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+      prefs.setString('adViewCountDateProfile', DateTime.now().add(Duration(days: 1)).toString());
       updatedCount = 1;
     }
 
-    prefs.setInt('adViewCount', updatedCount);
+    prefs.setInt('adViewCountProfile', updatedCount);
     setState(() {
-      _adViewCount = updatedCount;
+      _adViewCountProfile = updatedCount;
     });
   }
 
@@ -815,13 +815,13 @@ class _EditProfileState extends State<EditProfile> {
                               });
                             });
                             EasyLoading.show(status: "Loading...");
-                            if (_adViewCount < 3) {
+                            if (_adViewCountProfile < 3) {
                               Future.delayed(Duration(seconds: 3), () async {
                                 await RewardAds.rewardedInterstitialAd!.show(
                                     onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) async {
                                   // Reward the user for watching an ad.
 
-                                  await _incrementAdViewCount();
+                                  await _incrementAdViewCountProfile();
                                   RewardAds.loadAd();
                                   editProfile();
                                 }).then(
