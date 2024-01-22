@@ -697,6 +697,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               });
                             });
                             EasyLoading.show(status: "Loading...");
+                            // tampilkan rewards ads
                             RewardAds.rewardedInterstitialAd!.show(
                                 onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
                               // Reward the user for watching an ad.

@@ -5,7 +5,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class RewardAds {
   static RewardedInterstitialAd? rewardedInterstitialAd;
-
   static void loadAd() {
     RewardedInterstitialAd.load(
         adUnitId:

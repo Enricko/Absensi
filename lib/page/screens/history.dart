@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:absensi/include/interstisial_ads.dart';
 import 'package:absensi/page/auth/login.dart';
 import 'package:absensi/page/screens/bulanan.dart';
@@ -49,10 +51,14 @@ class _HistoryState extends State<History> {
     if (FirebaseAuth.instance.currentUser == null) {
       FirebaseAuth.instance.currentUser;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => LoginPage()));
       });
     }
   }
+
+  int _adViewCount = 0;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -66,7 +72,42 @@ class _HistoryState extends State<History> {
     InterstitialAds.loadAd();
     // Reward Ads
     RewardAds.loadAd();
+    _loadAdViewCount();
+    _timer = Timer.periodic(Duration(days: 1), (timer) {
+      _resetAdViewCount();
+    });
     setState(() {});
+  }
+
+  Future<void> _resetAdViewCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('adViewCount', 0);
+    setState(() {
+      _adViewCount = 0;
+    });
+  }
+
+  Future<void> _loadAdViewCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _adViewCount = prefs.getInt('adViewCount') ?? 0;
+    });
+  }
+
+  Future<void> _incrementAdViewCount() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int updatedCount = (_adViewCount + 1) % 4; // set limit 3 kali sehari
+    prefs.setInt('adViewCount', updatedCount);
+    setState(() {
+      _adViewCount = updatedCount;
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel the timer to avoid memory leaks
+    super.dispose();
   }
 
   @override
@@ -104,7 +145,8 @@ class _HistoryState extends State<History> {
                             hintText: "Cari Lemburanmu",
                             hintStyle: TextStyle(fontSize: 13),
                             prefix: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: SvgPicture.asset(
                                 "assets/Search.svg",
                                 color: Colors.black38,
@@ -112,11 +154,13 @@ class _HistoryState extends State<History> {
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(width: 1, color: Colors.black38),
+                              borderSide:
+                                  BorderSide(width: 1, color: Colors.black38),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(width: 1, color: Colors.black38),
+                              borderSide:
+                                  BorderSide(width: 1, color: Colors.black38),
                             ),
                             filled: true,
                             fillColor: Colors.white),
@@ -130,7 +174,8 @@ class _HistoryState extends State<History> {
                   child: Container(
                     color: Colors.white,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 20),
                       child: Column(
                         children: [
                           Row(
@@ -147,7 +192,8 @@ class _HistoryState extends State<History> {
                                     selectedYear = value!;
                                   });
                                 },
-                                items: years.map<DropdownMenuItem<int>>((int year) {
+                                items: years
+                                    .map<DropdownMenuItem<int>>((int year) {
                                   return DropdownMenuItem<int>(
                                     value: year,
                                     child: Text('$year'),
@@ -168,10 +214,14 @@ class _HistoryState extends State<History> {
                                   .child(id_user) // Id user
                                   .onValue,
                               builder: (context, snapshot) {
-                                if (snapshot.hasData && (snapshot.data!).snapshot.value != null) {
+                                if (snapshot.hasData &&
+                                    (snapshot.data!).snapshot.value != null) {
                                   // Variable data mempermudah memanggil data pada database
-                                  Map<dynamic, dynamic> data = Map<dynamic, dynamic>.from(
-                                      (snapshot.data! as DatabaseEvent).snapshot.value as Map<dynamic, dynamic>);
+                                  Map<dynamic, dynamic> data =
+                                      Map<dynamic, dynamic>.from(
+                                          (snapshot.data! as DatabaseEvent)
+                                              .snapshot
+                                              .value as Map<dynamic, dynamic>);
                                   // Mengubah map menjadi list
                                   List<Map<dynamic, dynamic>> dataList = [];
 
@@ -180,12 +230,15 @@ class _HistoryState extends State<History> {
                                     // Mensetting variable dengan total lembur dan gaji)
 
                                     // Filter Tahun History
-                                    var parseDateyear = DateFormat("yyyy", 'id').parse(key);
-                                    var formInputYear = DateFormat("yyyy", 'id').parse(selectedYear.toString());
+                                    var parseDateyear =
+                                        DateFormat("yyyy", 'id').parse(key);
+                                    var formInputYear = DateFormat("yyyy", 'id')
+                                        .parse(selectedYear.toString());
                                     if (!years.contains(parseDateyear.year)) {
                                       years.add(parseDateyear.year);
                                     }
-                                    if (parseDateyear.isAtSameMomentAs(formInputYear)) {
+                                    if (parseDateyear
+                                        .isAtSameMomentAs(formInputYear)) {
                                       dataList.add({
                                         'tanggal': key,
                                       });
@@ -193,8 +246,10 @@ class _HistoryState extends State<History> {
                                   });
                                   // Filter Sorting Bulan
                                   dataList.sort((a, b) {
-                                    var aDate = DateFormat("yyyy-MM", 'id').parse(a['tanggal']);
-                                    var bDate = DateFormat("yyyy-MM", 'id').parse(b['tanggal']);
+                                    var aDate = DateFormat("yyyy-MM", 'id')
+                                        .parse(a['tanggal']);
+                                    var bDate = DateFormat("yyyy-MM", 'id')
+                                        .parse(b['tanggal']);
                                     return aDate.compareTo(bDate);
                                   });
                                   // Filter Search Bulan
@@ -203,10 +258,12 @@ class _HistoryState extends State<History> {
                                       return true;
                                     }
                                     return DateFormat('MMMM', 'id')
-                                        .format(DateFormat('yyyy-MM', "id").parse(value['tanggal']))
+                                        .format(DateFormat('yyyy-MM', "id")
+                                            .parse(value['tanggal']))
                                         .toString()
                                         .toLowerCase()
-                                        .contains(filterSearchController.text.toLowerCase());
+                                        .contains(filterSearchController.text
+                                            .toLowerCase());
                                   }).toList();
 
                                   return ListView.builder(
@@ -217,23 +274,36 @@ class _HistoryState extends State<History> {
                                           // Card Lemburan
                                           Container(
                                             width: double.infinity,
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 20),
                                             decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                               border: Border(
-                                                left: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                                top: BorderSide(width: 11, color: Color(0xFF2FA4D9)),
-                                                right: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
-                                                bottom: BorderSide(width: 1, color: Color(0xFF2FA4D9)),
+                                                left: BorderSide(
+                                                    width: 1,
+                                                    color: Color(0xFF2FA4D9)),
+                                                top: BorderSide(
+                                                    width: 11,
+                                                    color: Color(0xFF2FA4D9)),
+                                                right: BorderSide(
+                                                    width: 1,
+                                                    color: Color(0xFF2FA4D9)),
+                                                bottom: BorderSide(
+                                                    width: 1,
+                                                    color: Color(0xFF2FA4D9)),
                                               ),
                                             ),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   "PAYSLIP ${DateFormat('MMMM yyyy', 'id').format(DateFormat('yyyy-MM', "id").parse(dataList[index]['tanggal']))}",
-                                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500),
                                                 ),
                                                 SizedBox(
                                                   height: 8,
@@ -251,7 +321,8 @@ class _HistoryState extends State<History> {
                                                         child: Text(
                                                       "${DateFormat('MMMM yyyy', 'id').format(DateFormat('yyyy-MM', "id").parse(dataList[index]['tanggal']))}",
                                                       style: TextStyle(
-                                                          fontWeight: FontWeight.w300,
+                                                          fontWeight:
+                                                              FontWeight.w300,
                                                           fontSize: 14,
                                                           color: Colors.blue),
                                                     )),
@@ -262,30 +333,72 @@ class _HistoryState extends State<History> {
                                                   width: double.infinity,
                                                   child: ElevatedButton(
                                                       style: ButtonStyle(
-                                                        shape: MaterialStateProperty.all(
+                                                        shape:
+                                                            MaterialStateProperty
+                                                                .all(
                                                           RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(12),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
                                                           ),
                                                         ),
-                                                        backgroundColor: MaterialStateProperty.all(Colors.blue),
-                                                        foregroundColor: MaterialStateProperty.all(Colors.white),
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all(Colors
+                                                                    .blue),
+                                                        foregroundColor:
+                                                            MaterialStateProperty
+                                                                .all(Colors
+                                                                    .white),
                                                       ),
-                                                      onPressed: () {
-                                                        EasyLoading.show(status: "Loading...");
+                                                      onPressed: () async{
+                                                        print('adviewcount = $_adViewCount');
+                                                        // tampilkan rewards ads
+                                                        if (_adViewCount < 4) {
+                                                          EasyLoading.show(
+                                                              status:
+                                                              "Loading...");
+                                                          _incrementAdViewCount();
+                                                         await RewardAds
+                                                              .rewardedInterstitialAd!
+                                                              .show(onUserEarnedReward:
+                                                                  (AdWithoutView
+                                                                          ad,
+                                                                      RewardItem
+                                                                          rewardItem) {
+                                                            // Reward the user for watching an ad.
 
-                                                        RewardAds.rewardedInterstitialAd!.show(onUserEarnedReward:
-                                                            (AdWithoutView ad, RewardItem rewardItem) {
-                                                          // Reward the user for watching an ad.
-                                                          Navigator.push(
+                                                            Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                  builder: (ctx) =>
-                                                                      SumBulanan(tanggal: dataList[index]['tanggal'])));
-                                                        }).then((value) {
-                                                          EasyLoading.dismiss();
-                                                        });
+                                                                builder: (ctx) =>
+                                                                    SumBulanan(
+                                                                        tanggal:
+                                                                            dataList[index]['tanggal']),
+                                                              ),
+                                                            );
+                                                          }).then(
+                                                            (value) {
+                                                              EasyLoading
+                                                                  .dismiss();
+                                                            },
+                                                          );
+                                                        } else {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (ctx) => SumBulanan(
+                                                                  tanggal: dataList[
+                                                                          index]
+                                                                      [
+                                                                      'tanggal']),
+                                                            ),
+                                                          );
+                                                        }
                                                       },
-                                                      child: Text("Lihat Detail")),
+                                                      child:
+                                                          Text("Lihat Detail")),
                                                 )
                                               ],
                                             ),
