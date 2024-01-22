@@ -52,6 +52,9 @@ class _EditProfileState extends State<EditProfile> {
   bool ignorePointer = false;
   Timer? ignorePointerTimer;
 
+  // Ads Counter
+  int _adViewCount = 0;
+
   String? nama;
   String? gaji;
   String? no_telepon;
@@ -165,10 +168,38 @@ class _EditProfileState extends State<EditProfile> {
     InterstitialAds.loadAd();
     // Reward Ads
     RewardAds.loadAd();
+    _loadAdViewCount();
     setState(() {});
   }
 
-//function yang akan dijalankan ketika screen di hapus / di tinggalkan
+  Future<void> _loadAdViewCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _adViewCount = prefs.getInt('adViewCount') ?? 0;
+    });
+  }
+
+  Future<void> _incrementAdViewCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int updatedCount = (_adViewCount + 1); // set limit 3 kali sehari
+    if (prefs.getString('adViewCountDate') != null) {
+      if (prefs.getInt('adViewCount')! >= 1 &&
+          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDate').toString()))) {
+        prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+        updatedCount = 1;
+      }
+    } else {
+      prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+      updatedCount = 1;
+    }
+
+    prefs.setInt('adViewCount', updatedCount);
+    setState(() {
+      _adViewCount = updatedCount;
+    });
+  }
+
+  //function yang akan dijalankan ketika screen di hapus / di tinggalkan
   @override
   void dispose() {
     // Timer pada ignore pointer akan di hapus jika pindah page
@@ -784,14 +815,27 @@ class _EditProfileState extends State<EditProfile> {
                               });
                             });
                             EasyLoading.show(status: "Loading...");
-                            //show reward ads
-                            RewardAds.rewardedInterstitialAd!.show(
-                                onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
-                              // Reward the user for watching an ad.
+                            if (_adViewCount < 3) {
+                              Future.delayed(Duration(seconds: 3), () async {
+                                await RewardAds.rewardedInterstitialAd!.show(
+                                    onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) async {
+                                  // Reward the user for watching an ad.
+
+                                  await _incrementAdViewCount();
+                                  RewardAds.loadAd();
+                                  editProfile();
+                                }).then(
+                                  (value) {
+                                    EasyLoading.dismiss();
+                                  },
+                                );
+                              }).then((value) {
+                                print(value);
+                                EasyLoading.dismiss();
+                              });
+                            } else {
                               editProfile();
-                            }).then((value){
-                              EasyLoading.dismiss();
-                            });
+                            }
                           }
                         },
                         child: Text("Simpan")),

@@ -59,6 +59,9 @@ class _FormAbsensiState extends State<FormAbsensi> {
   int selectedRadio = 0;
   final String locale = 'id';
   String? keterangan;
+  
+  // Ads Counter
+  int _adViewCount = 0;
 
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
@@ -267,10 +270,38 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
     // Load InterstitialAd Ads
     InterstitialAds.loadAd();
-    
+
     // Load Interstitial Reward Ads
     RewardAds.loadAd();
+   _loadAdViewCount();
     setState(() {});
+  }
+
+  Future<void> _loadAdViewCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _adViewCount = prefs.getInt('adViewCount') ?? 0;
+    });
+  }
+
+  Future<void> _incrementAdViewCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int updatedCount = (_adViewCount + 1); // set limit 3 kali sehari
+    if (prefs.getString('adViewCountDate') != null) {
+      if (prefs.getInt('adViewCount')! >= 1 &&
+          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDate').toString()))) {
+        prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+        updatedCount = 1;
+      }
+    } else {
+      prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+      updatedCount = 1;
+    }
+
+    prefs.setInt('adViewCount', updatedCount);
+    setState(() {
+      _adViewCount = updatedCount;
+    });
   }
 
   @override
@@ -697,15 +728,27 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               });
                             });
                             EasyLoading.show(status: "Loading...");
-                            // tampilkan rewards ads
-                            RewardAds.rewardedInterstitialAd!.show(
-                                onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
-                              // Reward the user for watching an ad.
-                              // Menjalanan kan logic Simpan data lembur
+                            if (_adViewCount < 3) {
+                              Future.delayed(Duration(seconds: 3), () async {
+                                await RewardAds.rewardedInterstitialAd!.show(
+                                    onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) async {
+                                  // Reward the user for watching an ad.
+
+                                  await _incrementAdViewCount();
+                                  RewardAds.loadAd();
+                                  simpanLembur();
+                                }).then(
+                                  (value) {
+                                    EasyLoading.dismiss();
+                                  },
+                                );
+                              }).then((value) {
+                                print(value);
+                                EasyLoading.dismiss();
+                              });
+                            } else {
                               simpanLembur();
-                            }).then((value){
-                              EasyLoading.dismiss();
-                            });
+                            }
                           }
                         },
                         child: Text("Simpan")),
