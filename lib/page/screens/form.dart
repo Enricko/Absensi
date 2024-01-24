@@ -61,7 +61,7 @@ class _FormAbsensiState extends State<FormAbsensi> {
   String? keterangan;
 
   // Ads Counter
-  int _adViewCount = 0;
+  int _adViewCountForm = 0;
 
   // Format Currency
   NumberFormat currencyFormatter = NumberFormat.currency(
@@ -273,50 +273,50 @@ class _FormAbsensiState extends State<FormAbsensi> {
 
     // Load Interstitial Reward Ads
     RewardAds.loadAd();
-    _loadAdViewCount();
+    _loadAdViewCountForm();
     setState(() {});
   }
 
-  Future<void> _loadAdViewCount() async {
+  Future<void> _loadAdViewCountForm() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('adViewCountDate') != null) {
-      if (prefs.getInt('adViewCount')! >= 1 &&
-          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDate').toString()))) {
-        prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
-        prefs.setInt('adViewCount',0);
-        _adViewCount = 0;
+    if (prefs.getString('adViewCountDateForm') != null) {
+      if (prefs.getInt('adViewCountForm')! >= 1 &&
+          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDateForm').toString()))) {
+        prefs.setString('adViewCountDateForm', DateTime.now().add(Duration(days: 1)).toString());
+        prefs.setInt('adViewCountForm',0);
+        _adViewCountForm = 0;
         setState(() {});
         return;
       }
-      _adViewCount = prefs.getInt('adViewCount') ?? 0;
+      _adViewCountForm = prefs.getInt('adViewCountForm') ?? 0;
       setState(() {});
       return;
     } else {
-      prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
-      prefs.setInt('adViewCount',0);
-      _adViewCount = 0;
+      prefs.setString('adViewCountDateForm', DateTime.now().add(Duration(days: 1)).toString());
+      prefs.setInt('adViewCountForm',0);
+      _adViewCountForm = 0;
       setState(() {});
       return;
     }
   }
 
-  Future<void> _incrementAdViewCount() async {
+  Future<void> _incrementAdViewCountForm() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int updatedCount = (_adViewCount + 1); // set limit 3 kali sehari
-    if (prefs.getString('adViewCountDate') != null) {
-      if (prefs.getInt('adViewCount')! >= 1 &&
-          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDate').toString()))) {
-        prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+    int updatedCount = (_adViewCountForm + 1); // set limit 3 kali sehari
+    if (prefs.getString('adViewCountDateForm') != null) {
+      if (prefs.getInt('adViewCountForm')! >= 1 &&
+          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDateForm').toString()))) {
+        prefs.setString('adViewCountDateForm', DateTime.now().add(Duration(days: 1)).toString());
         updatedCount = 1;
       }
     } else {
-      prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+      prefs.setString('adViewCountDateForm', DateTime.now().add(Duration(days: 1)).toString());
       updatedCount = 1;
     }
 
-    prefs.setInt('adViewCount', updatedCount);
+    prefs.setInt('adViewCountForm', updatedCount);
     setState(() {
-      _adViewCount = updatedCount;
+      _adViewCountForm = updatedCount;
     });
   }
 
@@ -744,13 +744,13 @@ class _FormAbsensiState extends State<FormAbsensi> {
                               });
                             });
                             EasyLoading.show(status: "Loading...");
-                            if (_adViewCount < 3) {
+                            if (_adViewCountForm < 3) {
                               Future.delayed(Duration(seconds: 3), () async {
                                 await RewardAds.rewardedInterstitialAd!.show(
                                     onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) async {
                                   // Reward the user for watching an ad.
 
-                                  await _incrementAdViewCount();
+                                  await _incrementAdViewCountForm();
                                   RewardAds.loadAd();
                                   simpanLembur();
                                 }).then(
