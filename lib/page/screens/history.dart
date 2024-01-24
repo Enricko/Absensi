@@ -76,9 +76,25 @@ class _HistoryState extends State<History> {
 
   Future<void> _loadAdViewCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
+    if (prefs.getString('adViewCountDate') != null) {
+      if (prefs.getInt('adViewCount')! >= 1 &&
+          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDate').toString()))) {
+        prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+        prefs.setInt('adViewCount',0);
+        _adViewCount = 0;
+        setState(() {});
+        return;
+      }
       _adViewCount = prefs.getInt('adViewCount') ?? 0;
-    });
+      setState(() {});
+      return;
+    } else {
+      prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+      prefs.setInt('adViewCount',0);
+      _adViewCount = 0;
+      setState(() {});
+      return;
+    }
   }
 
   Future<void> _incrementAdViewCount() async {
@@ -304,6 +320,7 @@ class _HistoryState extends State<History> {
                                                       ),
                                                       onPressed: () async {
                                                         // tampilkan rewards ads
+                                                        print("_adViewCount : ${_adViewCount}");
                                                         if (_adViewCount < 3) {
                                                           EasyLoading.show(status: "Loading...");
                                                           Future.delayed(Duration(seconds: 3), () async {
@@ -326,7 +343,16 @@ class _HistoryState extends State<History> {
                                                               (value) {
                                                                 EasyLoading.dismiss();
                                                               },
-                                                            );
+                                                            ).onError((error, stackTrace){
+                                                              EasyLoading.dismiss();
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      SumBulanan(tanggal: dataList[index]['tanggal']),
+                                                                ),
+                                                              );
+                                                            });
                                                           }).then((value) {
                                                             print(value);
                                                             EasyLoading.dismiss();

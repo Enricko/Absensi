@@ -174,9 +174,25 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<void> _loadAdViewCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
+    if (prefs.getString('adViewCountDate') != null) {
+      if (prefs.getInt('adViewCount')! >= 1 &&
+          DateTime.now().isAfter(DateTime.parse(prefs.getString('adViewCountDate').toString()))) {
+        prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+        prefs.setInt('adViewCount', 0);
+        _adViewCount = 0;
+        setState(() {});
+        return;
+      }
       _adViewCount = prefs.getInt('adViewCount') ?? 0;
-    });
+      setState(() {});
+      return;
+    } else {
+      prefs.setString('adViewCountDate', DateTime.now().add(Duration(days: 1)).toString());
+      prefs.setInt('adViewCount', 0);
+      _adViewCount = 0;
+      setState(() {});
+      return;
+    }
   }
 
   Future<void> _incrementAdViewCount() async {
@@ -828,9 +844,11 @@ class _EditProfileState extends State<EditProfile> {
                                   (value) {
                                     EasyLoading.dismiss();
                                   },
-                                );
+                                ).onError((error, stackTrace) {
+                                  EasyLoading.dismiss();
+                                  editProfile();
+                                });
                               }).then((value) {
-                                print(value);
                                 EasyLoading.dismiss();
                               });
                             } else {
