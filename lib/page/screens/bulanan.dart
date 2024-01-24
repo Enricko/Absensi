@@ -66,7 +66,7 @@ class _SumBulananState extends State<SumBulanan> {
     ///mengeksekusi function sebelum function build
     getPref();
     // Load InterstitialAd Ads
-    InterstitialAds.loadAd();
+    // InterstitialAds.loadAd();
   }
 
   @override
